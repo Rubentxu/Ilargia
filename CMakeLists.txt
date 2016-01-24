@@ -2,6 +2,21 @@ cmake_minimum_required(VERSION 3.3.2)
 
 project(Ilargia)
 
+set(Ilargia_BINARY_DIR )
+
+set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
+set(EXECUTABLE_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
+set(LIBRARY_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${dir})
+set(CMAKE_BUILD_FILES_DIRECTORY ${dir})
+set(CMAKE_BUILD_DIRECTORY ${dir})
+set(Ilargia_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
+
+
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 
@@ -36,5 +51,6 @@ add_subdirectory(demos)
 add_subdirectory(test)
 add_subdirectory(libBehavior)
 add_subdirectory(libEntitas)
+
 
 

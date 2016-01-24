@@ -3,10 +3,10 @@ set(libEntitas_SRCS
         events/GroupEventType.h)
 
 # Declare the library
-add_library(libEntitas STATIC ${libEntitas_SRCS})
+add_library(entitas STATIC ${libEntitas_SRCS})
 
 # Specify here the include directories exported
 # by this library
-target_include_directories(libEntitas PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(entitas PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-set_target_properties(libEntitas PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(entitas PROPERTIES LINKER_LANGUAGE CXX)
