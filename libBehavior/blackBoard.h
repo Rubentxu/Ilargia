@@ -5,9 +5,12 @@
 #include <map>
 #include <memory>
 #include <iostream>
+#include <boost/any.hpp>
+#include <boost/optional.hpp>
+
 
 class blackBoard {
-    std::map<std::string, std::unique_ptr<boost::any>> properties;
+    std::map<std::string, boost::any> properties;
 
 public:
     blackBoard() {};
@@ -17,22 +20,17 @@ public:
     void operator=(blackBoard const &x) = delete;
 
     template<typename T>
-    T get(std::string name) {
-        boost::any*  result = properties.at(name).get();
-        if (result->is<T>())
-            return result->_<T>();
-        else nullptr;
-    }
-
-    template<typename T>
-    bool is(std::string name) {
-
-        return properties.at(name)->is<T>();
+    boost::optional<T> get(std::string name) {
+        boost::any result = properties.at(name);
+        if (!result.empty() && result.type() == typeid(T))
+            return boost::optional<T>{boost::any_cast<T>(result)};
+        else
+            return boost::optional<T>();
     }
 
     template<class... Args>
     void set(std::string name, Args &&... value) {
-        properties.emplace(std::string(name), make_unique<boost::any>(std::forward<Args>(value)...));
+        properties.emplace(std::string(name), boost::any(std::forward<Args>(value)...));
         //OnPropertyChanged(name);
     }
 

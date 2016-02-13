@@ -31,3 +31,5 @@ iml;
 *.?ml
 .idea
 *.*~
+
+build/
