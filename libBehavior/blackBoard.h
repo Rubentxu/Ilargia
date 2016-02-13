@@ -20,12 +20,13 @@ public:
     void operator=(blackBoard const &x) = delete;
 
     template<typename T>
-    boost::optional<T> get(std::string name) {
+    T& get(std::string name) {
         boost::any result = properties.at(name);
         if (!result.empty() && result.type() == typeid(T))
-            return boost::optional<T>{boost::any_cast<T>(result)};
+            return boost::any_cast<T&>(result);
         else
-            return boost::optional<T>();
+            set(name,new T{});
+            return boost::any_cast<T&>(properties.at(name));
     }
 
     template<class... Args>
@@ -33,10 +34,11 @@ public:
         properties.emplace(std::string(name), boost::any(std::forward<Args>(value)...));
         //OnPropertyChanged(name);
     }
-
-//    std::map<std::string, std::unique_ptr<any>> getProperties() const {
-//        return properties;
-//    };
+    template<typename T>
+    void setVector(std::string name, std::vector<T> &&value) {
+        properties.emplace(std::string(name), boost::any(std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8}));
+        //OnPropertyChanged(name);
+    }
 
 };
 

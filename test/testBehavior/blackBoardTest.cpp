@@ -30,53 +30,55 @@ public:
 TEST_F(blackBoardTest, typeBool) {
     blackBoard b0 {};
     b0.set("isCheck",true);
+    b0.set("name",std::string{"Juan"});
 
-    EXPECT_EQ(b0.get<bool>("isCheck").get(), true);
+    EXPECT_EQ(true, b0.get<bool>("isCheck"));
+    EXPECT_EQ("Juan", b0.get<std::string>("name"));
 
 }
 
-//TEST_F(blackBoardTest, typeChar) {
-//    blackBoard b0 {};
-//    b0.set("myChar",'A');
-//    EXPECT_EQ(b0.get<char>("myChar"), 'A');
-//
-//}
-/*
+TEST_F(blackBoardTest, typeChar) {
+    blackBoard b0 {};
+    b0.set("myChar",'A');
+    EXPECT_EQ('A', b0.get<char>("myChar"));
+
+}
+
 TEST_F(blackBoardTest, typeInt) {
     blackBoard b0 {};
     b0.set("myInt",6);
-    EXPECT_EQ(b0.get<int>("myInt"), 6);
-    EXPECT_TRUE(b0.is<int>("myInt"));
+    EXPECT_EQ(6, b0.get<int>("myInt"));
 
 }
 
 TEST_F(blackBoardTest, typeDouble) {
     blackBoard b0 {};
     b0.set("myDouble",3.14);
-    EXPECT_EQ(b0.get<double>("myDouble"), 3.14);
+    EXPECT_EQ(3.14, b0.get<double>("myDouble"));
 
 }
 
 TEST_F(blackBoardTest, typeChars) {
     blackBoard b0 {};
     b0.set("myChars","hello,");
-    EXPECT_EQ(b0.get<const char *>("myChars"), "hello,");
+    EXPECT_EQ("hello,", b0.get<const char *>("myChars"));
 }
 
 TEST_F(blackBoardTest, typeVectorInt) {
     blackBoard b0 {};
-    b0.set("myVector",std::vector<int>{6, 5, 4, 3, 2, 1, 0});
-    auto expected = std::vector<int>{6, 5, 4, 3, 2, 1, 0};
-    EXPECT_EQ(b0.get<std::vector<int>>("myVector"), expected);
+    auto expected = std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8};
+    b0.setVector("myVector",std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8});
+
+    EXPECT_EQ(expected, b0.get<std::vector<int>>("myVector"));
 
 }
 
 TEST_F(blackBoardTest, typeString) {
     blackBoard b0 {};
     b0.set("myString",std::string("world!"));
-    auto result = b0.get<int>("myString");
-    EXPECT_EQ(result, 1);
-}*/
+    auto result = b0.get<std::string>("myString");
+    EXPECT_EQ("world!", result);
+}
 
 //TEST_F(blackBoardTest, typeStruct) {
 //    blackBoard b0 {};
