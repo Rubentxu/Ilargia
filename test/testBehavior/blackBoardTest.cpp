@@ -1,5 +1,5 @@
 #include <iostream>
-#include "blackBoard.h"
+#include "BlackBoard.h"
 #include "blackBoardTest.h"
 
 

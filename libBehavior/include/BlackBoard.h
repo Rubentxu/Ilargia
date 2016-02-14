@@ -1,23 +1,19 @@
-#ifndef BLACKBOARD_H
-#define BLACKBOARD_H
+#ifndef BlackBoard_H
+#define BlackBoard_H
 
 #include <string>
 #include <map>
-#include <memory>
-#include <iostream>
 #include <boost/any.hpp>
-#include <boost/optional.hpp>
 
-
-class blackBoard {
+class BlackBoard {
     std::map<std::string, boost::any> properties;
 
 public:
-    blackBoard() {};
+    BlackBoard() {};
 
-    blackBoard(blackBoard const &s) = delete;
+    BlackBoard(BlackBoard const &s) = delete;
 
-    void operator=(blackBoard const &x) = delete;
+    void operator=(BlackBoard const &x) = delete;
 
     template<typename T>
     T& get(std::string name) {
@@ -36,4 +32,4 @@ public:
     }
 };
 
-#endif //BLACKBOARD_H
+#endif //BlackBoard_H
