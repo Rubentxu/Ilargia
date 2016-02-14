@@ -9,5 +9,6 @@ TARGET_LINK_LIBRARIES(testBehavior
     libgmock
 )
 
+
 add_test(NAME testBehavior
          COMMAND testBehavior)

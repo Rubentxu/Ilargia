@@ -20,10 +20,17 @@ void blackBoardTest::TearDown() { };
 
 
 class testObject {
-public:
     int _value;
+    std::string _name;
+public:
 
-    testObject(int val) : _value{val} { }
+    testObject() : _value{0} , _name{"test"}{ }
+    testObject(int val, std::string name) : _value{val} , _name{name}{ }
+
+    bool operator==(const testObject &other) const {
+        return _value == other._value && _name == other._name;;
+    }
+
 
 };
 
@@ -64,14 +71,14 @@ TEST_F(blackBoardTest, typeChars) {
     EXPECT_EQ("hello,", b0.get<const char *>("myChars"));
 }
 
-TEST_F(blackBoardTest, typeVectorInt) {
+/*TEST_F(blackBoardTest, typeVectorInt) {
     blackBoard b0 {};
     auto expected = std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8};
     b0.setVector("myVector",std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8});
 
     EXPECT_EQ(expected, b0.get<std::vector<int>>("myVector"));
 
-}
+}*/
 
 TEST_F(blackBoardTest, typeString) {
     blackBoard b0 {};
@@ -80,9 +87,9 @@ TEST_F(blackBoardTest, typeString) {
     EXPECT_EQ("world!", result);
 }
 
-//TEST_F(blackBoardTest, typeStruct) {
-//    blackBoard b0 {};
-//    b0.set("myStruct", testObject{3});
-//    EXPECT_EQ(b0.get<testObject>("myStruct"), "world!");
-//}
+TEST_F(blackBoardTest, typeStruct) {
+    blackBoard b0 {};
+    b0.set("myStruct", testObject{3,"Pruebas"});
+    EXPECT_EQ(b0.get<testObject>("myStruct"),  (testObject{3,"Pruebas"}));
+}
 

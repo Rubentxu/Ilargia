@@ -34,12 +34,6 @@ public:
         properties.emplace(std::string(name), boost::any(std::forward<Args>(value)...));
         //OnPropertyChanged(name);
     }
-    template<typename T>
-    void setVector(std::string name, std::vector<T> &&value) {
-        properties.emplace(std::string(name), boost::any(std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8}));
-        //OnPropertyChanged(name);
-    }
-
 };
 
 #endif //BLACKBOARD_H
