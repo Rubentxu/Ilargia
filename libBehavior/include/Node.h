@@ -18,9 +18,14 @@ std::string generateUUID() {
     return boost::lexical_cast<std::string>(id);
 }
 
-enum class NodeCategorie { COMPOSITE, DECORATOR, ACTION, CONDITION };
+enum class NodeCategorie {
+    COMPOSITE, DECORATOR, ACTION, CONDITION
+};
+
 class Context;
+
 enum class Status;
+
 class BehaviorTree;
 
 class Node {
@@ -32,7 +37,9 @@ class Node {
 
 public:
 
-    Node(std::string name) : _name{name}{ _id = generateUUID(); };
+    Node() : _name{"Default"} { _id = generateUUID(); };
+
+    Node(std::string name) : _name{name} { _id = generateUUID(); };
 
     virtual std::string getId();
 
