@@ -17,14 +17,14 @@
 
  find_package(Boost REQUIRED)
  if (Boost_FOUND)
-
+     MESSAGE("Boost Found: ${Boost_INCLUDE_DIR}")
      include_directories(${PROJECT_SOURCE_DIR}/include)
      include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
      link_directories(${Boost_LIBRARY_DIRS})
-     add_library(${PROJECT_NAME} STATIC ${SRCS} Node.cpp include/Node.h BehaviorTree.cpp include/BehaviorTree.h)
+     add_library(${PROJECT_NAME} STATIC ${SRCS})
      target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-     target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+     target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
 
  endif ()
 

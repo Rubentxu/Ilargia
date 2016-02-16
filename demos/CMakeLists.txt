@@ -8,8 +8,8 @@ add_executable(demo
 
 # Specify here the libraries this program depends on
 target_link_libraries(demo
-    libEntitas
-    libBehavior
+    Entitas
+    Behavior
 )
 
 install(TARGETS demo DESTINATION bin)

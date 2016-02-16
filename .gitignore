@@ -32,4 +32,7 @@ iml;
 .idea
 *.*~
 
+test/lib/*
+tem
+
 build/

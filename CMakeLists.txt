@@ -16,15 +16,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
 
+option(test "Build all tests." ON) #
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -45,12 +42,12 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     ENDIF (NOT WIN32)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-enable_testing()
-
-add_subdirectory(demos)
-add_subdirectory(test)
 add_subdirectory(libBehavior)
 add_subdirectory(libEntitas)
+add_subdirectory(demos)
+if (test)
+    add_subdirectory(test)
+endif()
 
 
 

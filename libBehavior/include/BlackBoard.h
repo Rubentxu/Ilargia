@@ -9,7 +9,7 @@ class BlackBoard {
     std::map<std::string, boost::any> properties;
 
 public:
-    BlackBoard() { };
+    BlackBoard();
 
     BlackBoard(BlackBoard const &s) = delete;
 
