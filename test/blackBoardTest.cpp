@@ -5,8 +5,6 @@
 #include "BlackBoard.h"
 #include "blackBoardTest.h"
 
-
-
 //using ::testing::Return;
 
 blackBoardTest::blackBoardTest() {
@@ -39,62 +37,70 @@ public:
 };
 
 TEST_F(blackBoardTest, typeBool) {
-    BlackBoard b0 {};
-    b0.set("isCheck",true);
-    b0.set("name",std::string{"Juan"});
+    BlackBoard b0{};
+    b0.setParam("isCheck",true);
+    auto value = b0.getParam<bool>("isCheck");
+    EXPECT_EQ(true, value);
+}
+/*
+    b0.setParam("isCheck",true);
+    b0.setParam("name",std::string{"Juan"});
 
-    EXPECT_EQ(true, b0.get<bool>("isCheck"));
-    EXPECT_EQ("Juan", b0.get<std::string>("name"));
+    EXPECT_EQ(true, b0.getParam<bool>("isCheck"));
+    EXPECT_EQ("Juan", b0.getParam<std::string>("name"));
 
 }
 
 TEST_F(blackBoardTest, typeChar) {
     BlackBoard b0 {};
-    b0.set("myChar",'A');
-    EXPECT_EQ('A', b0.get<char>("myChar"));
+    b0.setParam("myChar",'A');
+    EXPECT_EQ('A', b0.getParam<char>("myChar"));
 
 }
 
 TEST_F(blackBoardTest, typeInt) {
     BlackBoard b0 {};
-    b0.set("myInt",6);
-    EXPECT_EQ(6, b0.get<int>("myInt"));
+    b0.setParam("myInt",6);
+    EXPECT_EQ(6, b0.getParam<int>("myInt"));
 
 }
 
 TEST_F(blackBoardTest, typeDouble) {
     BlackBoard b0 {};
-    b0.set("myDouble",3.14);
-    EXPECT_EQ(3.14, b0.get<double>("myDouble"));
+    b0.setParam("myDouble",3.14);
+    EXPECT_EQ(3.14, b0.getParam<double>("myDouble"));
 
 }
 
 TEST_F(blackBoardTest, typeChars) {
     BlackBoard b0 {};
-    b0.set("myChars","hello,");
-    EXPECT_EQ("hello,", b0.get<const char *>("myChars"));
+    b0.setParam("myChars","hello,");
+    EXPECT_EQ("hello,", b0.getParam<const char *>("myChars"));
 }
 
+*/
 /*TEST_F(blackBoardTest, typeVectorInt) {
     BlackBoard b0 {};
     auto expected = std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8};
-    b0.setVector("myVector",std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8});
+    b0.setParamVector("myVector",std::vector<int>{1, 2, 3, 4, 5, 6, 7, 8});
 
     EXPECT_EQ(expected, b0.get<std::vector<int>>("myVector"));
 
-}*/
+}*//*
+
 
 TEST_F(blackBoardTest, typeString) {
     BlackBoard b0 {};
-    b0.set("myString",std::string("world!"));
-    auto result = b0.get<std::string>("myString");
+    b0.setParam("myString",std::string("world!"));
+    auto result = b0.getParam<std::string>("myString");
     EXPECT_EQ("world!", result);
 }
 
 TEST_F(blackBoardTest, typeStruct) {
     BlackBoard b0 {};
-    b0.set("myStruct", testObject{3,"Pruebas"});
+    b0.setParam("myStruct", testObject{3,"Pruebas"});
     auto actual = testObject{3,"Pruebas"};
-    EXPECT_EQ(b0.get<testObject>("myStruct"), actual);
+    EXPECT_EQ(b0.getParam<testObject>("myStruct"), actual);
 }
+*/
 

@@ -11,28 +11,22 @@
 #include <memory>
 #include "BehaviorTree.h"
 
-
-std::string generateUUID() {
-    static boost::uuids::random_generator gen;
-    auto id = gen();
-    return boost::lexical_cast<std::string>(id);
-}
+struct Context;
+using ContextPtr = std::unique_ptr<Context>;
 
 enum class NodeCategorie {
     COMPOSITE, DECORATOR, ACTION, CONDITION
 };
 
 class Context;
-
 enum class Status;
-
 class BehaviorTree;
+std::string generateUUID();
 
 class Node {
     std::string _id;
     std::string _name;
     NodeCategorie _category;
-    std::string _title;
     std::string _description;
 
 public:
@@ -43,74 +37,19 @@ public:
 
     virtual std::string getId();
 
-    virtual void enter(Context &context);
+    virtual void enter(ContextPtr& context);
 
-    virtual void exit(Context &context);
+    virtual void exit(ContextPtr& context);
 
-    virtual void open(Context &context);
+    virtual void open(ContextPtr& context);
 
-    virtual void close(Context &context);
+    virtual void close(ContextPtr& context);
 
-    virtual Status tick(Context &context);
+    virtual Status tick(ContextPtr& context);
+
+    virtual Status execute(ContextPtr& context);
 
     virtual ~Node();
 };
-
-
-class Context {
-    std::shared_ptr<BehaviorTree> _behavior;
-    std::string _contextId;
-    boost::any _target;
-    std::map<std::string, Node> _openNodes;
-    int _nodeCount;
-
-public:
-    void enterNode(Node &node);
-
-    void exitNode(Node &node);
-
-    void openNode(Node &node);
-
-    void closeNode(Node &node);
-
-    void contextNode(Node &node);
-
-    /*void &BlackBoard getContextMemory() {
-        return this.getExtendMemory(this.Id, this.ContextId)
-    }*/
-
-};
-
-
-/*
-Status ExecuteNode(Node &node, Context &context) {
-    nodeMemory := context.get(node)
-    context.enterNode(node);
-    node.enter(context);
-
-    if _, ok := nodeMemory.Bool["isOpen"];
-    !ok {
-            context.openNode(node);
-            nodeMemory.Bool["isOpen"] =  true
-            node.Open(context)
-
-    }
-
-    context.contextNode(node)
-    status := node.Tick(context)
-
-    if
-        status != RUNNING {
-                context.closeNode(node)
-                nodeMemory.Bool["isOpen"]= false
-                node.Close(context)
-        }
-
-    context.exitNode(node)
-    node.Exit(context)
-
-    return status
-};*/
-
 
 #endif //ILARGIA_NODE_H

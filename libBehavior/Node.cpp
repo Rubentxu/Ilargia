@@ -1,19 +1,33 @@
 #include "Node.h"
 
 
-void Context::enterNode(Node &node) {
-    _nodeCount++;
-    _openNodes[node.getId()] = node;
+Status Node::execute(ContextPtr &context) {
+    enter(context);
+
+    //if(context->_blackBoard->getParam<bool>(std::string{"isOpen"},"",""));
 }
 
-void Context::exitNode(Node &node) {/* TODO: call debug here*/}
 
-void Context::openNode(Node &node) {/* TODO: call debug here*/}
+/*    _execute: function(tick) {
+      // ENTER
+      this._enter(tick);
 
-void Context::closeNode(Node &node) {
-    _openNodes.erase(node.getId());
-}
+      // OPEN
+      if (!tick.blackboard.get('isOpen', tick.tree.id, this.id)) {
+          this._open(tick);
+      }
 
-void Context::contextNode(Node &node) {/* TODO: call debug here*/}
+      // TICK
+      var status = this._tick(tick);
 
+      // CLOSE
+      if (status !== b3.RUNNING) {
+          this._close(tick);
+      }
 
+      // EXIT
+      this._exit(tick);
+
+      return status;
+    },
+    */
