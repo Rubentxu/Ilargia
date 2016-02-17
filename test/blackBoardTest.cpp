@@ -1,3 +1,6 @@
+#ifdef __STRICT_ANSI__
+#undef __STRICT_ANSI__
+#endif
 #include <iostream>
 #include "BlackBoard.h"
 #include "blackBoardTest.h"
@@ -91,6 +94,7 @@ TEST_F(blackBoardTest, typeString) {
 TEST_F(blackBoardTest, typeStruct) {
     BlackBoard b0 {};
     b0.set("myStruct", testObject{3,"Pruebas"});
-    EXPECT_EQ(b0.get<testObject>("myStruct"),  (testObject{3,"Pruebas"}));
+    auto actual = testObject{3,"Pruebas"};
+    EXPECT_EQ(b0.get<testObject>("myStruct"), actual);
 }
 
