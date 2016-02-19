@@ -19,13 +19,11 @@ enum class Status {
 
 class Node;
 class BehaviorTree;
-struct Context;
 
 using TargetPtr = std::shared_ptr<boost::any>;
 using NodePtr = std::shared_ptr<Node>;
 using BehaviorTreePtr = std::shared_ptr<BehaviorTree>;
 using BlackBoardPtr = std::shared_ptr<BlackBoard>;
-using ContextPtr = std::unique_ptr<Context>;
 
 struct Context {
     std::shared_ptr<BehaviorTree> _behavior;
@@ -36,21 +34,23 @@ struct Context {
 
     Context(std::shared_ptr<BehaviorTree> behavior) : _behavior{behavior} { }
 
-    void enterNode(NodePtr& node);
+    void enterNode(NodePtr node);
 
-    void exitNode(NodePtr& node);
+    void exitNode(NodePtr node);
 
-    void openNode(NodePtr& node);
+    void openNode(NodePtr node);
 
-    void closeNode(NodePtr& node);
+    void closeNode(NodePtr node);
 
-    void contextNode(NodePtr& node);
+    void tickNode(NodePtr node);
 
     /*void &BlackBoard getContextMemory() {
         return this.getExtendMemory(this.Id, this.ContextId)
     }*/
 
 };
+
+using ContextPtr = std::unique_ptr<Context>;
 
 class BehaviorTree : std::enable_shared_from_this<BehaviorTree>{
     std::string _id;
@@ -62,6 +62,10 @@ public:
     BehaviorTree(NodePtr root, std::string title = "The behavior tree", std::string desc = "Default description");
 
     Status tick(TargetPtr& target, BlackBoardPtr& blackBoard);
+
+    std::string getId() const {
+        return _id;
+    }
 
 };
 

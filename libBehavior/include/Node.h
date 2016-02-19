@@ -18,16 +18,27 @@ enum class NodeCategorie {
     COMPOSITE, DECORATOR, ACTION, CONDITION
 };
 
-class Context;
 enum class Status;
 class BehaviorTree;
 std::string generateUUID();
 
-class Node {
+class Node  : std::enable_shared_from_this<BehaviorTree> {
+protected:
     std::string _id;
     std::string _name;
     NodeCategorie _category;
     std::string _description;
+
+    void _open(ContextPtr& context);
+
+    void _close(ContextPtr& context);
+
+    void _enter(ContextPtr& context);
+
+    void _exit(ContextPtr& context);
+
+    Status _tick(ContextPtr& context);
+
 
 public:
 
@@ -37,13 +48,13 @@ public:
 
     virtual std::string getId();
 
-    virtual void enter(ContextPtr& context);
-
-    virtual void exit(ContextPtr& context);
-
     virtual void open(ContextPtr& context);
 
     virtual void close(ContextPtr& context);
+
+    virtual void enter(ContextPtr& context);
+
+    virtual void exit(ContextPtr& context);
 
     virtual Status tick(ContextPtr& context);
 
@@ -51,5 +62,16 @@ public:
 
     virtual ~Node();
 };
+
+template<size_t rows>
+class Composite : public Node {
+    std::array<NodePtr, rows>  _children;
+public:
+    //Composite(const std::initialier_list<NodePtr>& children) : _children {I()...}, _category{NodeCategorie::COMPOSITE} {}
+    template <typename... Types>
+    Composite(NodePtr t, Types... ts) : _children{ { t, ts... } } {}
+};
+
+
 
 #endif //ILARGIA_NODE_H

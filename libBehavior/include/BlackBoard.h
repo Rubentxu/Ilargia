@@ -49,10 +49,10 @@ public:
 
     }
 
-    template<class ...Args>
-    bool setParam(std::string name,  Args && ...value) {
-        auto &memory = getMemory();
-        return memory.emplace(std::string(name), boost::any(std::forward<Args>(value)...)).second;
+    template<class T>
+    bool setParam(std::string name,  T&& value, std::string treeScope = "", std::string nodeScope = "") {
+        auto &memory = getMemory(treeScope, nodeScope);
+        return memory.emplace(std::string(name), boost::any(std::forward<T>(value))).second;
         //OnPropertyChanged(name);
     }
 };

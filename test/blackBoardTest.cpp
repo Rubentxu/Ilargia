@@ -85,4 +85,16 @@ TEST_F(blackBoardTest, typeStruct) {
     EXPECT_EQ(b0.getParam<testObject>("myStruct"), actual);
 }
 
+TEST_F(blackBoardTest, typeStructTreeScope) {
+    EXPECT_EQ(true,b0.setParam("myStruct", testObject{3,"Pruebas2"},"TreeTest"));
+    auto actual = testObject{3,"Pruebas2"};
+    EXPECT_EQ(b0.getParam<testObject>("myStruct","TreeTest"), actual);
+}
+
+
+TEST_F(blackBoardTest, typeStructNodeScope) {
+    EXPECT_EQ(true,b0.setParam("myStruct", testObject{3,"Pruebas3"},"TreeTest","NodeTest"));
+    auto actual = testObject{3,"Pruebas3"};
+    EXPECT_EQ(b0.getParam<testObject>("myStruct","TreeTest","NodeTest"), actual);
+}
 

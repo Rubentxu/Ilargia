@@ -1,22 +1,21 @@
 #include "BehaviorTree.h"
 
 
-void Context::enterNode(NodePtr& node) {
+void Context::enterNode(NodePtr node) {
     _nodeCount++;
     _openNodes.insert(node);
 }
 
-void Context::exitNode(NodePtr& node) {}
+void Context::exitNode(NodePtr node) {}
 
-void Context::openNode(NodePtr& node) {}
+void Context::openNode(NodePtr node) {}
 
-void Context::closeNode(NodePtr& node) {
+void Context::closeNode(NodePtr node) {
     _nodeCount--;
     _openNodes.erase(node);
 }
 
-void  Context::contextNode(NodePtr &node) {}
-
+void  Context::tickNode(NodePtr node) {}
 
 
 
@@ -25,7 +24,7 @@ BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc) {
     _title = title;
     _description = desc;
     _root        = root;
-    //_context->_behavior = shared_from_this();
+    _context->_behavior = shared_from_this();
 }
 
 Status BehaviorTree::tick(TargetPtr& target, BlackBoardPtr& blackBoard) {
