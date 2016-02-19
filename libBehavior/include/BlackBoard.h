@@ -38,7 +38,7 @@ public:
 
     template<typename T>
     T& getParam(std::string name, std::string treeScope = "", std::string nodeScope = "") {
-        auto memory = getMemory(treeScope, nodeScope);
+        auto &memory = getMemory(treeScope, nodeScope);
         auto result = memory.find(name);
         if (result == memory.end() || result->second.type() != typeid(T) ) {
             T* val = new T{};
@@ -50,9 +50,9 @@ public:
     }
 
     template<class ...Args>
-    void setParam(std::string name,  Args && ...value) {
-        auto memory = getMemory();
-        memory.emplace(std::string(name), boost::any(std::forward<Args>(value)...));
+    bool setParam(std::string name,  Args && ...value) {
+        auto &memory = getMemory();
+        return memory.emplace(std::string(name), boost::any(std::forward<Args>(value)...)).second;
         //OnPropertyChanged(name);
     }
 };
