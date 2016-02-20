@@ -1,5 +1,6 @@
 #include "Context.h"
 
+using namespace bt;
 
 void Context::enterNode(NodePtr node) {
     _nodeCount++;

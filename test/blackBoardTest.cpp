@@ -5,6 +5,7 @@
 #include "BlackBoard.h"
 #include "blackBoardTest.h"
 
+using namespace bt;
 //using ::testing::Return;
 
 blackBoardTest::blackBoardTest() {
@@ -13,6 +14,8 @@ blackBoardTest::blackBoardTest() {
 //    // Have norf return false by default
 //    ON_CALL(m_bar, norf()).WillByDefault(Return(false));
 }
+
+
 BlackBoard b0;
 
 blackBoardTest::~blackBoardTest() { };

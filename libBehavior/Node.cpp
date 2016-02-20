@@ -1,4 +1,5 @@
 #include "Node.h"
+using namespace bt;
 
 void Node::_open(ContextPtr &context) {
     context->_openNodes.insert(shared_from_this());

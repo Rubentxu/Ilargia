@@ -1,23 +1,13 @@
 #include "BehaviorTree.h"
 
+using namespace bt;
 
-void Context::enterNode(NodePtr node) {
-    _nodeCount++;
-    _openNodes.insert(node);
+
+std::string generateUUID() {
+    static boost::uuids::random_generator gen;
+    auto id = gen();
+    return boost::lexical_cast<std::string>(id);
 }
-
-void Context::exitNode(NodePtr node) {}
-
-void Context::openNode(NodePtr node) {}
-
-void Context::closeNode(NodePtr node) {
-    _nodeCount--;
-    _openNodes.erase(node);
-}
-
-void  Context::tickNode(NodePtr node) {}
-
-
 
 BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc) {
     _id          = generateUUID();
