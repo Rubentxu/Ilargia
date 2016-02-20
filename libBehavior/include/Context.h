@@ -39,7 +39,5 @@ namespace bt {
 
     };
 
-    using ContextPtr = std::unique_ptr<Context>;
-
 };
 #endif //ILARGIA_CONTEXT_H

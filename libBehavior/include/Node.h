@@ -9,6 +9,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/any.hpp>
 #include <memory>
+#include <chrono>
 #include "BehaviorTree.h"
 #include "Context.h"
 
@@ -96,6 +97,26 @@ namespace bt {
 
     };
 
+    template <Status status>
+    class Trigger : public Action {
+    public:
+
+        Status tick(ContextPtr &context) override {
+            return status;
+        };
+    };
+
+    class Wait : public Action {
+        std::chrono::duration<double> _endTime;
+    public:
+        Wait(int milliseconds) {
+            _name = "Wait";
+        }
+
+        void _open(ContextPtr &context);
+
+        Status tick(ContextPtr &context) override ;
+    };
 
     class Composite : public Node {
     protected:
@@ -116,6 +137,8 @@ namespace bt {
 
         Status tick(ContextPtr &context) override;
     };
+
+
 
 };
 
