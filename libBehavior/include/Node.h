@@ -41,7 +41,6 @@ protected:
 
     Status _tick(ContextPtr& context);
 
-
 public:
 
     Node() : _name{"Default"} { _id = generateUUID(); };
@@ -64,7 +63,34 @@ public:
 
     virtual ~Node();
 };
+
 using NodePtr = std::shared_ptr<Node>;
+
+class Condition : public Node {
+public:
+    Condition() {
+        _category = NodeCategorie::CONDITION;
+    }
+
+};
+
+class Decorator : public Node {
+public:
+    NodePtr _child;
+    Decorator(NodePtr child) : _child{child} {
+        _category = NodeCategorie::DECORATOR;
+    }
+
+};
+
+class Action : public Node {
+public:
+    Action() {
+        _category = NodeCategorie::ACTION;
+    }
+
+};
+
 template <size_t size>
 class Composite : public Node {
     std::array<NodePtr,size> _children;
@@ -75,5 +101,15 @@ public:
     }
 
 };
+
+template <size_t size>
+class Sequence : public Composite<size> {
+public:
+    Sequence(std::initializer_list <NodePtr>& l) : Composite<size>::Composite(l), Composite<size>::_name{"Sequence"}{
+
+    };
+
+};
+
 
 #endif //ILARGIA_NODE_H
