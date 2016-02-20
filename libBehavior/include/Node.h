@@ -10,9 +10,11 @@
 #include <boost/any.hpp>
 #include <memory>
 #include "BehaviorTree.h"
+#include <array>
 
 struct Context;
 using ContextPtr = std::unique_ptr<Context>;
+//std::string operator "" _s(const char*, std::size_t);
 
 enum class NodeCategorie {
     COMPOSITE, DECORATOR, ACTION, CONDITION
@@ -22,7 +24,7 @@ enum class Status;
 class BehaviorTree;
 std::string generateUUID();
 
-class Node  : std::enable_shared_from_this<BehaviorTree> {
+class Node  : std::enable_shared_from_this<Node> {
 protected:
     std::string _id;
     std::string _name;
@@ -62,16 +64,16 @@ public:
 
     virtual ~Node();
 };
-
-template<size_t rows>
+using NodePtr = std::shared_ptr<Node>;
+template <size_t size>
 class Composite : public Node {
-    std::array<NodePtr, rows>  _children;
+    std::array<NodePtr,size> _children;
 public:
-    //Composite(const std::initialier_list<NodePtr>& children) : _children {I()...}, _category{NodeCategorie::COMPOSITE} {}
-    template <typename... Types>
-    Composite(NodePtr t, Types... ts) : _children{ { t, ts... } } {}
+    Composite(std::initializer_list <NodePtr>& l)  {
+        std :: copy(l.begin(), l .end(), _children ) ;
+        _category = NodeCategorie::COMPOSITE;
+    }
+
 };
-
-
 
 #endif //ILARGIA_NODE_H
