@@ -49,19 +49,19 @@ public:
 
     virtual std::string getId();
 
-    virtual void open(ContextPtr& context);
+    virtual void open(ContextPtr& context) {};
 
-    virtual void close(ContextPtr& context);
+    virtual void close(ContextPtr& context) {};
 
-    virtual void enter(ContextPtr& context);
+    virtual void enter(ContextPtr& context) {};
 
-    virtual void exit(ContextPtr& context);
+    virtual void exit(ContextPtr& context) {};
 
-    virtual Status tick(ContextPtr& context);
+    virtual Status tick(ContextPtr& context) {};
 
     virtual Status execute(ContextPtr& context);
 
-    virtual ~Node();
+    virtual ~Node() {};
 };
 
 using NodePtr = std::shared_ptr<Node>;
@@ -91,24 +91,25 @@ public:
 
 };
 
-template <size_t size>
+
 class Composite : public Node {
-    std::array<NodePtr,size> _children;
+protected:
+    std::vector<NodePtr> _children;
 public:
-    Composite(std::initializer_list <NodePtr>& l)  {
-        std :: copy(l.begin(), l .end(), _children ) ;
+    Composite(std::initializer_list <NodePtr>& ini) : _children{ini} {
         _category = NodeCategorie::COMPOSITE;
     }
 
+    virtual Status tick(ContextPtr& context) {};
 };
 
-template <size_t size>
-class Sequence : public Composite<size> {
+class Sequence : public Composite {
 public:
-    Sequence(std::initializer_list <NodePtr>& l) : Composite<size>::Composite(l), Composite<size>::_name{"Sequence"}{
-
+    Sequence(std::initializer_list <NodePtr>& ini) : Composite::Composite{ini} {
+        _name = "Sequence";
     };
 
+    Status tick(ContextPtr& context) override;
 };
 
 
