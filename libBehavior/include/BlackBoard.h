@@ -6,13 +6,11 @@
 #include <set>
 #include <memory>
 #include <boost/any.hpp>
-#include <Node.h>
+#include <Global.h>
 
 
 namespace bt {
     using Memory = std::map<std::string, boost::any>;
-    class Node;
-    using NodePtr = std::shared_ptr<Node>;
 
     struct TreeMemory : public Memory {
         Memory nodeMemory;

@@ -3,26 +3,20 @@
 
 #include <string>
 #include <memory>
-#include "Node.h"
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/lexical_cast.hpp>
+#include "Global.h"
 #include "Context.h"
-#include "BlackBoard.h"
 
 namespace bt {
-    using TargetPtr = std::shared_ptr<boost::any>;
-    using ContextPtr = std::unique_ptr<Context>;
-    using BlackBoardPtr = std::shared_ptr<BlackBoard>;
-
-    std::string generateUUID();
-
-    enum class Status {
-        SUCCESS, FAILURE, RUNNING, ERROR
-    };
 
     class BehaviorTree : std::enable_shared_from_this<BehaviorTree> {
         std::string _id;
         std::string _title;
         std::string _description;
-        bt::NodePtr _root;
+        NodePtr _root;
         ContextPtr _context;
     public:
         BehaviorTree(NodePtr root, std::string title = "The behavior tree", std::string desc = "Default description");

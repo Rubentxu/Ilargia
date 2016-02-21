@@ -1,6 +1,10 @@
 #include "Node.h"
 using namespace bt;
 
+Node::Node() : _name{"Default"} { _id = generateUUID(); };
+
+Node::Node(std::string name) : _name{name} { _id = generateUUID(); };
+
 void Node::_open(ContextPtr &context) {
     context->_openNodes.insert(shared_from_this());
     context->_blackBoard->setParam("isOpen", true, context->_behavior->getId(),_id);
@@ -44,32 +48,4 @@ Status Node::execute(ContextPtr &context) {
 
     _exit(context);
     return status;
-}
-
-void Wait::_open(ContextPtr &context){
-    context->_blackBoard->setParam("startTime", std::chrono::system_clock::now(), context->_behavior->getId(), getId());
-}
-
-Status Wait::tick(ContextPtr &context) {
-    auto currTime = std::chrono::system_clock::now();
-    auto startTime = context->_blackBoard->getParam<std::chrono::time_point<std::chrono::system_clock>>("startTime", context->_behavior->getId(), getId());
-
-    if (currTime - startTime > _endTime) {
-        return Status::SUCCESS;
-    }
-
-    return Status::RUNNING;
-};
-
-Status Sequence::tick(ContextPtr& context) {
-
-    for (auto child: _children) {
-        Status status = child->execute(context);
-
-        if (status != Status::SUCCESS) {
-            return status;
-        }
-    }
-
-    return Status::SUCCESS;
 }

@@ -1,22 +1,14 @@
 #ifndef ILARGIA_CONTEXT_H
 #define ILARGIA_CONTEXT_H
 
-#include "BehaviorTree.h"
-#include "BlackBoard.h"
-
+#include "Global.h"
+#include <set>
 
 namespace bt {
-    class BehaviorTree;
-    using BehaviorTreePtr = std::shared_ptr<BehaviorTree>;
-    using TargetPtr = std::shared_ptr<boost::any>;
-    class BlackBoard;
-    using BlackBoardPtr = std::shared_ptr<BlackBoard>;
-    class Node;
-    using NodePtr = std::shared_ptr<Node>;
 
     struct Context {
         BehaviorTreePtr _behavior;
-        bt::TargetPtr _target;
+        TargetPtr _target;
         BlackBoardPtr _blackBoard;
         std::set<NodePtr> _openNodes;
         int _nodeCount = 0;
@@ -38,6 +30,7 @@ namespace bt {
         }*/
 
     };
+
 
 };
 #endif //ILARGIA_CONTEXT_H
