@@ -4,12 +4,12 @@
 #include "gtest/gtest.h"
 
 // The fixture for testing class Foo.
-class blackBoardTest : public ::testing::Test {
+class BlackBoardTest : public ::testing::Test {
 
 protected:
-    blackBoardTest();
+    BlackBoardTest();
 
-    virtual ~blackBoardTest();
+    virtual ~BlackBoardTest();
 
     virtual void SetUp();
 

@@ -40,8 +40,7 @@ namespace bt {
         Status _tick(ContextPtr &context);
 
     public:
-
-        Node() = delete;
+        Node(){}
 
         Node(std::string name,NodeCategorie category);
 

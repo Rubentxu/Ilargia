@@ -9,12 +9,9 @@ std::string generateUUID() {
     return boost::lexical_cast<std::string>(id);
 }
 
-BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc) {
-    _id          = generateUUID();
-    _title = title;
-    _description = desc;
-    _root        = root;
-    _context->_behavior = shared_from_this();
+BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
+        : _id{generateUUID()}, _title{title}, _description{desc}, _root{std::move(root)}{
+    _context = ContextPtr{new Context{shared_from_this()}};
 }
 
 Status BehaviorTree::tick(TargetPtr& target, BlackBoardPtr& blackBoard) {
