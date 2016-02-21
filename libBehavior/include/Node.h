@@ -41,9 +41,11 @@ namespace bt {
 
     public:
 
-        Node();
+        Node() = delete;
 
-        Node(std::string name);
+        Node(std::string name,NodeCategorie category);
+
+        Node(std::string name,NodeCategorie category,std::string description);
 
         virtual std::string getId();
 
@@ -66,15 +68,14 @@ namespace bt {
 
     class Condition : public Node {
     public:
-        Condition() {
-            _category = NodeCategorie::CONDITION;
-        }
+        Condition() : Node{"DefaultCondition", NodeCategorie::CONDITION }{}
+
+        Condition(std::string name) : Node{name, NodeCategorie::CONDITION }{}
+
+        Condition(std::string name, std::string description)
+                : Node{name, NodeCategorie::CONDITION, description }{}
 
     };
-
-
-
-
 
 };
 

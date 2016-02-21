@@ -1,9 +1,11 @@
 #include "Node.h"
 using namespace bt;
 
-Node::Node() : _name{"Default"} { _id = generateUUID(); };
 
-Node::Node(std::string name) : _name{name} { _id = generateUUID(); };
+Node::Node(std::string name,NodeCategorie category) : _name{name}, _category{category}, _id{ generateUUID()} {};
+
+Node::Node(std::string name,NodeCategorie category,std::string description): Node{name, category} { _description = description; };
+
 
 void Node::_open(ContextPtr &context) {
     context->_openNodes.insert(shared_from_this());

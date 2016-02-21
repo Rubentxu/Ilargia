@@ -8,22 +8,20 @@ namespace bt {
     protected:
         std::vector<NodePtr> _children;
     public:
-        Composite(std::initializer_list<NodePtr> &ini) : _children{ini} {
-            _category = NodeCategorie::COMPOSITE;
-        }
+        Composite(std::string name, std::initializer_list<NodePtr> &ini)
+                : Node{name,NodeCategorie::COMPOSITE}, _children{ini} {}
+
+        Composite(std::initializer_list<NodePtr> &ini)
+                : Node{"DefaultDecorator",NodeCategorie::COMPOSITE}, _children{ini} {}
 
         virtual Status tick(ContextPtr &context) { };
     };
 
     class Sequence : public Composite {
     public:
-        Sequence(std::initializer_list<NodePtr> &ini) : Composite::Composite{ini} {
-            _name = "Sequence";
-        };
+        Sequence(std::initializer_list<NodePtr> &ini) : Composite::Composite{"Sequence",ini} {};
 
         Status tick(ContextPtr &context) override;
     };
 }
-
-
 #endif //ILARGIA_COMPOSITENODE_H

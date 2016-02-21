@@ -8,9 +8,10 @@ namespace bt {
 
     class Action : public Node {
     public:
-        Action() {
-            _category = NodeCategorie::ACTION;
-        }
+
+        Action() : Node{"DefaultDecorator",NodeCategorie::ACTION} {}
+
+        Action(std::string name) : Node{name,NodeCategorie::ACTION} {}
 
     };
 
