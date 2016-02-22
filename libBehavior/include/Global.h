@@ -11,6 +11,7 @@ namespace bt {
     using ContextPtr = std::unique_ptr<Context>;
     class BehaviorTree;
     using BehaviorTreePtr = std::shared_ptr<BehaviorTree>;
+    using BehaviorTreeWPtr = std::weak_ptr<BehaviorTree>;
     using TargetPtr = std::shared_ptr<boost::any>;
     class BlackBoard;
     using BlackBoardPtr = std::shared_ptr<BlackBoard>;

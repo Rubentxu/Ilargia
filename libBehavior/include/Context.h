@@ -7,7 +7,7 @@
 namespace bt {
 
     struct Context {
-        BehaviorTreePtr _behavior;
+        BehaviorTreeWPtr _behavior;
         TargetPtr _target;
         BlackBoardPtr _blackBoard;
         std::set<NodePtr> _openNodes;

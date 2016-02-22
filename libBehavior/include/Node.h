@@ -22,8 +22,8 @@ namespace bt {
         SUCCESS, FAILURE, RUNNING, ERROR
     };
 
-    class Node : std::enable_shared_from_this<Node> {
-    protected:
+    struct Node : std::enable_shared_from_this<Node> {
+
         std::string _id;
         std::string _name;
         NodeCategorie _category;
@@ -39,24 +39,23 @@ namespace bt {
 
         Status _tick(ContextPtr &context);
 
-    public:
         Node(){}
 
         Node(std::string name,NodeCategorie category);
 
         Node(std::string name,NodeCategorie category,std::string description);
 
-        virtual std::string getId();
+        virtual std::string getId() const { return _id; }
 
-        virtual void open(ContextPtr &context) { };
+        virtual void open(ContextPtr &context) { }
 
-        virtual void close(ContextPtr &context) { };
+        virtual void close(ContextPtr &context) { }
 
-        virtual void enter(ContextPtr &context) { };
+        virtual void enter(ContextPtr &context) { }
 
-        virtual void exit(ContextPtr &context) { };
+        virtual void exit(ContextPtr &context) { }
 
-        virtual Status tick(ContextPtr &context) { };
+        virtual Status tick(ContextPtr &context) { }
 
         virtual Status execute(ContextPtr &context);
 

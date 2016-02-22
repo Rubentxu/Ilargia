@@ -15,9 +15,8 @@ using TriggerPtr = std::shared_ptr<Trigger<T>>;
 NodeTest::~NodeTest() { };
 
 void NodeTest::SetUp() {
-    auto action = new Trigger<Status::SUCCESS>();
-    auto nodep = std::shared_ptr<Trigger<Status::SUCCESS>>{std::move(action)};
-    auto behavior = std::make_shared<BehaviorTree>() ;
+    auto nodep =  std::make_shared<Action>("name");
+    auto behavior = std::make_shared<BehaviorTree>(NodePtr(std::make_shared<Action>("name"))) ;
     context = ContextPtr{new Context{behavior}};
     context->_blackBoard = BlackBoardPtr{};
 };
@@ -25,11 +24,11 @@ void NodeTest::SetUp() {
 void NodeTest::TearDown() { };
 
 
-/*
+
 TEST_F(NodeTest, triggerAction) {
     node = TriggerPtr<Status::SUCCESS>{};
     EXPECT_EQ(Status::SUCCESS,node->tick(context));
 }
-*/
+
 
 

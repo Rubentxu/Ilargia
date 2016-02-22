@@ -18,7 +18,7 @@ namespace bt {
     }
 
     void Limiter::open(ContextPtr &context) {
-        context->_blackBoard->setParam("count", 0, context->_behavior->getId(), getId());
+        context->_blackBoard->setParam("count", 0, context->_behavior.lock()->getId(), getId());
     }
 
     Status Limiter::tick(ContextPtr &context) {
@@ -26,13 +26,13 @@ namespace bt {
             return Status::ERROR;
         }
 
-        int count = context->_blackBoard->getParam<int>("count", context->_behavior->getId(), getId());
+        int count = context->_blackBoard->getParam<int>("count", context->_behavior.lock()->getId(), getId());
 
         if (count < _maxLoop) {
             Status status = _child->execute(context);
 
             if (status == Status::SUCCESS || status == Status::FAILURE)
-                context->_blackBoard->setParam("count", count+1, context->_behavior->getId(), getId());
+                context->_blackBoard->setParam("count", count+1, context->_behavior.lock()->getId(), getId());
 
             return status;
         }

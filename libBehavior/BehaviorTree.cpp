@@ -3,14 +3,15 @@
 using namespace bt;
 
 
-std::string generateUUID() {
+std::string bt::generateUUID() {
     static boost::uuids::random_generator gen;
     auto id = gen();
     return boost::lexical_cast<std::string>(id);
 }
 
 BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
-        : _id{generateUUID()}, _title{title}, _description{desc}, _root{std::move(root)}{
+        : _title{title}, _description{desc}, _root{std::move(root)}{
+    _id = generateUUID();
     _context = ContextPtr{new Context{shared_from_this()}};
 }
 
