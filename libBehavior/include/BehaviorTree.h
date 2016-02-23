@@ -20,7 +20,9 @@ namespace bt {
         NodePtr _root;
         ContextPtr _context;
     public:
-        BehaviorTree(NodePtr root, std::string title = "The behavior tree", std::string desc = "Default description");
+        BehaviorTree(NodePtr root) : BehaviorTree(root, "The behavior tree","Default description"){}
+
+        BehaviorTree(NodePtr root, std::string title, std::string desc);
 
         Status tick(TargetPtr &target, BlackBoardPtr &blackBoard);
 

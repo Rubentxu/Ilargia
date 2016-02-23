@@ -6,7 +6,7 @@
 
 namespace bt {
 
-    class Action : virtual public Node {
+    class Action : public Node {
     public:
 
         Action(std::string name) : Node(name,NodeCategorie::ACTION) {}
@@ -18,15 +18,17 @@ namespace bt {
     public:
         Trigger(): Action("DefaultTrigger") {}
 
+        Trigger(std::string name): Action(name) {}
+
         Status tick(ContextPtr &context) {
             return status;
         };
     };
 
     class Wait : public Action {
-        std::chrono::duration<double> _endTime;
+        std::chrono::duration<int, std::milli> _endTime;
     public:
-        Wait(int milliseconds): Action("DefaultWait"){
+        Wait(int milliseconds): Action("DefaultWait"), _endTime{milliseconds}{
             _name = "Wait";
         }
 

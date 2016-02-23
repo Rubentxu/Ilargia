@@ -18,5 +18,5 @@ protected:
 
 public:
     NodePtr node;
-    ContextPtr context;
+    BehaviorTreePtr behavior;
 };
