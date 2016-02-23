@@ -13,7 +13,9 @@ namespace bt {
         std::set<NodePtr> _openNodes;
         int _nodeCount = 0;
 
-        Context(std::shared_ptr<BehaviorTree> behavior) : _behavior{std::move(behavior)} { }
+        Context(std::shared_ptr<BehaviorTree> behavior)  {
+            _behavior = behavior;
+        }
 
         void enterNode(NodePtr node);
 

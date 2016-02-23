@@ -12,14 +12,13 @@ std::string bt::generateUUID() {
 BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
         : _title{title}, _description{desc}, _root{std::move(root)}{
     _id = generateUUID();
-    _context = ContextPtr{new Context{shared_from_this()}};
 }
 
 Status BehaviorTree::tick(TargetPtr& target, BlackBoardPtr& blackBoard) {
     if(!blackBoard) {
         throw "The blackboard parameter is obligatory and must be an instance of b3.Blackboard";
     }
-
+    if(!_context) _context = ContextPtr{new Context{shared_from_this()}};
     _context->_target = target;
     _context->_blackBoard = blackBoard;
 

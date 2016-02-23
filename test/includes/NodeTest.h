@@ -9,6 +9,7 @@ using namespace bt;
 class NodeTest : public ::testing::Test {
 
 protected:
+    NodeTest();
 
     virtual ~NodeTest();
 
@@ -18,5 +19,5 @@ protected:
 
 public:
     NodePtr node;
-    BehaviorTreePtr behavior;
+
 };

@@ -10,22 +10,24 @@ using namespace bt;
 //using ::testing::Return;
 template <Status T>
 using TriggerPtr = std::shared_ptr<Trigger<T>>;
+BehaviorTreePtr behavior;
+ContextPtr context;
+
+NodeTest::NodeTest() {
+    behavior = std::make_shared<BehaviorTree>(std::make_shared<Trigger<Status::SUCCESS>>("name")) ;
+    context = ContextPtr{new Context{behavior}};
+};
 
 NodeTest::~NodeTest() { };
 
-void NodeTest::SetUp() {
-    auto nodep =  std::make_shared<Action>("name");
-    behavior = std::make_shared<BehaviorTree>(std::make_shared<Action>("name")) ;
-
-};
+void NodeTest::SetUp() {};
 
 void NodeTest::TearDown() { };
 
 
 
 TEST_F(NodeTest, triggerAction) {
-    node = TriggerPtr<Status::SUCCESS>{};
-    EXPECT_EQ(Status::SUCCESS,node->tick(behavior->_context));
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->tick(context));
 }
 
 
