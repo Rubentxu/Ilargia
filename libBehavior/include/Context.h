@@ -7,15 +7,13 @@
 namespace bt {
 
     struct Context {
-        BehaviorTreeWPtr _behavior;
+        BehaviorTreePtr _behavior;
         TargetPtr _target;
         BlackBoardPtr _blackBoard;
         std::set<NodePtr> _openNodes;
         int _nodeCount = 0;
 
-        Context(std::shared_ptr<BehaviorTree> behavior)  {
-            _behavior = behavior;
-        }
+        Context() = default;
 
         void enterNode(NodePtr node);
 

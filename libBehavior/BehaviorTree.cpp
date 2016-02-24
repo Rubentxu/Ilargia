@@ -18,9 +18,6 @@ Status BehaviorTree::tick(TargetPtr& target, BlackBoardPtr& blackBoard) {
     if(!blackBoard) {
         throw "The blackboard parameter is obligatory and must be an instance of b3.Blackboard";
     }
-    if(!_context) _context = ContextPtr{new Context{shared_from_this()}};
-    _context->_target = target;
-    _context->_blackBoard = blackBoard;
 
    // Status state = _root->ex
 

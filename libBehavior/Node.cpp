@@ -9,13 +9,13 @@ Node::Node(std::string name,NodeCategorie category,std::string description): Nod
 
 void Node::_open(ContextPtr &context) {
     context->_openNodes.insert(shared_from_this());
-    context->_blackBoard->setParam("isOpen", true, context->_behavior.lock()->getId(),_id);
+    context->_blackBoard->setParam("isOpen", true, context->_behavior->_id,_id);
     open(context);
 }
 
 void Node::_close(ContextPtr &context) {
     context->closeNode(shared_from_this());
-    context->_blackBoard->setParam("isOpen", false, context->_behavior.lock()->getId(),_id);
+    context->_blackBoard->setParam("isOpen", false, context->_behavior->_id,_id);
     close(context);
 }
 
@@ -38,7 +38,7 @@ Status Node::_tick(ContextPtr &context) {
 Status Node::execute(ContextPtr &context) {
     enter(context);
 
-    if(context->_blackBoard->getParam<bool>("isOpen", context->_behavior.lock()->getId(), getId())) {
+    if(context->_blackBoard->getParam<bool>("isOpen", context->_behavior->_id, getId())) {
         open(context);
     }
 

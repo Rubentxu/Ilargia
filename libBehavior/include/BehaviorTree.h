@@ -12,23 +12,19 @@
 
 namespace bt {
 
-
-    struct BehaviorTree : std::enable_shared_from_this<BehaviorTree> {
+    struct BehaviorTree {
         std::string _id;
         std::string _title;
         std::string _description;
         NodePtr _root;
-        ContextPtr _context;
     public:
+        BehaviorTree() = delete;
+
         BehaviorTree(NodePtr root) : BehaviorTree(root, "The behavior tree","Default description"){}
 
         BehaviorTree(NodePtr root, std::string title, std::string desc);
 
         Status tick(TargetPtr &target, BlackBoardPtr &blackBoard);
-
-        std::string getId() const {
-            return _id;
-        }
 
     };
 
