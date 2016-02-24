@@ -39,5 +39,18 @@ TEST_F(NodeTest, triggerActionFailure) {
     EXPECT_EQ(Status::FAILURE,behavior->_root->tick(context));
 }
 
+TEST_F(NodeTest, triggerActionError) {
+    behavior->_root = std::make_shared<Trigger<Status::ERROR>>("name");
+    EXPECT_EQ(Status::ERROR,behavior->_root->tick(context));
+}
 
+TEST_F(NodeTest, triggerActionRunning) {
+    behavior->_root = std::make_shared<Trigger<Status::RUNNING>>("name");
+    EXPECT_EQ(Status::RUNNING,behavior->_root->tick(context));
+}
 
+TEST_F(NodeTest, triggerActionWait) {
+    behavior->_root = std::make_shared<Wait>(2);
+    //behavior->_root->_open();
+    EXPECT_EQ(Status::RUNNING,behavior->_root->tick(context));
+}

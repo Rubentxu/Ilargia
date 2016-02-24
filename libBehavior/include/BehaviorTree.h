@@ -9,6 +9,7 @@
 #include <boost/lexical_cast.hpp>
 #include "Global.h"
 #include "Context.h"
+#include "Node.h"
 
 namespace bt {
 
@@ -24,7 +25,7 @@ namespace bt {
 
         BehaviorTree(NodePtr root, std::string title, std::string desc);
 
-        Status tick(TargetPtr &target, BlackBoardPtr &blackBoard);
+        Status tick(ContextPtr &context);
 
     };
 

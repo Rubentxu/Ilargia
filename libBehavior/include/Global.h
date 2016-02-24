@@ -7,9 +7,9 @@
 
 namespace bt {
     enum class Status;
-    class Context;
+    struct Context;
     using ContextPtr = std::unique_ptr<Context>;
-    class BehaviorTree;
+    struct BehaviorTree;
     using BehaviorTreePtr = std::shared_ptr<BehaviorTree>;
     using TargetPtr = std::shared_ptr<boost::any>;
     class BlackBoard;

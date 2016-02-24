@@ -1,4 +1,5 @@
 #include "BehaviorTree.h"
+#include <algorithm>
 
 using namespace bt;
 
@@ -14,12 +15,23 @@ BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
     _id = generateUUID();
 }
 
-Status BehaviorTree::tick(TargetPtr& target, BlackBoardPtr& blackBoard) {
-    if(!blackBoard) {
+Status BehaviorTree::tick(ContextPtr &context) {
+    if(!context->_blackBoard) {
         throw "The blackboard parameter is obligatory and must be an instance of b3.Blackboard";
     }
 
-   // Status state = _root->ex
+    Status status = _root->execute(context);
+    auto lastOpenNodes = context->_blackBoard->getParam<std::set<NodePtr>>("openNodes", _id);
+    auto currOpenNodes = context->_openNodes;
+
+    int start = 0;
+    int i = 0;
+    for(;i< std::min(lastOpenNodes.size(),context->_openNodes.size()); i++) {
+        start = i + 1;
+        //if(lastOpenNodes->)
+    }
+
+
 
 }
 
