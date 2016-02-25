@@ -29,7 +29,7 @@ void NodeTest::SetUp() {};
 void NodeTest::TearDown() { };
 
 
-
+// Testing Action Nodes
 TEST_F(NodeTest, triggerActionSuccess) {
     EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
 }
@@ -50,10 +50,36 @@ TEST_F(NodeTest, triggerActionRunning) {
     EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
 }
 
-TEST_F(NodeTest, triggerActionWait) {
-    behavior->_root = std::make_shared<Wait>(201.0);
+TEST_F(NodeTest, actionWait) {
+    behavior->_root = std::make_shared<Wait>(50.0);
     EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
-    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{200.0});
+    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{80.0});
     EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
 
+}
+
+
+// Testing Decorator Nodes
+
+TEST_F(NodeTest, decoratorInverterFailure) {
+    behavior->_root = std::make_shared<Inverter>(std::make_shared<Trigger<Status::SUCCESS>>("name"));
+    EXPECT_EQ(Status::FAILURE,behavior->_root->execute(context));
+}
+
+TEST_F(NodeTest, decoratorInverterSucces) {
+    behavior->_root = std::make_shared<Inverter>(std::make_shared<Trigger<Status::FAILURE>>("name"));
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
+}
+
+TEST_F(NodeTest, decoratorInverterError) {
+    behavior->_root = std::make_shared<Inverter>(nullptr);
+    EXPECT_EQ(Status::ERROR,behavior->_root->execute(context));
+}
+
+TEST_F(NodeTest, decoratorLimiter) {
+    behavior->_root = std::make_shared<Limiter>(std::make_shared<Trigger<Status::SUCCESS>>("name"),2);
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
+    EXPECT_EQ(Status::FAILURE,behavior->_root->execute(context));
 }

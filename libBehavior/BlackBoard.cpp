@@ -4,16 +4,19 @@
 using namespace bt;
 
 TreeMemory& BlackBoard::getTreeMemory(std::string treeScope) {
-    auto treeMemory =  treeMemories.find(treeScope);
+  /*  auto treeMemory =  treeMemories.find(treeScope);
     if(treeMemory == treeMemories.end()) {
-        treeMemories.insert(std::make_pair(treeScope, TreeMemory{}));
+        return treeMemories.insert(std::make_pair(treeScope, TreeMemory{}));
         return treeMemories.find(treeScope)->second;
     }
-    return treeMemory->second;
-}
+    return treeMemory->second;*/
+    auto it = treeMemories.lower_bound(treeScope);
 
-Memory& BlackBoard::getNodeMemory(TreeMemory &treeMemory, std::string nodeScope) {
-    return treeMemory.nodeMemory;
+    if (it == treeMemories.end() || it->first != treeScope) {
+        return treeMemories.insert(it, std::make_pair(treeScope,TreeMemory{}))->second;
+    }
+    return it->second;
+
 }
 
 Memory& BlackBoard::getMemory(std::string treeScope, std::string nodeScope) {
@@ -21,7 +24,7 @@ Memory& BlackBoard::getMemory(std::string treeScope, std::string nodeScope) {
     if (!treeScope.empty()) {
         TreeMemory &treeMemory = getTreeMemory(treeScope);
         if (!nodeScope.empty()) {
-            return getNodeMemory(treeMemory, nodeScope);
+            return treeMemory.nodeMemory;
         }
         return treeMemory;
     }

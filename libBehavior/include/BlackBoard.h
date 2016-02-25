@@ -39,14 +39,19 @@ namespace bt {
         template<typename T>
         T &getParam(std::string name, std::string treeScope = "", std::string nodeScope = "") {
             auto &memory = getMemory(treeScope, nodeScope);
-            auto result = memory.find(name);
+   /*         auto result = memory.find(name);
             if (result == memory.end() || result->second.type() != typeid(T)) {
                 T *val = new T{};
                 return *val;
             } else {
                 return boost::any_cast<T &>(result->second);
+            }*/
+            auto it = memory.lower_bound(name);
+            if (it == memory.end() || it->first != name || it->second.type() != typeid(T)) {
+                T *val = new T{};
+                return *val;
             }
-
+            return it->second;
         }
 
         template<class T>
