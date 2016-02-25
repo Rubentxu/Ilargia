@@ -30,27 +30,27 @@ void NodeTest::TearDown() { };
 
 
 TEST_F(NodeTest, triggerActionSuccess) {
-    EXPECT_EQ(Status::SUCCESS,behavior->_root->tick(context));
+    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
 }
 
 
 TEST_F(NodeTest, triggerActionFailure) {
     behavior->_root = std::make_shared<Trigger<Status::FAILURE>>("name");
-    EXPECT_EQ(Status::FAILURE,behavior->_root->tick(context));
+    EXPECT_EQ(Status::FAILURE,behavior->_root->execute(context));
 }
 
 TEST_F(NodeTest, triggerActionError) {
     behavior->_root = std::make_shared<Trigger<Status::ERROR>>("name");
-    EXPECT_EQ(Status::ERROR,behavior->_root->tick(context));
+    EXPECT_EQ(Status::ERROR,behavior->_root->execute(context));
 }
 
 TEST_F(NodeTest, triggerActionRunning) {
     behavior->_root = std::make_shared<Trigger<Status::RUNNING>>("name");
-    EXPECT_EQ(Status::RUNNING,behavior->_root->tick(context));
+    EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
 }
 
 TEST_F(NodeTest, triggerActionWait) {
     behavior->_root = std::make_shared<Wait>(2);
     //behavior->_root->_open();
-    EXPECT_EQ(Status::RUNNING,behavior->_root->tick(context));
+    EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
 }

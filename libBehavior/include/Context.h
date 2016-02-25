@@ -11,7 +11,6 @@ namespace bt {
         TargetPtr _target;
         BlackBoardPtr _blackBoard;
         std::set<NodePtr> _openNodes;
-        int _nodeCount = 0;
 
         Context() = default;
 

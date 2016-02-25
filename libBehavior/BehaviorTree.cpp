@@ -22,17 +22,14 @@ Status BehaviorTree::tick(ContextPtr &context) {
 
     Status status = _root->execute(context);
     auto lastOpenNodes = context->_blackBoard->getParam<std::set<NodePtr>>("openNodes", _id);
-    auto currOpenNodes = context->_openNodes;
 
-    int start = 0;
-    int i = 0;
-    for(;i< std::min(lastOpenNodes.size(),context->_openNodes.size()); i++) {
-        start = i + 1;
-        //if(lastOpenNodes->)
+    for(NodePtr last : lastOpenNodes) {
+        if(context->_openNodes.find(last)== context->_openNodes.end()) last->_close(context);
     }
 
+    context->_blackBoard->setParam("openNodes", context->_openNodes, _id);
 
-
+    return status;
 }
 
 

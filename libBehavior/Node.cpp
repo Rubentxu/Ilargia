@@ -38,7 +38,7 @@ Status Node::_tick(ContextPtr &context) {
 Status Node::execute(ContextPtr &context) {
     enter(context);
 
-    if(context->_blackBoard->getParam<bool>("isOpen", context->_behavior->_id, getId())) {
+    if(!context->_blackBoard->getParam<bool>("isOpen", context->_behavior->_id, getId())) {
         open(context);
     }
 
