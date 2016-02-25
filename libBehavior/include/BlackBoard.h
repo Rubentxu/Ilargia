@@ -50,10 +50,17 @@ namespace bt {
         }
 
         template<class T>
-        bool setParam(std::string name, T &&value, std::string treeScope = "", std::string nodeScope = "") {
+        void setParam(std::string name, T &&value, std::string treeScope = "", std::string nodeScope = "") {
             auto &memory = getMemory(treeScope, nodeScope);
-            return memory.emplace(std::string(name), boost::any(std::forward<T>(value))).second;
-            //OnPropertyChanged(name);
+            auto it = memory.lower_bound(name);
+
+            if (it == memory.end() || it->first != name) {
+                memory.insert(it, std::make_pair(name,value));
+            } else {
+                it->second = value;
+                //OnPropertyChanged(name);
+            }
+
         }
     };
 

@@ -13,10 +13,9 @@ namespace bt {
 
         Decorator(std::string name,NodePtr child) : Node{name,NodeCategorie::DECORATOR}, _child{child} {}
 
-
     };
 
-    class Inverter : virtual public Decorator {
+    class Inverter : public Decorator {
     public:
 
         Inverter(NodePtr child) : Decorator{"DefaultInverter",child} {}
@@ -27,7 +26,7 @@ namespace bt {
 
     };
 
-    class Limiter : virtual public Decorator {
+    class Limiter : public Decorator {
         int _maxLoop = 1;
     public:
 

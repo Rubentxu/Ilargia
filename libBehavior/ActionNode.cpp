@@ -1,19 +1,17 @@
 #include "ActionNode.h"
 
 namespace bt {
-
-    void Wait::_open(ContextPtr &context) {
-        context->_blackBoard->setParam("startTime", std::chrono::system_clock::now(), context->_behavior->_id,
-                                       getId());
+    using namespace std::chrono;
+    void Wait::open(ContextPtr &context) {
+        context->_blackBoard->setParam("startTime", std::chrono::high_resolution_clock::now(), context->_behavior->_id, _id);
     }
 
     Status Wait::tick(ContextPtr &context) {
-        auto currTime = std::chrono::system_clock::now();
-        auto startTime = context->_blackBoard
-                ->getParam<std::chrono::time_point<std::chrono::system_clock>>("startTime", context->_behavior->_id,
-                                                                                                            getId());
+        auto currTime = std::chrono::high_resolution_clock::now();
+        auto startTime = context->_blackBoard->getParam<std::chrono::system_clock::time_point>("startTime", context->_behavior->_id, getId());
 
-        if (currTime - startTime > _endTime) {
+        std::chrono::duration<double, std::milli> elapsed  = currTime-startTime;
+        if (elapsed > _endTime) {
             return Status::SUCCESS;
         }
 

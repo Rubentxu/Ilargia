@@ -20,21 +20,22 @@ namespace bt {
 
         Trigger(std::string name): Action(name) {}
 
-        Status tick(ContextPtr &context) {
+        Status tick(ContextPtr &context) override {
             return status;
         };
     };
 
     class Wait : public Action {
-        std::chrono::duration<int, std::milli> _endTime;
+        std::chrono::duration<double, std::milli> _endTime;
+
     public:
-        Wait(int milliseconds): Action("DefaultWait"), _endTime{milliseconds}{
+        Wait(double milliseconds): Action("DefaultWait"), _endTime{milliseconds}{
             _name = "Wait";
         }
 
-        void _open(ContextPtr &context);
+        void open(ContextPtr &context) override ;
 
-        Status tick(ContextPtr &context);
+        Status tick(ContextPtr &context) override ;
     };
 
 }

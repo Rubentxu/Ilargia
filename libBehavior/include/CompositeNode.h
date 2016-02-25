@@ -14,7 +14,6 @@ namespace bt {
         Composite(std::initializer_list<NodePtr> &ini)
                 : Node{"DefaultDecorator",NodeCategorie::COMPOSITE}, _children{ini} {}
 
-        virtual Status tick(ContextPtr &context) { };
     };
 
     class Sequence : public Composite {
