@@ -76,10 +76,10 @@ TEST_F(NodeTest, decoratorInverterError) {
     EXPECT_EQ(Status::ERROR,behavior->_root->execute(context));
 }
 
+
 TEST_F(NodeTest, decoratorLimiter) {
     behavior->_root = std::make_shared<Limiter>(std::make_shared<Trigger<Status::SUCCESS>>("name"),2);
-    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
-    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
-    EXPECT_EQ(Status::SUCCESS,behavior->_root->execute(context));
+    EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
+    EXPECT_EQ(Status::RUNNING,behavior->_root->execute(context));
     EXPECT_EQ(Status::FAILURE,behavior->_root->execute(context));
 }

@@ -31,10 +31,10 @@ namespace bt {
         if (count < _maxLoop) {
             Status status = _child->execute(context);
 
-            if (status == Status::SUCCESS || status == Status::FAILURE)
+            if (status == Status::SUCCESS || status == Status::FAILURE){
                 context->_blackBoard->setParam("count", count+1, context->_behavior->_id, _id);
-
-            return status;
+            }
+            return Status::RUNNING ;
         }
         return Status::FAILURE;
 

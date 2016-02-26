@@ -4,6 +4,7 @@
 #include <iostream>
 #include "BlackBoard.h"
 #include "BlackBoardTest.h"
+#include <boost/any.hpp>
 
 using namespace bt;
 //using ::testing::Return;
@@ -39,6 +40,15 @@ public:
 
 
 };
+
+
+bool key_compare (Memory const &lhs, Memory const &rhs) {
+    auto pred = [] (decltype(*lhs.begin()) a, decltype(*lhs.begin()) b)
+    { return a.first == b.first; };
+
+    return lhs.size() == rhs.size()
+           && std::equal(lhs.begin(), lhs.end(), rhs.begin(), pred);
+}
 
 TEST_F(BlackBoardTest, typeBool) {
     b0.setParam("isCheck",true);
@@ -103,3 +113,58 @@ TEST_F(BlackBoardTest, typeStructNodeScope) {
     EXPECT_EQ(b0.getParam<testObject>("myStruct","TreeTest","NodeTest"), actual);
 }
 
+
+TEST_F(BlackBoardTest, baseMemories) {
+    Memory& baseMemory = b0.getMemory();
+    baseMemory.insert(std::make_pair("isCheck2",true));
+    auto it = baseMemory.find("isCheck2");
+
+    EXPECT_NE( baseMemory.end(), it );
+    EXPECT_EQ("isCheck2", it->first);
+    EXPECT_EQ(true, boost::any_cast<bool>(it->second));
+
+    Memory& memory = b0.getMemory("tree");
+    auto it2 = memory.find("isCheck2");
+
+    EXPECT_EQ(memory.end(), it2);
+
+}
+
+
+TEST_F(BlackBoardTest, treeMemories) {
+    Memory& treeMemory = b0.getMemory("tree");
+    treeMemory.insert(std::make_pair("Value",3));
+    auto ita = treeMemory.find("Value");
+
+    EXPECT_NE( treeMemory.end(), ita );
+    EXPECT_EQ("Value", ita->first);
+    EXPECT_EQ(3, boost::any_cast<int>(ita->second));
+
+    Memory& memory = b0.getMemory();
+    auto itb = memory.find("Value");
+
+    EXPECT_EQ(memory.end(), itb);
+
+    Memory& treeMemory2 = b0.getMemory("tree");
+    EXPECT_TRUE(key_compare(treeMemory, treeMemory2));
+
+}
+
+
+TEST_F(BlackBoardTest, nodeMemories) {
+    Memory& nodeMemory = b0.getMemory("tree","scope");
+    nodeMemory.insert(std::make_pair("ValueScope",50));
+    auto ita = nodeMemory.find("ValueScope");
+
+    EXPECT_NE( nodeMemory.end(), ita );
+    EXPECT_EQ("ValueScope", ita->first);
+    EXPECT_EQ(50, boost::any_cast<int>(ita->second));
+
+    Memory& memory = b0.getMemory("tree");
+    auto itb = memory.find("ValueScope");
+
+    EXPECT_EQ(memory.end(), itb);
+
+    Memory& nodeMemory2 = b0.getMemory("tree","scope");
+    EXPECT_TRUE(key_compare(nodeMemory, nodeMemory2));
+}

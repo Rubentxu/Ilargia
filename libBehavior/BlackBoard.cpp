@@ -4,19 +4,20 @@
 using namespace bt;
 
 TreeMemory& BlackBoard::getTreeMemory(std::string treeScope) {
-  /*  auto treeMemory =  treeMemories.find(treeScope);
-    if(treeMemory == treeMemories.end()) {
-        return treeMemories.insert(std::make_pair(treeScope, TreeMemory{}));
-        return treeMemories.find(treeScope)->second;
-    }
-    return treeMemory->second;*/
     auto it = treeMemories.lower_bound(treeScope);
-
-    if (it == treeMemories.end() || it->first != treeScope) {
-        return treeMemories.insert(it, std::make_pair(treeScope,TreeMemory{}))->second;
+    if (it == treeMemories.end() || it->first != treeScope){
+        return treeMemories.insert(it, std::make_pair(treeScope, TreeMemory{}))->second;
     }
     return it->second;
 
+}
+
+Memory& BlackBoard::getNodeMemory(std::map<std::string, Memory> &nodeMemories, std::string nodeScope) {
+    auto it = nodeMemories.lower_bound(nodeScope);
+    if (it == nodeMemories.end() || it->first != nodeScope) {
+        return nodeMemories.insert(it, std::make_pair(nodeScope, Memory{}))->second;
+    }
+    return it->second;
 }
 
 Memory& BlackBoard::getMemory(std::string treeScope, std::string nodeScope) {
@@ -24,7 +25,7 @@ Memory& BlackBoard::getMemory(std::string treeScope, std::string nodeScope) {
     if (!treeScope.empty()) {
         TreeMemory &treeMemory = getTreeMemory(treeScope);
         if (!nodeScope.empty()) {
-            return treeMemory.nodeMemory;
+            return getNodeMemory(treeMemory.nodeMemories, nodeScope);
         }
         return treeMemory;
     }
