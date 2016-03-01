@@ -14,7 +14,6 @@ namespace bt {
 
     struct TreeMemory : public Memory {
         std::map<std::string, Memory> nodeMemories;
-        std::set<NodePtr> openNodes;
         int traversalDepth = 0;
         int traversalCycle = 0;
     };
@@ -26,8 +25,6 @@ namespace bt {
         TreeMemory &getTreeMemory(std::string treeScope);
 
         Memory &getNodeMemory(std::map<std::string, Memory> &nodeMemories, std::string nodeScope);
-
-
 
     public:
         BlackBoard() { };
@@ -60,6 +57,7 @@ namespace bt {
                 //OnPropertyChanged(name);
             }
         }
+
 
     };
 

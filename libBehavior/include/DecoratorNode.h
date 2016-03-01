@@ -9,9 +9,11 @@ namespace bt {
         NodePtr _child;
     public:
 
-        Decorator(NodePtr child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR}, _child{child} {}
+        Decorator(NodePtr child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR} {
+            _child = std::move(child);
+        }
 
-        Decorator(std::string name,NodePtr child) : Node{name,NodeCategorie::DECORATOR}, _child{child} {}
+        Decorator(std::string name,NodePtr child) : Node{name,NodeCategorie::DECORATOR}, _child{std::move(child)} {}
 
     };
 
@@ -22,7 +24,7 @@ namespace bt {
 
         Inverter(std::string name,NodePtr child) : Decorator{name,child} {}
 
-        Status tick(ContextPtr &context) override ;
+        Status tick(Context &context) override ;
 
     };
 
@@ -34,9 +36,9 @@ namespace bt {
 
         Limiter(std::string name,NodePtr child, int maxLoop) : Decorator{name,child}, _maxLoop{maxLoop} {}
 
-        void open(ContextPtr &context) override;
+        void open(Context &context) override;
 
-        Status tick(ContextPtr &context) override ;
+        Status tick(Context &context) override ;
 
     };
 }

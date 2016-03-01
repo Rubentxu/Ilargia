@@ -15,16 +15,15 @@ BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
     _id = generateUUID();
 }
 
-Status BehaviorTree::tick(ContextPtr &context) {
-    context->_openNodes.clear();
+Status BehaviorTree::tick(Context &context) {
 
     Status status = _root->execute(context);
-    auto lastOpenNodes = context->_blackBoard->getParam<std::set<NodePtr>>("openNodes", _id);
 
-    for(NodePtr node : lastOpenNodes) {
-        if(context->_openNodes.find(node)== context->_openNodes.end()) node->_close(context);
+    for(Node *node : _lastOpenNodes) {
+        if(_currentOpenNodes.find(node) ==_currentOpenNodes.end()) node->close(context);
     }
-    context->_blackBoard->setParam("openNodes", context->_openNodes, _id);
+    _lastOpenNodes = _currentOpenNodes;
+    _currentOpenNodes.clear();
 
     return status;
 }

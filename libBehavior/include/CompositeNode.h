@@ -2,17 +2,37 @@
 #define ILARGIA_COMPOSITENODE_H
 
 #include "Node.h"
+#include <vector>
+#include <iterator>
+#include <initializer_list>
 
 namespace bt {
     class Composite : public Node {
     protected:
-        std::vector<NodePtr> _children;
+        struct ChildrenDeleter
+        {
+            void operator() (Node* node) const
+            {
+                delete node;
+            }
+        };
+
+        std::vector<std::unique_ptr<Node,ChildrenDeleter>> _children;
+
     public:
         Composite(std::string name, std::initializer_list<NodePtr> &ini)
-                : Node{name,NodeCategorie::COMPOSITE}, _children{ini} {}
+                : Node{name,NodeCategorie::COMPOSITE} , _children{std::move(ini)} {
+
+        }
 
         Composite(std::initializer_list<NodePtr> &ini)
-                : Node{"DefaultDecorator",NodeCategorie::COMPOSITE}, _children{ini} {}
+                : Composite{"DefaultDecorator",ini} {}
+
+        Composite(const Composite&) = delete;
+
+        Composite& operator=(const Composite&) = delete;
+
+        ~Composite() = default;
 
     };
 
@@ -20,7 +40,7 @@ namespace bt {
     public:
         Sequence(std::initializer_list<NodePtr> &ini) : Composite::Composite{"Sequence",ini} {};
 
-        Status tick(ContextPtr &context) override;
+        Status tick(Context &context) override;
     };
 }
 #endif //ILARGIA_COMPOSITENODE_H

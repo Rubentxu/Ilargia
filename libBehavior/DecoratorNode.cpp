@@ -1,7 +1,7 @@
 #include "DecoratorNode.h"
 
 namespace bt {
-    Status Inverter::tick(ContextPtr &context) {
+    Status Inverter::tick(Context &context) {
         if (!_child) {
             return Status::ERROR;
         }
@@ -17,22 +17,22 @@ namespace bt {
 
     }
 
-    void Limiter::open(ContextPtr &context) {
-        context->_blackBoard->setParam("count", 0, context->_behavior->_id, _id);
+    void Limiter::open(Context &context) {
+        context._blackBoard.setParam("count", 0, context._behavior._id, _id);
     }
 
-    Status Limiter::tick(ContextPtr &context) {
+    Status Limiter::tick(Context &context) {
         if (!_child) {
             return Status::ERROR;
         }
 
-        int count = context->_blackBoard->getParam<int>("count", context->_behavior->_id, _id);
+        int count = context._blackBoard.getParam<int>("count", context._behavior._id, _id);
 
         if (count < _maxLoop) {
             Status status = _child->execute(context);
 
             if (status == Status::SUCCESS || status == Status::FAILURE){
-                context->_blackBoard->setParam("count", count+1, context->_behavior->_id, _id);
+                context._blackBoard.setParam("count", count+1, context._behavior._id, _id);
             }
             return Status::RUNNING ;
         }

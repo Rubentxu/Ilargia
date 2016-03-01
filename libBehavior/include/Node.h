@@ -22,44 +22,37 @@ namespace bt {
         SUCCESS, FAILURE, RUNNING, ERROR
     };
 
-    struct Node : std::enable_shared_from_this<Node> {
-
+    struct Node {
         std::string _id;
         std::string _name;
         NodeCategorie _category;
         std::string _description;
 
-        void _open(ContextPtr &context);
 
-        void _close(ContextPtr &context);
 
-        void _enter(ContextPtr &context);
-
-        void _exit(ContextPtr &context);
-
-        Status _tick(ContextPtr &context);
-
-        Node(){}
+        explicit Node(){}
 
         Node(std::string name,NodeCategorie category);
 
         Node(std::string name,NodeCategorie category,std::string description);
 
-        virtual std::string getId() const { return _id; }
+        Node(const Node&) = delete;
 
-        virtual void open(ContextPtr &context) { }
+        Node& operator=(const Node&) = delete;
 
-        virtual void close(ContextPtr &context) { }
+        virtual void open(Context &context) { }
 
-        virtual void enter(ContextPtr &context) { }
+        virtual void close(Context &context) { }
 
-        virtual void exit(ContextPtr &context) { }
+        virtual void enter(Context &context) { }
 
-        virtual Status tick(ContextPtr &context) { }
+        virtual void exit(Context &context) { }
 
-        virtual Status execute(ContextPtr &context);
+        virtual Status tick(Context &context) { }
 
-        virtual ~Node() { };
+        virtual Status execute(Context &context);
+
+        virtual ~Node() = default;
     };
 
 

@@ -15,7 +15,7 @@ namespace bt {
     class BlackBoard;
     using BlackBoardPtr = std::shared_ptr<BlackBoard>;
     class Node;
-    using NodePtr = std::shared_ptr<Node>;
+    using NodePtr = std::unique_ptr<Node>;
     std::string generateUUID();
 }
 #endif //ILARGIA_GLOBAL_H

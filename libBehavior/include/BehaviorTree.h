@@ -18,14 +18,16 @@ namespace bt {
         std::string _title;
         std::string _description;
         NodePtr _root;
-    public:
+        std::set<Node*> _currentOpenNodes;
+        std::set<Node*> _lastOpenNodes;
+
         BehaviorTree() = delete;
 
-        BehaviorTree(NodePtr root) : BehaviorTree(root, "The behavior tree","Default description"){}
+        BehaviorTree(NodePtr root) : BehaviorTree(std::move(root), "The behavior tree","Default description"){}
 
         BehaviorTree(NodePtr root, std::string title, std::string desc);
 
-        Status tick(ContextPtr &context);
+        Status tick(Context &context);
 
     };
 

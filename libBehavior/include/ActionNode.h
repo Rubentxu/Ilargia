@@ -20,7 +20,7 @@ namespace bt {
 
         Trigger(std::string name): Action(name) {}
 
-        Status tick(ContextPtr &context) override {
+        Status tick(Context &context) override {
             return status;
         };
     };
@@ -33,9 +33,9 @@ namespace bt {
             _name = "Wait";
         }
 
-        void open(ContextPtr &context) override ;
+        void open(Context &context) override ;
 
-        Status tick(ContextPtr &context) override ;
+        Status tick(Context &context) override ;
     };
 
 }

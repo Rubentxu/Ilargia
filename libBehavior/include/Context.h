@@ -7,29 +7,19 @@
 namespace bt {
 
     struct Context {
-        BehaviorTreePtr _behavior;
-        TargetPtr _target;
-        BlackBoardPtr _blackBoard;
-        std::set<NodePtr> _openNodes;
+        BehaviorTree    &_behavior;
+        TargetPtr       _target;
+        BlackBoard      &_blackBoard;
 
-        Context() = default;
+        Context() = delete;
 
-        void enterNode(NodePtr node);
+        Context(BehaviorTree &behavior, TargetPtr &target, BlackBoard &blackBoard) = delete;
 
-        void exitNode(NodePtr node);
+        Context(const Context&) =  delete;
 
-        void openNode(NodePtr node);
-
-        void closeNode(NodePtr node);
-
-        void tickNode(NodePtr node);
-
-        /*void &BlackBoard getContextMemory() {
-            return this.getExtendMemory(this.Id, this.ContextId)
-        }*/
+        Context& operator=(const Context&) = delete;
 
     };
-
 
 };
 #endif //ILARGIA_CONTEXT_H

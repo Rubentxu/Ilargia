@@ -1,7 +1,7 @@
 #include "BlackBoard.h"
-#include <boost/any.hpp>
 
 using namespace bt;
+
 
 TreeMemory& BlackBoard::getTreeMemory(std::string treeScope) {
     auto it = treeMemories.lower_bound(treeScope);

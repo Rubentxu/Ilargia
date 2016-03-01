@@ -15,7 +15,7 @@ std::shared_ptr<BehaviorTree> behavior;
 ContextPtr context;
 
 NodeTest::NodeTest() {
-    behavior = std::make_shared<BehaviorTree>(std::make_shared<Trigger<Status::SUCCESS>>("name"));
+    behavior = std::unique_ptr<BehaviorTree>(std::make_shared<Trigger<Status::SUCCESS>>("name"));
     context = ContextPtr(new Context{});
     context->_behavior = behavior ;
     context->_target = std::make_shared<boost::any>(1);
