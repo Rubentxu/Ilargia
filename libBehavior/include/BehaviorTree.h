@@ -13,6 +13,7 @@
 
 namespace bt {
 
+
     struct BehaviorTree {
         std::string _id;
         std::string _title;
@@ -21,7 +22,7 @@ namespace bt {
         std::set<Node*> _currentOpenNodes;
         std::set<Node*> _lastOpenNodes;
 
-        BehaviorTree() = delete;
+        BehaviorTree() = default;
 
         BehaviorTree(NodePtr root) : BehaviorTree(std::move(root), "The behavior tree","Default description"){}
 

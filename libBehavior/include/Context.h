@@ -11,13 +11,7 @@ namespace bt {
         TargetPtr       _target;
         BlackBoard      &_blackBoard;
 
-        Context() = delete;
-
-        Context(BehaviorTree &behavior, TargetPtr &target, BlackBoard &blackBoard) = delete;
-
-        Context(const Context&) =  delete;
-
-        Context& operator=(const Context&) = delete;
+        Context(BehaviorTree &behavior, BlackBoard &blackBoard) : _behavior(behavior), _blackBoard(blackBoard) { }
 
     };
 

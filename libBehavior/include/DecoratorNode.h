@@ -9,11 +9,11 @@ namespace bt {
         NodePtr _child;
     public:
 
-        Decorator(NodePtr child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR} {
+        Decorator(NodePtr &child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR} {
             _child = std::move(child);
         }
 
-        Decorator(std::string name,NodePtr child) : Node{name,NodeCategorie::DECORATOR}, _child{std::move(child)} {}
+        Decorator(std::string name,NodePtr &child) : Node{name,NodeCategorie::DECORATOR}, _child{std::move(child)} {}
 
     };
 

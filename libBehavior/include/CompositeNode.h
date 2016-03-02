@@ -20,9 +20,11 @@ namespace bt {
         std::vector<std::unique_ptr<Node,ChildrenDeleter>> _children;
 
     public:
-        Composite(std::string name, std::initializer_list<NodePtr> &ini)
-                : Node{name,NodeCategorie::COMPOSITE} , _children{std::move(ini)} {
+        Composite(std::string name, std::initializer_list<NodePtr> nodes)
+                : Node{name,NodeCategorie::COMPOSITE}  {
 
+           /* _children {std::make_move_iterator(std::begin(nodes)),
+                      std::make_move_iterator(std::end(nodes))};*/
         }
 
         Composite(std::initializer_list<NodePtr> &ini)

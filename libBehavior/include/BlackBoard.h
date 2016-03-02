@@ -29,10 +29,6 @@ namespace bt {
     public:
         BlackBoard() { };
 
-        BlackBoard(BlackBoard const &s) = delete;
-
-        void operator=(BlackBoard const &x) = delete;
-
         Memory &getMemory(std::string treeScope = "", std::string nodeScope = "");
 
         template<typename T>
