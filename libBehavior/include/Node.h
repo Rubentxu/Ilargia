@@ -28,17 +28,11 @@ namespace bt {
         NodeCategorie _category;
         std::string _description;
 
-
-
-        explicit Node(){}
+        Node(){}
 
         Node(std::string name,NodeCategorie category);
 
         Node(std::string name,NodeCategorie category,std::string description);
-
-        Node(const Node&) = delete;
-
-        Node& operator=(const Node&) = delete;
 
         virtual void open(Context &context) { }
 

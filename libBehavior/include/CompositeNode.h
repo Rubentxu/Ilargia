@@ -17,18 +17,21 @@ namespace bt {
             }
         };
 
-        std::vector<std::unique_ptr<Node,ChildrenDeleter>> _children;
+        std::vector<NodePtr> _children;
 
     public:
-        Composite(std::string name, std::initializer_list<NodePtr> nodes)
+
+        Composite(std::string name, std::initializer_list<Node*> nodes)
                 : Node{name,NodeCategorie::COMPOSITE}  {
 
-           /* _children {std::make_move_iterator(std::begin(nodes)),
-                      std::make_move_iterator(std::end(nodes))};*/
+            for ( auto &it : nodes ) {
+                _children.push_back( NodePtr(it) );
+
+            }
         }
 
-        Composite(std::initializer_list<NodePtr> &ini)
-                : Composite{"DefaultDecorator",ini} {}
+      /*  Composite(std::initializer_list<Node> &nodes)
+                : Composite{"DefaultDecorator",nodes} {}*/
 
         Composite(const Composite&) = delete;
 
@@ -40,7 +43,7 @@ namespace bt {
 
     class Sequence : public Composite {
     public:
-        Sequence(std::initializer_list<NodePtr> &ini) : Composite::Composite{"Sequence",ini} {};
+        Sequence(std::initializer_list<Node*> &ini) : Composite::Composite{"Sequence",ini} {};
 
         Status tick(Context &context) override;
     };
