@@ -16,9 +16,8 @@ namespace bt {
     template<Status status>
     class Trigger : public Action {
     public:
-        Trigger(): Action("DefaultTrigger") {}
 
-        Trigger(std::string name): Action(name) {}
+        Trigger(std::string name="DefaultTrigger"): Action(name) {}
 
         Status tick(Context &context) override {
             return status;
@@ -29,9 +28,7 @@ namespace bt {
         std::chrono::duration<double, std::milli> _endTime;
 
     public:
-        Wait(double milliseconds): Action("DefaultWait"), _endTime{milliseconds}{
-            _name = "Wait";
-        }
+        Wait(double milliseconds, std::string name="DefaultWait"): Action(name), _endTime{milliseconds}{}
 
         void open(Context &context) override ;
 

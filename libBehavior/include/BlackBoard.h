@@ -6,8 +6,6 @@
 #include <set>
 #include <memory>
 #include <boost/any.hpp>
-#include <Global.h>
-
 
 namespace bt {
     using Memory = std::map<std::string, boost::any>;

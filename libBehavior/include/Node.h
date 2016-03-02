@@ -7,7 +7,6 @@
 #include <memory>
 #include <chrono>
 #include "Context.h"
-#include "BlackBoard.h"
 #include "BehaviorTree.h"
 
 //std::string operator "" _s(const char*, std::size_t);
@@ -19,7 +18,7 @@ namespace bt {
     };
 
     enum class Status {
-        SUCCESS, FAILURE, RUNNING, ERROR
+        SUCCESS, FAILURE, RUNNING, ERROR, NONE
     };
 
     struct Node {
@@ -28,11 +27,7 @@ namespace bt {
         NodeCategorie _category;
         std::string _description;
 
-        Node(){}
-
-        Node(std::string name,NodeCategorie category);
-
-        Node(std::string name,NodeCategorie category,std::string description);
+        Node(std::string name,NodeCategorie category,std::string description="Default description");
 
         virtual void open(Context &context) { }
 

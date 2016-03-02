@@ -1,10 +1,13 @@
 #ifndef ILARGIA_CONTEXT_H
 #define ILARGIA_CONTEXT_H
 
-#include "Global.h"
+#include "BehaviorTree.h"
+#include "BlackBoard.h"
 #include <set>
 
 namespace bt {
+    struct BehaviorTree;
+    using TargetPtr = std::shared_ptr<boost::any>;
 
     struct Context {
         BehaviorTree    &_behavior;

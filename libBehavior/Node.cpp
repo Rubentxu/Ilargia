@@ -2,9 +2,9 @@
 using namespace bt;
 
 
-Node::Node(std::string name,NodeCategorie category) : _name{name}, _category{category}, _id{ bt::generateUUID()} {};
-
-Node::Node(std::string name,NodeCategorie category,std::string description): Node{name, category} { _description = description; };
+Node::Node(std::string name,NodeCategorie category,std::string description): _name{name}, _category{category}, _description{description}{
+    _id = generateUUID();
+}
 
 
 Status Node::execute(Context &context) {

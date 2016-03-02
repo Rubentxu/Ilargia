@@ -12,12 +12,11 @@ using namespace bt;
 template <Status T>
 using TriggerPtr = std::shared_ptr<Trigger<T>>;
 
-BehaviorTree behavior;
+BehaviorTree behavior{NodePtr(new Trigger<Status::SUCCESS> {"name"})};
 BlackBoard blackBoard;
 Context *context;
 
 NodeTest::NodeTest() {
-    behavior = BehaviorTree{NodePtr(new Trigger<Status::SUCCESS> {"name"})};
     blackBoard = BlackBoard{};
     context = new Context{behavior,blackBoard};
     context->_target = std::make_shared<boost::any>(1);
@@ -52,9 +51,9 @@ TEST_F(NodeTest, triggerActionRunning) {
 }
 
 TEST_F(NodeTest, actionWait) {
-    behavior._root = NodePtr(new Wait{50.0});
+    behavior._root = NodePtr(new Wait{5.0});
     EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
-    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{80.0});
+    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{8.0});
     EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
 
 }
@@ -83,4 +82,12 @@ TEST_F(NodeTest, decoratorLimiter) {
     EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
     EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+}
+
+
+TEST_F(NodeTest, decoratorMaxTime) {
+    behavior._root = NodePtr(new Repeater {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(5, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
+
 }

@@ -41,5 +41,34 @@ namespace bt {
         Status tick(Context &context) override ;
 
     };
+
+    class MaxTime : public Decorator {
+        std::chrono::duration<double, std::milli> _maxTime;
+        Status currentStatus = Status::NONE;
+    public:
+
+        MaxTime(NodePtr child, double maxTime) : Decorator{"DefaultMaxTime",child}, _maxTime{maxTime} {}
+
+        MaxTime(std::string name,NodePtr child, double maxTime) : Decorator{name,child}, _maxTime{maxTime} {}
+
+        void open(Context &context) override;
+
+        Status tick(Context &context) override ;
+
+    };
+
+    class Repeater : public Decorator {
+        int _maxLoop = 1;
+    public:
+
+        Repeater(NodePtr child, int maxLoop) : Decorator{"DefaultRepeater",child}, _maxLoop{maxLoop} {}
+
+        Repeater(std::string name,NodePtr child, int maxLoop) : Decorator{name,child}, _maxLoop{maxLoop} {}
+
+        void open(Context &context) override;
+
+        Status tick(Context &context) override ;
+
+    };
 }
 #endif //ILARGIA_DECORATORNODE_H

@@ -9,41 +9,23 @@
 namespace bt {
     class Composite : public Node {
     protected:
-        struct ChildrenDeleter
-        {
-            void operator() (Node* node) const
-            {
-                delete node;
-            }
-        };
-
         std::vector<NodePtr> _children;
 
     public:
 
         Composite(std::string name, std::initializer_list<Node*> nodes)
                 : Node{name,NodeCategorie::COMPOSITE}  {
-
             for ( auto &it : nodes ) {
                 _children.push_back( NodePtr(it) );
 
             }
         }
 
-      /*  Composite(std::initializer_list<Node> &nodes)
-                : Composite{"DefaultDecorator",nodes} {}*/
-
-        Composite(const Composite&) = delete;
-
-        Composite& operator=(const Composite&) = delete;
-
-        ~Composite() = default;
-
     };
 
     class Sequence : public Composite {
     public:
-        Sequence(std::initializer_list<Node*> &ini) : Composite::Composite{"Sequence",ini} {};
+        Sequence(std::initializer_list<Node*> &nodes) : Composite::Composite{"Sequence",nodes} {};
 
         Status tick(Context &context) override;
     };
