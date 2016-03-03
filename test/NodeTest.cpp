@@ -118,9 +118,31 @@ TEST_F(NodeTest, decoratorRepeater) {
 
 }
 
-TEST_F(NodeTest, decoratorRepeaterUntil) {
-    behavior._root = NodePtr(new RepeaterUntil{NodePtr(new Wait{150.0}),5,Status::SUCCESS});
-    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
+TEST_F(NodeTest, decoratorRepeaterUntilSucces) {
+    behavior._root = NodePtr(new RepeaterUntil{NodePtr(new LimiterAndToggle<Status::FAILURE,Status::SUCCESS>{3}),5,Status::SUCCESS});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(3, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
+
+}
+
+TEST_F(NodeTest, decoratorRepeaterUntilLimit) {
+    behavior._root = NodePtr(new RepeaterUntil{NodePtr(new LimiterAndToggle<Status::FAILURE,Status::SUCCESS>{7}),5,Status::SUCCESS});
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
     EXPECT_EQ(5, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
+
+}
+
+TEST_F(NodeTest, decoratorRepeaterUntilFailure) {
+    behavior._root = NodePtr(new RepeaterUntil{NodePtr(new LimiterAndToggle<Status::SUCCESS,Status::FAILURE>{4}),5,Status::FAILURE});
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+    EXPECT_EQ(4, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
+
+}
+
+
+TEST_F(NodeTest, compositeSequence) {
+    behavior._root = NodePtr(new Sequence{new Trigger<Status::SUCCESS> {"name"},new Trigger<Status::SUCCESS> {"name"},
+                             new Trigger<Status::SUCCESS> {"name"},new Trigger<Status::FAILURE> {"name"}});
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 
 }

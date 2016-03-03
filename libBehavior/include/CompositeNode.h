@@ -25,7 +25,7 @@ namespace bt {
 
     class Sequence : public Composite {
     public:
-        Sequence(std::initializer_list<Node*> &nodes) : Composite::Composite{"Sequence",nodes} {};
+        Sequence(std::initializer_list<Node*> &&nodes) : Composite::Composite{"Sequence",nodes} {};
 
         Status tick(Context &context) override;
     };
