@@ -58,7 +58,6 @@ namespace bt {
         struct CurrentStatus{
             Status status = enabled;
             int count = 0;
-            CurrentStatus() {}
         };
 
     public:

@@ -14,7 +14,6 @@ namespace bt {
         if (elapsed > _endTime) {
             return Status::SUCCESS;
         }
-
         return Status::RUNNING;
     };
 

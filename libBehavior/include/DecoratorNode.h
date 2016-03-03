@@ -44,14 +44,16 @@ namespace bt {
 
     class MaxTime : public Decorator {
         std::chrono::duration<double, std::milli> _maxTime;
-        Status currentStatus = Status::NONE;
+        struct MaxTimeState {
+            std::chrono::system_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+            Status currentStatus = Status::NONE;
+        };
+
     public:
 
         MaxTime(NodePtr child, double maxTime) : Decorator{"DefaultMaxTime",child}, _maxTime{maxTime} {}
 
         MaxTime(std::string name,NodePtr child, double maxTime) : Decorator{name,child}, _maxTime{maxTime} {}
-
-        void open(Context &context) override;
 
         Status tick(Context &context) override ;
 

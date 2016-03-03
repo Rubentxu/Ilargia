@@ -9,10 +9,10 @@ Node::Node(std::string name,NodeCategorie category,std::string description): _na
 
 Status Node::execute(Context &context) {
     enter(context);
-
-    if(!context._blackBoard.getParam<bool>("isOpen", context._behavior._id, _id)) {
+    bool &isOpen = context._blackBoard.getParam<bool>("isOpen", context._behavior._id, _id);
+    if(!isOpen) {
         context._currentOpenNodes.insert(this);
-        context._blackBoard.setParam("isOpen", true, context._behavior._id, _id);
+        isOpen = true;
         open(context);
     }
 
@@ -20,7 +20,7 @@ Status Node::execute(Context &context) {
 
     if(status != Status::RUNNING) {
         context._currentOpenNodes.erase(this);
-        context._blackBoard.setParam("isOpen", false, context._behavior._id, _id);
+        isOpen = false;
         close(context);
     }
 

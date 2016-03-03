@@ -18,7 +18,7 @@ namespace bt {
     };
 
     enum class Status {
-        SUCCESS=0, FAILURE=1, RUNNING=2, ERROR=3, NONE=4
+        NONE=0, SUCCESS=1, FAILURE=2, RUNNING=3, ERROR=4
     };
 
 
