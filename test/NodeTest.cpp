@@ -50,6 +50,24 @@ TEST_F(NodeTest, triggerActionRunning) {
     EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
 }
 
+TEST_F(NodeTest, toggleAction) {
+    behavior._root = NodePtr(new Toggle<Status::SUCCESS,Status::FAILURE>{"name"});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+}
+
+TEST_F(NodeTest, limiterAndToggleAction) {
+    behavior._root = NodePtr(new LimiterAndToggle<Status::SUCCESS,Status::FAILURE>{"name",2});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+}
+
 TEST_F(NodeTest, actionWait) {
     behavior._root = NodePtr(new Wait{5.0});
     EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
@@ -70,12 +88,10 @@ TEST_F(NodeTest, decoratorInverterSucces) {
     EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
 }
 
-
 TEST_F(NodeTest, decoratorInverterError) {
     behavior._root = NodePtr(new Inverter {nullptr});
     EXPECT_EQ(Status::ERROR, behavior._root->execute(*context));
 }
-
 
 TEST_F(NodeTest, decoratorLimiter) {
     behavior._root = NodePtr(new Limiter{NodePtr(new Trigger<Status::SUCCESS>{"name"}),2});
@@ -84,10 +100,27 @@ TEST_F(NodeTest, decoratorLimiter) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 }
 
-
 TEST_F(NodeTest, decoratorMaxTime) {
+    behavior._root = NodePtr(new MaxTime {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{1.0});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{6.0});
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+
+
+}
+
+TEST_F(NodeTest, decoratorRepeater) {
     behavior._root = NodePtr(new Repeater {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});
     EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(5, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
+
+}
+
+TEST_F(NodeTest, decoratorRepeaterUntil) {
+    behavior._root = NodePtr(new RepeaterUntil{NodePtr(new Wait{150.0}),5,Status::SUCCESS});
+    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
     EXPECT_EQ(5, context->_blackBoard.getParam<int>("count", context->_behavior._id, behavior._root->_id));
 
 }

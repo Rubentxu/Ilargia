@@ -86,4 +86,31 @@ namespace bt {
 
     }
 
+
+    void RepeaterUntil::open(Context &context) {
+        context._blackBoard.setParam("count", 0, context._behavior._id, _id);
+    }
+
+    Status RepeaterUntil::tick(Context &context) {
+        if (!_child) {
+            return Status::ERROR;
+        }
+
+        int count = context._blackBoard.getParam<int>("count", context._behavior._id, _id);
+        Status status = Status::ERROR;
+
+        while (_maxLoop < 0 || count < _maxLoop) {
+            status = _child->execute(context);
+
+            if (status != _repeaterUntil ){
+                count++;
+            } else {
+                break;
+            }
+        }
+        context._blackBoard.setParam("count", count, context._behavior._id, _id);
+        return status;
+
+    }
+
 }

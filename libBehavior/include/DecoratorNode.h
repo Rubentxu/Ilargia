@@ -58,7 +58,7 @@ namespace bt {
     };
 
     class Repeater : public Decorator {
-        int _maxLoop = 1;
+        int _maxLoop = -1;
     public:
 
         Repeater(NodePtr child, int maxLoop) : Decorator{"DefaultRepeater",child}, _maxLoop{maxLoop} {}
@@ -67,7 +67,26 @@ namespace bt {
 
         void open(Context &context) override;
 
-        Status tick(Context &context) override ;
+        Status tick(Context &context) override;
+
+    };
+
+
+
+    class RepeaterUntil : public Decorator {
+        int _maxLoop = -1;
+        Status _repeaterUntil;
+    public:
+
+        RepeaterUntil(NodePtr child, int maxLoop, Status repeaterUntil) : Decorator{"DefaultRepeater",child},
+                  _maxLoop{maxLoop}, _repeaterUntil {repeaterUntil} {}
+
+        RepeaterUntil(std::string name,NodePtr child, int maxLoop, Status repeaterUntil) : Decorator{name,child},
+                  _maxLoop{maxLoop}, _repeaterUntil {repeaterUntil} {}
+
+        void open(Context &context) override;
+
+        Status tick(Context &context) override;
 
     };
 }

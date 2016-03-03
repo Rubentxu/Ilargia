@@ -20,8 +20,6 @@ namespace bt {
         std::string _title;
         std::string _description;
         NodePtr _root;
-        std::set<Node*> _currentOpenNodes;
-        std::set<Node*> _lastOpenNodes;
 
         BehaviorTree(NodePtr root) : BehaviorTree(std::move(root), "The behavior tree","Default description"){}
 

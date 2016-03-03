@@ -18,8 +18,9 @@ namespace bt {
     };
 
     enum class Status {
-        SUCCESS, FAILURE, RUNNING, ERROR, NONE
+        SUCCESS=0, FAILURE=1, RUNNING=2, ERROR=3, NONE=4
     };
+
 
     struct Node {
         std::string _id;

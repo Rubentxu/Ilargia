@@ -22,11 +22,12 @@ Status BehaviorTree::tick(Context &context) {
 
     Status status = _root->execute(context);
 
-    for(Node *node : _lastOpenNodes) {
-        if(_currentOpenNodes.find(node) ==_currentOpenNodes.end()) node->close(context);
+    for(Node *node : context._lastOpenNodes) {
+        if(context._currentOpenNodes.find(node) ==context._currentOpenNodes.end()) node->close(context);
     }
-    _lastOpenNodes = _currentOpenNodes;
-    _currentOpenNodes.clear();
+    context._lastOpenNodes.clear();
+    context._lastOpenNodes = context._currentOpenNodes;
+    context._currentOpenNodes.clear();
 
     return status;
 }

@@ -7,12 +7,15 @@
 
 namespace bt {
     struct BehaviorTree;
+    struct Node;
     using TargetPtr = std::shared_ptr<boost::any>;
 
     struct Context {
         BehaviorTree    &_behavior;
         TargetPtr       _target;
         BlackBoard      &_blackBoard;
+        std::set<Node*> _currentOpenNodes;
+        std::set<Node*> _lastOpenNodes;
 
         Context(BehaviorTree &behavior, BlackBoard &blackBoard) : _behavior(behavior), _blackBoard(blackBoard) { }
 
