@@ -15,6 +15,7 @@ set(Ilargia_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
 
 # uncomment to be in Release mode [default]
 # SET(CMAKE_BUILD_TYPE Release)
@@ -152,6 +153,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)]]
 add_subdirectory(libBehavior)
 add_subdirectory(libEntitas)
 add_subdirectory(demos)
+add_subdirectory(src)
 if (test)
     add_subdirectory(test)
 endif()

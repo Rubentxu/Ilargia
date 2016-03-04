@@ -1,8 +1,9 @@
 set(PROJECT_NAME "Entitas" CXX)
 project(${PROJECT_NAME})
-set(libEntitas_SRCS
-        events/Event.h
-        events/GroupEventType.h)
+
+file(GLOB libEntitas_SRCS *.cpp)
+
+include_directories(includes)
 
 # Declare the library
 add_library(${PROJECT_NAME} STATIC ${libEntitas_SRCS})
