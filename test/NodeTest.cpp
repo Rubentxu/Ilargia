@@ -146,3 +146,35 @@ TEST_F(NodeTest, compositeSequence) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 
 }
+
+TEST_F(NodeTest, compositeMemSequence) {
+    behavior._root = NodePtr(new MemSequence{new Trigger<Status::SUCCESS> {"name"},new Trigger<Status::SUCCESS> {"name"},
+                             new Toggle<Status::RUNNING,Status::SUCCESS>{"name"},new Trigger<Status::FAILURE> {"name"}});
+    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
+    EXPECT_EQ(2, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+    EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
+    EXPECT_EQ(0, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
+    EXPECT_EQ(2, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+}
+
+
+
+TEST_F(NodeTest, compositePriority) {
+    behavior._root = NodePtr(new Priority{new Trigger<Status::SUCCESS> {"name"},new Trigger<Status::SUCCESS> {"name"},
+                                          new Trigger<Status::SUCCESS> {"name"}});
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+
+}
+
+
+TEST_F(NodeTest, compositeMemPriority) {
+    behavior._root = NodePtr(new MemPriority{new Trigger<Status::FAILURE> {"name"},new Trigger<Status::FAILURE> {"name"},
+                                             new Toggle<Status::RUNNING,Status::FAILURE>{"name"},new Trigger<Status::SUCCESS> {"name"}});
+    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
+    EXPECT_EQ(2, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+    EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
+    EXPECT_EQ(0, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+    EXPECT_EQ(Status::RUNNING, behavior._root->execute(*context));
+    EXPECT_EQ(2, context->_blackBoard.getParam<std::size_t>("indexRunningChild", context->_behavior._id, behavior._root->_id));
+}

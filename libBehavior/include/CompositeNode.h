@@ -29,5 +29,30 @@ namespace bt {
 
         Status tick(Context &context) override;
     };
+
+    class MemSequence : public Composite {
+    public:
+        MemSequence(std::initializer_list<Node*> &&nodes) : Composite::Composite{"Sequence",nodes} {};
+
+        void close(Context &context) override;
+
+        Status tick(Context &context) override;
+    };
+
+    class Priority : public Composite {
+    public:
+        Priority(std::initializer_list<Node*> &&nodes) : Composite::Composite{"Sequence",nodes} {};
+
+        Status tick(Context &context) override;
+    };
+
+    class MemPriority : public Composite {
+    public:
+        MemPriority(std::initializer_list<Node*> &&nodes) : Composite::Composite{"Sequence",nodes} {};
+
+        void close(Context &context) override;
+
+        Status tick(Context &context) override;
+    };
 }
 #endif //ILARGIA_COMPOSITENODE_H
