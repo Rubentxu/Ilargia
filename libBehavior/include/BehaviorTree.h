@@ -3,29 +3,29 @@
 
 #include <string>
 #include <memory>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/random_generator.hpp>
-#include <boost/lexical_cast.hpp>
-#include "Global.h"
-#include "Context.h"
+#include <set>
 #include "Node.h"
+#include "Context.h"
 
 namespace bt {
+    struct Node;
+    struct Context;
+    enum class Status;
+    using NodePtr = std::unique_ptr<Node>;
+
+    std::string generateUUID();
 
     struct BehaviorTree {
         std::string _id;
         std::string _title;
         std::string _description;
         NodePtr _root;
-    public:
-        BehaviorTree() = delete;
 
-        BehaviorTree(NodePtr root) : BehaviorTree(root, "The behavior tree","Default description"){}
+        BehaviorTree(NodePtr root) : BehaviorTree(std::move(root), "The behavior tree","Default description"){}
 
         BehaviorTree(NodePtr root, std::string title, std::string desc);
 
-        Status tick(ContextPtr &context);
+        Status tick(Context &context);
 
     };
 

@@ -1,5 +1,8 @@
 #include "BehaviorTree.h"
-#include <algorithm>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/lexical_cast.hpp>
 
 using namespace bt;
 
@@ -15,16 +18,16 @@ BehaviorTree::BehaviorTree(NodePtr root, std::string title, std::string desc)
     _id = generateUUID();
 }
 
-Status BehaviorTree::tick(ContextPtr &context) {
-    context->_openNodes.clear();
+Status BehaviorTree::tick(Context &context) {
 
     Status status = _root->execute(context);
-    auto lastOpenNodes = context->_blackBoard->getParam<std::set<NodePtr>>("openNodes", _id);
 
-    for(NodePtr node : lastOpenNodes) {
-        if(context->_openNodes.find(node)== context->_openNodes.end()) node->_close(context);
+    for(Node *node : context._lastOpenNodes) {
+        if(context._currentOpenNodes.find(node) ==context._currentOpenNodes.end()) node->close(context);
     }
-    context->_blackBoard->setParam("openNodes", context->_openNodes, _id);
+    context._lastOpenNodes.clear();
+    context._lastOpenNodes = context._currentOpenNodes;
+    context._currentOpenNodes.clear();
 
     return status;
 }

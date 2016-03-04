@@ -9,9 +9,11 @@ namespace bt {
         NodePtr _child;
     public:
 
-        Decorator(NodePtr child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR}, _child{child} {}
+        Decorator(NodePtr &child) : Node{"DefaultDecorator",NodeCategorie::DECORATOR} {
+            _child = std::move(child);
+        }
 
-        Decorator(std::string name,NodePtr child) : Node{name,NodeCategorie::DECORATOR}, _child{child} {}
+        Decorator(std::string name,NodePtr &child) : Node{name,NodeCategorie::DECORATOR}, _child{std::move(child)} {}
 
     };
 
@@ -22,7 +24,7 @@ namespace bt {
 
         Inverter(std::string name,NodePtr child) : Decorator{name,child} {}
 
-        Status tick(ContextPtr &context) override ;
+        Status tick(Context &context) override ;
 
     };
 
@@ -34,9 +36,59 @@ namespace bt {
 
         Limiter(std::string name,NodePtr child, int maxLoop) : Decorator{name,child}, _maxLoop{maxLoop} {}
 
-        void open(ContextPtr &context) override;
+        void open(Context &context) override;
 
-        Status tick(ContextPtr &context) override ;
+        Status tick(Context &context) override ;
+
+    };
+
+    class MaxTime : public Decorator {
+        std::chrono::duration<double, std::milli> _maxTime;
+        struct MaxTimeState {
+            std::chrono::system_clock::time_point startTime = std::chrono::high_resolution_clock::now();
+            Status currentStatus = Status::NONE;
+        };
+
+    public:
+
+        MaxTime(NodePtr child, double maxTime) : Decorator{"DefaultMaxTime",child}, _maxTime{maxTime} {}
+
+        MaxTime(std::string name,NodePtr child, double maxTime) : Decorator{name,child}, _maxTime{maxTime} {}
+
+        Status tick(Context &context) override ;
+
+    };
+
+    class Repeater : public Decorator {
+        int _maxLoop = -1;
+    public:
+
+        Repeater(NodePtr child, int maxLoop) : Decorator{"DefaultRepeater",child}, _maxLoop{maxLoop} {}
+
+        Repeater(std::string name,NodePtr child, int maxLoop) : Decorator{name,child}, _maxLoop{maxLoop} {}
+
+        void open(Context &context) override;
+
+        Status tick(Context &context) override;
+
+    };
+
+
+
+    class RepeaterUntil : public Decorator {
+        int _maxLoop = -1;
+        Status _repeaterUntil;
+    public:
+
+        RepeaterUntil(NodePtr child, int maxLoop, Status repeaterUntil) : Decorator{"DefaultRepeater",child},
+                  _maxLoop{maxLoop}, _repeaterUntil {repeaterUntil} {}
+
+        RepeaterUntil(std::string name,NodePtr child, int maxLoop, Status repeaterUntil) : Decorator{name,child},
+                  _maxLoop{maxLoop}, _repeaterUntil {repeaterUntil} {}
+
+        void open(Context &context) override;
+
+        Status tick(Context &context) override;
 
     };
 }

@@ -1,35 +1,25 @@
 #ifndef ILARGIA_CONTEXT_H
 #define ILARGIA_CONTEXT_H
 
-#include "Global.h"
+#include "BehaviorTree.h"
+#include "BlackBoard.h"
 #include <set>
 
 namespace bt {
+    struct BehaviorTree;
+    struct Node;
+    using TargetPtr = std::shared_ptr<boost::any>;
 
     struct Context {
-        BehaviorTreePtr _behavior;
-        TargetPtr _target;
-        BlackBoardPtr _blackBoard;
-        std::set<NodePtr> _openNodes;
+        BehaviorTree    &_behavior;
+        TargetPtr       _target;
+        BlackBoard      &_blackBoard;
+        std::set<Node*> _currentOpenNodes;
+        std::set<Node*> _lastOpenNodes;
 
-        Context() = default;
-
-        void enterNode(NodePtr node);
-
-        void exitNode(NodePtr node);
-
-        void openNode(NodePtr node);
-
-        void closeNode(NodePtr node);
-
-        void tickNode(NodePtr node);
-
-        /*void &BlackBoard getContextMemory() {
-            return this.getExtendMemory(this.Id, this.ContextId)
-        }*/
+        Context(BehaviorTree &behavior, BlackBoard &blackBoard) : _behavior(behavior), _blackBoard(blackBoard) { }
 
     };
-
 
 };
 #endif //ILARGIA_CONTEXT_H

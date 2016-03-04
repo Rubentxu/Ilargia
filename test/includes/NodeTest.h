@@ -5,6 +5,7 @@
 #include <Node.h>
 #include <ActionNode.h>
 #include <DecoratorNode.h>
+#include <CompositeNode.h>
 
 
 using namespace bt;

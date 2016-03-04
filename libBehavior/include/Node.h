@@ -7,7 +7,6 @@
 #include <memory>
 #include <chrono>
 #include "Context.h"
-#include "BlackBoard.h"
 #include "BehaviorTree.h"
 
 //std::string operator "" _s(const char*, std::size_t);
@@ -19,47 +18,31 @@ namespace bt {
     };
 
     enum class Status {
-        SUCCESS, FAILURE, RUNNING, ERROR
+        NONE=0, SUCCESS=1, FAILURE=2, RUNNING=3, ERROR=4
     };
 
-    struct Node : std::enable_shared_from_this<Node> {
 
+    struct Node {
         std::string _id;
         std::string _name;
         NodeCategorie _category;
         std::string _description;
 
-        void _open(ContextPtr &context);
+        Node(std::string name,NodeCategorie category,std::string description="Default description");
 
-        void _close(ContextPtr &context);
+        virtual void open(Context &context) { }
 
-        void _enter(ContextPtr &context);
+        virtual void close(Context &context) { }
 
-        void _exit(ContextPtr &context);
+        virtual void enter(Context &context) { }
 
-        Status _tick(ContextPtr &context);
+        virtual void exit(Context &context) { }
 
-        Node(){}
+        virtual Status tick(Context &context) { }
 
-        Node(std::string name,NodeCategorie category);
+        virtual Status execute(Context &context);
 
-        Node(std::string name,NodeCategorie category,std::string description);
-
-        virtual std::string getId() const { return _id; }
-
-        virtual void open(ContextPtr &context) { }
-
-        virtual void close(ContextPtr &context) { }
-
-        virtual void enter(ContextPtr &context) { }
-
-        virtual void exit(ContextPtr &context) { }
-
-        virtual Status tick(ContextPtr &context) { }
-
-        virtual Status execute(ContextPtr &context);
-
-        virtual ~Node() { };
+        virtual ~Node() = default;
     };
 
 
