@@ -41,7 +41,7 @@
 # - For each specified module XXX (system, window, graphics, network, audio, main):
 #   - SFML_XXX_LIBRARY_DEBUG:   the name of the debug library of the xxx module (set to SFML_XXX_LIBRARY_RELEASE is no debug version is found)
 #   - SFML_XXX_LIBRARY_RELEASE: the name of the release library of the xxx module (set to SFML_XXX_LIBRARY_DEBUG is no release version is found)
-#   - SFML_XXX_LIBRARY:         the name of the library to link to for the xxx module (includes both debug and optimized names if necessary)
+#   - SFML_XXX_LIBRARY:         the name of the library to link to for the xxx module (include both debug and optimized names if necessary)
 #   - SFML_XXX_FOUND:           true if either the debug or release library of the xxx module is found
 #   - SFML_XXX_DEPENDENCIES:    the list of libraries the module depends on, in case of static linking
 # - SFML_LIBRARIES:    the list of all libraries corresponding to the required modules
