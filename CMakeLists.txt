@@ -113,6 +113,7 @@ endif ()
 
 add_subdirectory(libBehavior)
 #add_subdirectory(libEntitas)
+add_subdirectory(libBitScan)
 add_subdirectory(demos)
 
 if (test)
@@ -138,9 +139,10 @@ ELSE(SFML_FOUND)
 endif()
 
 # Add include directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES} include/Entity.h src/Entity.cpp)
+add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
@@ -154,6 +156,8 @@ endif()
 # link it with anax and SFML
 target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
+        Behavior
+        BitScan
         ${ANAX_LIBRARY_NAME}
         ${SFML_LIBRARIES}
 )

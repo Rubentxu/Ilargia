@@ -1,6 +1,5 @@
 #include "Entity.h"
 
-
 namespace Entitas {
 
     const int &Entity::getCreationIndex() const {
@@ -16,13 +15,15 @@ namespace Entitas {
         if (HasComponent(index)) {
             throw "Entity already has Component";
         }
+        bitarray bbi(100);
+        bbi.set_bit(10);
 
         _components[index] = std::unique_ptr<IComponent>(&component);
         _componentIndicesCache.clear();
 
         if (OnComponentAdded != nullptr) {
             for (auto listener : OnComponentAdded->listeners())
-                listener(*this, index, component);
+                listener(*this, index, _components[index]);
         }
         return shared_from_this();
     }
@@ -34,7 +35,7 @@ namespace Entitas {
         if (!HasComponent(index)) {
             throw "Entity does not have component";
         }
-        replaceComponent(index, nullptr);
+        replaceComponent(index, IComponent{});
         return shared_from_this();
     }
 
@@ -50,30 +51,29 @@ namespace Entitas {
     }
 
     void Entity::_replaceComponent(int index, IComponent &&replacement) {
-        auto previousComponent = _components[index];
-        if (previousComponent.get() == &replacement) {
-            if (OnComponentReplaced != nullptr) {
-                for (auto listener : OnComponentReplaced->listeners())
-                    listener(this, index, previousComponent, replacement);
+        if (_components[index]) {
+            if (!_components[index].get() && !replacement) {
+                return;
+            }
+        }
+        std::unique_ptr<IComponent> previousComponent(_components[index].release());
+        _components[index].reset(&replacement);
+        if (!replacement) {
+            _componentIndicesCache.clear();
+            if (OnComponentRemoved) {
+                for (auto listener : OnComponentRemoved->listeners()) {
+                    listener(*this, index, previousComponent);
+                }
             }
         } else {
-            _components[index].reset(&replacement);
-            if (&replacement == nullptr) {
-                _componentIndicesCache.clear();
-                if (OnComponentRemoved != nullptr) {
-                    for (auto listener : OnComponentRemoved->listeners())
-                        listener(this, index, previousComponent);
-                }
-            } else {
-                if (OnComponentReplaced != nullptr) {
-                    for (auto listener : OnComponentReplaced->listeners())
-                        listener(this, index, previousComponent, replacement);
-                }
+            if (OnComponentReplaced != nullptr) {
+                for (auto listener : OnComponentReplaced->listeners())
+                    listener(*this, index, previousComponent, _components[index]);
             }
         }
     }
 
-    IComponent& Entity::getComponent(int index) {
+    IComponent &Entity::getComponent(int index) {
         if (!HasComponent(index)) {
             throw "Entity does not have component";
         }
@@ -96,12 +96,12 @@ namespace Entitas {
     }
 
     bool Entity::HasComponent(int index) {
-        return _components[index].get() != nullptr;
+        return _components[index] && _components[index].get();
     }
 
     bool Entity::hasComponents(std::vector<int> &indices) {
         for (int i = 0, indicesLength = indices.size(); i < indicesLength; i++) {
-            if (_components[indices[i]].get() == nullptr)
+            if (!_components[indices[i]] || !_components[indices[i]].get())
                 return false;
         }
         return true;
@@ -109,8 +109,7 @@ namespace Entitas {
 
     bool Entity::hasAnyComponent(std::vector<int> &indices) {
         for (int i = 0, indicesLength = indices.size(); i < indicesLength; i++) {
-            if (_components[indices[i]].get()
-                != nullptr)
+            if (_components[indices[i]] && _components[indices[i]].get())
                 return true;
         }
         return false;
@@ -118,16 +117,16 @@ namespace Entitas {
 
     void Entity::removeAllComponents() {
         for (int i = 0, componentsLength = _components.size(); i < componentsLength; i++) {
-            if (_components[i] != nullptr)
-                replaceComponent(i, nullptr);
+            if (_components[i] && !_components[i].get())
+                replaceComponent(i, IComponent{});
         }
     }
 
     void Entity::destroy() {
         removeAllComponents();
-        OnComponentAdded->addListener("nullptr", nullptr);
-        OnComponentReplaced->addListener("nullptr", nullptr);
-        OnComponentRemoved->addListener("nullptr", nullptr);
+        OnComponentAdded.reset();
+        OnComponentReplaced.reset();
+        OnComponentRemoved.reset();
         componentNames.clear();
         _isEnabled = false;
     }
