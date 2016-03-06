@@ -54,13 +54,13 @@ namespace Entitas {
 
         std::shared_ptr<Entity> replaceComponent(int index, IComponent &&component);
 
-        IComponent &getComponent(int index);
+        IComponent& getComponent(int index);
 
-        std::vector<std::unique_ptr<IComponent>> &getComponents();
+        std::vector<std::unique_ptr<IComponent>>& getComponents();
 
-        std::vector<int> &getComponentIndices();
+        std::vector<int>& getComponentIndices();
 
-        bool HasComponent(int index);
+        bool hasComponent(int index);
 
         bool hasComponents(std::vector<int> &indices);
 
@@ -71,7 +71,7 @@ namespace Entitas {
         void destroy();
 
         using EntityReleased = std::function<void(const std::shared_ptr<Entity> &entity)>;
-        Event<EntityReleased> *OnEntityReleased = new Event<EntityReleased>();
+        std::unique_ptr<Event<EntityReleased>> OnEntityReleased;
 
         int getRetainCount() const;
 

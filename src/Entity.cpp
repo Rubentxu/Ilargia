@@ -2,17 +2,17 @@
 
 namespace Entitas {
 
+    Entity::Entity(int totalComponents) : _components(std::vector<std::unique_ptr<IComponent>>(totalComponents,std::unique_ptr<IComponent>())) { }
+
     const int &Entity::getCreationIndex() const {
         return _creationIndex;
     }
-
-    Entity::Entity(int totalComponents) : _components(std::vector<std::unique_ptr<IComponent>>(totalComponents)) { }
 
     std::shared_ptr<Entity> Entity::addComponent(int index, IComponent &&component) {
         if (!_isEnabled)
             throw "Cannot add component!";
 
-        if (HasComponent(index)) {
+        if (hasComponent(index)) {
             throw "Entity already has Component";
         }
         bitarray bbi(100);
@@ -32,7 +32,7 @@ namespace Entitas {
         if (!_isEnabled)
             throw "Cannot remove component!";
 
-        if (!HasComponent(index)) {
+        if (!hasComponent(index)) {
             throw "Entity does not have component";
         }
         replaceComponent(index, IComponent{});
@@ -43,7 +43,7 @@ namespace Entitas {
         if (!_isEnabled)
             throw "Cannot replace component!";
 
-        if (HasComponent(index))
+        if (hasComponent(index))
             _replaceComponent(index, std::move(component));
         else if (&component != nullptr)
             addComponent(index, std::move(component));
@@ -74,7 +74,7 @@ namespace Entitas {
     }
 
     IComponent &Entity::getComponent(int index) {
-        if (!HasComponent(index)) {
+        if (!hasComponent(index)) {
             throw "Entity does not have component";
         }
         return *_components[index].get();
@@ -95,7 +95,7 @@ namespace Entitas {
         return _componentIndicesCache;
     }
 
-    bool Entity::HasComponent(int index) {
+    bool Entity::hasComponent(int index) {
         return _components[index] && _components[index].get();
     }
 
