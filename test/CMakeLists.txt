@@ -49,22 +49,9 @@ set_target_properties(libgmock PROPERTIES
         #    "INTERFACE_INCLUDE_DIRECTORIES" "${source_dir}/include"
         )
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
-include_directories("${source_dir}/include")
-
-
-file(GLOB SRCS *.cpp)
-# This adds another subdirectory, which has 'project(gtest)'. cmake -Dtest=ON .. -DGTEST_OS_CYGWIN=1
+#include_directories("${source_dir}/include")
 
 
 include_directories(includes)
-
-ADD_EXECUTABLE(testBehavior ${SRCS})
-
-TARGET_LINK_LIBRARIES(testBehavior
-    Behavior
-    libgtest
-    libgmock
-)
-
-add_test(NAME testBehavior
-        COMMAND testBehavior)
+add_subdirectory(Behavior)
+add_subdirectory(Ilargia)

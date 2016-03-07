@@ -1,10 +1,13 @@
 #ifdef __STRICT_ANSI__
 #undef __STRICT_ANSI__
 #endif
+#include "gtest/gtest.h"
 #include <iostream>
 #include <thread>
-#include "NodeTest.h"
-
+#include <Node.h>
+#include <ActionNode.h>
+#include <DecoratorNode.h>
+#include <CompositeNode.h>
 
 using namespace bt;
 
@@ -16,18 +19,15 @@ BehaviorTree behavior{NodePtr(new Trigger<Status::SUCCESS> {"name"})};
 BlackBoard blackBoard;
 Context *context;
 
-NodeTest::NodeTest() {
-    blackBoard = BlackBoard{};
-    context = new Context{behavior,blackBoard};
-    context->_target = std::make_shared<boost::any>(1);
+
+class NodeTest: public ::testing::Test {
+public:
+    NodeTest() {
+        blackBoard = BlackBoard{};
+        context = new Context{behavior,blackBoard};
+        context->_target = std::make_shared<boost::any>(1);
+    };
 };
-
-NodeTest::~NodeTest() { };
-
-void NodeTest::SetUp() {};
-
-void NodeTest::TearDown() { };
-
 
 // Testing Action Nodes
 TEST_F(NodeTest, triggerActionSuccess) {

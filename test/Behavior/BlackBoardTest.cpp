@@ -1,30 +1,17 @@
 #ifdef __STRICT_ANSI__
 #undef __STRICT_ANSI__
 #endif
+#include "gtest/gtest.h"
 #include <iostream>
 #include "BlackBoard.h"
-#include "BlackBoardTest.h"
 #include <boost/any.hpp>
 
 using namespace bt;
-//using ::testing::Return;
 
-BlackBoardTest::BlackBoardTest() {
-//    // Have qux return true by default
-//    ON_CALL(m_bar, qux()).WillByDefault(Return(true));
-//    // Have norf return false by default
-//    ON_CALL(m_bar, norf()).WillByDefault(Return(false));
-}
-
-
-BlackBoard b0;
-
-BlackBoardTest::~BlackBoardTest() { };
-
-void BlackBoardTest::SetUp() { };
-
-void BlackBoardTest::TearDown() { };
-
+class BlackBoardTest: public ::testing::Test{
+public:
+    BlackBoard b0;
+};
 
 class testObject {
     int _value;

@@ -2,7 +2,7 @@
 
 namespace Entitas {
 
-    Entity::Entity(int totalComponents) : _components(std::vector<std::unique_ptr<IComponent>>(totalComponents,std::unique_ptr<IComponent>())) { }
+    Entity::Entity(int totalComponents) : _components(std::vector<std::unique_ptr<IComponent>>(totalComponents)) { }
 
     const int &Entity::getCreationIndex() const {
         return _creationIndex;
