@@ -21,7 +21,7 @@ namespace Entitas {
         }
     };
 
-    class Entity : public std::enable_shared_from_this<Entity> {
+    class Entity {
 
         std::vector<std::unique_ptr<IComponent>> _components;
         std::vector<int> _componentIndicesCache;
@@ -47,11 +47,11 @@ namespace Entitas {
 
         Entity(int totalComponents);
 
-        std::shared_ptr<Entity> addComponent(int index, IComponent &&component);
+        Entity& addComponent(int index, IComponent &&component);
 
-        std::shared_ptr<Entity> removeComponent(int index);
+        Entity& removeComponent(int index);
 
-        std::shared_ptr<Entity> replaceComponent(int index, IComponent &&component);
+        Entity& replaceComponent(int index, IComponent &&component);
 
         IComponent& getComponent(int index);
 
@@ -69,12 +69,12 @@ namespace Entitas {
 
         void destroy();
 
-        using EntityReleased = std::function<void(const std::shared_ptr<Entity> &entity)>;
+        using EntityReleased = std::function<void(const Entity &entity)>;
         std::unique_ptr<Event<EntityReleased>> OnEntityReleased;
 
         int getRetainCount() const;
 
-        //std::shared_ptr<Entity> retain(const std::shared_ptr<void> &owner);
+        //Entity& retain(const std::shared_ptr<void> &owner);
 
         //void release(const std::shared_ptr<void> &owner);
     };
@@ -86,9 +86,9 @@ namespace Entitas {
     public:
         static const std::shared_ptr<EntityEqualityComparer> comparer;
 
-        bool Equals(const std::shared_ptr<Entity> &x, const std::shared_ptr<Entity> &y);
+        bool Equals(const Entity& &x, const Entity& &y);
 
-        int GetHashCode(const std::shared_ptr<Entity> &obj);
+        int GetHashCode(const Entity& &obj);
     };*/
 
 

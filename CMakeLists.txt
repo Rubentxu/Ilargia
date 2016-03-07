@@ -138,9 +138,7 @@ ELSE(SFML_FOUND)
 endif()
 
 # Add include directories
-set(Ilargia_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/)
-set(Ilargia_INCLUDE_DIR ${Ilargia_SOURCE_DIR}/src/include)
-include_directories(${Ilargia_INCLUDE_DIR})
+include_directories(${Ilargia_SOURCE_DIR}/src/include)
 include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES Ilargia_SOURCE_DIR/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})

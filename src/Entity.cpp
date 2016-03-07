@@ -8,7 +8,7 @@ namespace Entitas {
         return _creationIndex;
     }
 
-    std::shared_ptr<Entity> Entity::addComponent(int index, IComponent &&component) {
+    Entity& Entity::addComponent(int index, IComponent &&component) {
         if (!_isEnabled)
             throw "Cannot add component!";
 
@@ -28,7 +28,7 @@ namespace Entitas {
         return shared_from_this();
     }
 
-    std::shared_ptr<Entity> Entity::removeComponent(int index) {
+    Entity& Entity::removeComponent(int index) {
         if (!_isEnabled)
             throw "Cannot remove component!";
 
@@ -39,7 +39,7 @@ namespace Entitas {
         return shared_from_this();
     }
 
-    std::shared_ptr<Entity> Entity::replaceComponent(int index, IComponent &&component) {
+    Entity& Entity::replaceComponent(int index, IComponent &&component) {
         if (!_isEnabled)
             throw "Cannot replace component!";
 
@@ -135,7 +135,7 @@ namespace Entitas {
         return owners.size();
     }
 
-    std::shared_ptr<Entity> Entity::retain(const std::shared_ptr<void> &owner) {
+    Entity& Entity::retain(const std::shared_ptr<void> &owner) {
         if (!owners.insert(owner).second)
             throw "Entity is already retained by owner";
 
