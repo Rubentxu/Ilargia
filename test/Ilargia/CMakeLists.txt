@@ -2,6 +2,13 @@ file(GLOB_RECURSE SRCS *.cpp)
 
 ADD_EXECUTABLE(testIlargia ${SRCS})
 
+include_directories(${Ilargia_INCLUDE_DIR})
+include_directories(${Ilargia_SOURCE_DIR}/src/include)
+
+if (ILARGIA_INCLUDE_DIR)
+    message(ERROR "No existe Ilargia includes")
+endif ()
+
 TARGET_LINK_LIBRARIES(testIlargia
     Ilargia
     libgtest

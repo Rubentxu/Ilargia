@@ -8,7 +8,6 @@ set(ILARGIA_VERSION_MINOR 1)
 set(ILARGIA_VERSION_PATCH 0)
 set(PROJECT_VERSION ${ILARGIA_VERSION_MAJOR}.${ILARGIA_VERSION_MINOR}.${ILARGIA_VERSION_PATCH})
 
-set(Ilargia_BINARY_DIR)
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
 set(EXECUTABLE_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
@@ -113,8 +112,8 @@ endif ()
 
 add_subdirectory(libBehavior)
 #add_subdirectory(libEntitas)
-add_subdirectory(libBitScan)
-add_subdirectory(demos)
+#add_subdirectory(libBitScan)
+#add_subdirectory(demos)
 
 if (test)
     add_subdirectory(test)
@@ -139,9 +138,11 @@ ELSE(SFML_FOUND)
 endif()
 
 # Add include directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/include)
+set(Ilargia_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/)
+set(Ilargia_INCLUDE_DIR ${Ilargia_SOURCE_DIR}/src/include)
+include_directories(${Ilargia_INCLUDE_DIR})
 include_directories(${BitScan_SOURCE_DIR}/include)
-file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES Ilargia_SOURCE_DIR/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
@@ -157,7 +158,7 @@ endif()
 target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
         Behavior
-        BitScan
+        #BitScan
         ${ANAX_LIBRARY_NAME}
         ${SFML_LIBRARIES}
 )

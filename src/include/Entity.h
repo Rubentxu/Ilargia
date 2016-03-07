@@ -9,7 +9,6 @@
 #include <unordered_set>
 #include <boost/any.hpp>
 #include "Event.h"
-#include "bitscan.h"
 
 namespace Entitas {
 
