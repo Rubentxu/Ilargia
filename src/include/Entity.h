@@ -45,7 +45,7 @@ namespace Entitas {
 
         const int &getCreationIndex() const;
 
-        Entity(int totalComponents);
+        Entity(int totalComponents): _components(std::vector<std::unique_ptr<IComponent>>(totalComponents)){}
 
         Entity& addComponent(int index, IComponent &&component);
 

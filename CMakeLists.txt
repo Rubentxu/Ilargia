@@ -140,7 +140,7 @@ endif()
 # Add include directories
 include_directories(${Ilargia_SOURCE_DIR}/src/include)
 include_directories(${BitScan_SOURCE_DIR}/include)
-file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES Ilargia_SOURCE_DIR/*.cpp)
+file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES

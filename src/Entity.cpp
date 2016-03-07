@@ -2,7 +2,6 @@
 
 namespace Entitas {
 
-    Entity::Entity(int totalComponents) : _components(std::vector<std::unique_ptr<IComponent>>(totalComponents)) { }
 
     const int &Entity::getCreationIndex() const {
         return _creationIndex;
@@ -15,8 +14,6 @@ namespace Entitas {
         if (hasComponent(index)) {
             throw "Entity already has Component";
         }
-        bitarray bbi(100);
-        bbi.set_bit(10);
 
         _components[index] = std::unique_ptr<IComponent>(&component);
         _componentIndicesCache.clear();
@@ -25,7 +22,7 @@ namespace Entitas {
             for (auto listener : OnComponentAdded->listeners())
                 listener(*this, index, _components[index]);
         }
-        return shared_from_this();
+        return *this;
     }
 
     Entity& Entity::removeComponent(int index) {
@@ -36,7 +33,7 @@ namespace Entitas {
             throw "Entity does not have component";
         }
         replaceComponent(index, IComponent{});
-        return shared_from_this();
+        return *this;
     }
 
     Entity& Entity::replaceComponent(int index, IComponent &&component) {
@@ -47,7 +44,7 @@ namespace Entitas {
             _replaceComponent(index, std::move(component));
         else if (&component != nullptr)
             addComponent(index, std::move(component));
-        return shared_from_this();
+        return *this;
     }
 
     void Entity::_replaceComponent(int index, IComponent &&replacement) {
