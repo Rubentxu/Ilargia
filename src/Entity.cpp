@@ -7,93 +7,77 @@ namespace Entitas {
         return _creationIndex;
     }
 
-    Entity& Entity::addComponent(int index, IComponent &&component) {
+    Entity &Entity::addComponent(int index, IComponent &&component) {
         if (!_isEnabled)
             throw "Cannot add component!";
 
         if (hasComponent(index)) {
             throw "Entity already has Component";
         }
+        if(_components[index]) {
+            _components[index].reset(&component);
+        } else {
+            _components[index] = std::unique_ptr<IComponent>(&component);
+        }
 
-        _components[index] = std::unique_ptr<IComponent>(&component);
         _componentIndicesCache.clear();
 
-        if (OnComponentAdded != nullptr) {
+        if (OnComponentAdded) {
             for (auto listener : OnComponentAdded->listeners())
                 listener(*this, index, _components[index]);
         }
         return *this;
     }
 
-    Entity& Entity::removeComponent(int index) {
+    Entity &Entity::removeComponent(int index) {
         if (!_isEnabled)
             throw "Cannot remove component!";
 
         if (!hasComponent(index)) {
             throw "Entity does not have component";
         }
-        replaceComponent(index, IComponent{});
-        return *this;
+        std::unique_ptr<IComponent> previousComponent;
+        if (_components[index]) {
+            previousComponent.reset(_components[index].release());
+        }
+        _componentIndicesCache.clear();
+        if (OnComponentRemoved) {
+            for (auto listener : OnComponentRemoved->listeners()) {
+                listener(*this, index, previousComponent);
+            }
+        }
     }
 
-    Entity& Entity::replaceComponent(int index, IComponent &&component) {
+    Entity &Entity::replaceComponent(int index, IComponent &&component) {
         if (!_isEnabled)
             throw "Cannot replace component!";
 
-        if (hasComponent(index))
-            _replaceComponent(index, std::move(component));
-        else if (&component != nullptr)
+        if (_components[index]) {
+            std::unique_ptr<IComponent> previousComponent(_components[index].release());
+            _components[index].reset(&component);
+            if (OnComponentReplaced) {
+                for (auto listener : OnComponentReplaced->listeners())
+                    listener(*this, index, previousComponent, _components[index]);
+            }
+            _componentIndicesCache.clear();
+        } else if (&component != nullptr)
             addComponent(index, std::move(component));
         return *this;
     }
 
-    void Entity::_replaceComponent(int index, IComponent &&replacement) {
-        if (_components[index]) {
-            if (!_components[index].get() && !replacement) {
-                return;
-            }
-        }
-        std::unique_ptr<IComponent> previousComponent(_components[index].release());
-        _components[index].reset(&replacement);
-        if (!replacement) {
-            _componentIndicesCache.clear();
-            if (OnComponentRemoved) {
-                for (auto listener : OnComponentRemoved->listeners()) {
-                    listener(*this, index, previousComponent);
-                }
-            }
-        } else {
-            if (OnComponentReplaced != nullptr) {
-                for (auto listener : OnComponentReplaced->listeners())
-                    listener(*this, index, previousComponent, _components[index]);
-            }
-        }
-    }
-
-    IComponent &Entity::getComponent(int index) {
-        if (!hasComponent(index)) {
-            throw "Entity does not have component";
-        }
-        return *_components[index].get();
-    }
-
-    std::vector<std::unique_ptr<IComponent>>& Entity::getComponents() {
-        return _components;
-    }
 
     std::vector<int>& Entity::getComponentIndices() {
         if (_componentIndicesCache.empty()) {
-            auto indices = std::vector<int>(16);
-            for (int i = 0, componentsLength = _components.size(); i < componentsLength; i++) {
-                if (_components[i] != nullptr)
-                    _componentIndicesCache.push_back(i);
+            for (int index = 0, componentsLength = _components.size(); index < componentsLength; index++) {
+                if (_components[index])
+                    _componentIndicesCache.push_back(index);
             }
         }
         return _componentIndicesCache;
     }
 
     bool Entity::hasComponent(int index) {
-        return _components[index] && _components[index].get();
+        return _components[index]? true: false;
     }
 
     bool Entity::hasComponents(std::vector<int> &indices) {

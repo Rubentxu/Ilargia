@@ -22,6 +22,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
 
+
 # uncomment to be in Release mode [default]
 # SET(CMAKE_BUILD_TYPE Release)
 
@@ -137,16 +138,21 @@ ELSE(SFML_FOUND)
     MESSAGE(FATAL_ERROR "SFML is needed to build ${PROJECT_NAME}!")
 endif()
 
+include(Config)
+
 # Add include directories
 include_directories(${Ilargia_SOURCE_DIR}/src/include)
 include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
-add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})
+add_library(${ILARGIA_LIBRARY_NAME}
+        ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION ${ILARGIA_VERSION_MAJOR}
         )
+
+
 
 if(APPLE)
     set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES OSX_ARCHITECTURES "i386;x86_64;")

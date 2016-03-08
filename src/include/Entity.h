@@ -6,9 +6,11 @@
 #include <stdexcept>
 #include <memory>
 #include <vector>
+#include <array>
 #include <unordered_set>
 #include <boost/any.hpp>
 #include "Event.h"
+#include "Config.h"
 
 namespace Entitas {
 
@@ -22,11 +24,8 @@ namespace Entitas {
     };
 
     class Entity {
-
-        std::vector<std::unique_ptr<IComponent>> _components;
+        std::array<std::unique_ptr<IComponent>,MAX_AMOUNT_OF_COMPONENTS> _components;
         std::vector<int> _componentIndicesCache;
-
-        void _replaceComponent(int index, IComponent &&component);
 
     public:
 //        std::unordered_set<boost::any> owners;
@@ -45,7 +44,9 @@ namespace Entitas {
 
         const int &getCreationIndex() const;
 
-        Entity(int totalComponents): _components(std::vector<std::unique_ptr<IComponent>>(totalComponents)){}
+        Entity(){
+            //_components.fill(std::unique_ptr<IComponent>());
+        }
 
         Entity& addComponent(int index, IComponent &&component);
 
@@ -53,9 +54,17 @@ namespace Entitas {
 
         Entity& replaceComponent(int index, IComponent &&component);
 
-        IComponent& getComponent(int index);
+        template<typename T>
+        T& getComponent(int index){
+            if (!_components[index]) {
+                throw "Entity does not have component";
+            }
+            return static_cast<T&>(*_components[index].get());
+        }
 
-        std::vector<std::unique_ptr<IComponent>>& getComponents();
+        std::array<std::unique_ptr<IComponent>,MAX_AMOUNT_OF_COMPONENTS>& getComponents(){
+            return _components;
+        }
 
         std::vector<int>& getComponentIndices();
 
