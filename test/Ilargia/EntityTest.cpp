@@ -2,6 +2,7 @@
 #undef __STRICT_ANSI__
 #endif
 #include "gtest/gtest.h"
+#include "Components/TestComponent.h"
 #include <Entity.h>
 
 using namespace Entitas;
@@ -19,9 +20,10 @@ public:
 };
 
 TEST_F(EntityTest, addComponent) {
-    entity->addComponent(3,TestComponent{true});
-    EXPECT_EQ(true, entity->getComponent<TestComponent>(3)._test);
-    EXPECT_EQ(false, entity->getComponent<TestComponent>(1)._test);
+    entity->addComponent(TestComponent{true});
+    TestComponent r = entity->getComponent<TestComponent>();
+    EXPECT_EQ(true, r._test);
     EXPECT_EQ(1, entity->getComponentIndices().size());
-    EXPECT_EQ(3, entity->getComponentIndices()[0]);
+    EXPECT_EQ(std::type_index(typeid(TestComponent)), entity->getComponentIndices()[0]);
+    EXPECT_EQ(true, entity->hasComponent<TestComponent>());
 }

@@ -5,38 +5,39 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
-#include <vector>
-#include <array>
-#include <unordered_set>
 #include <boost/any.hpp>
+#include <type_traits>
 #include "Event.h"
 #include "Config.h"
+#include <typeindex>
+#include <typeinfo>
+#include <unordered_map>
 
 namespace Entitas {
 
-    class IComponent {
+    struct IComponent {
         bool _isEnabled = false;
 
-    public:
         operator bool() const {
             return _isEnabled;
         }
     };
 
     class Entity {
-        std::array<std::unique_ptr<IComponent>,MAX_AMOUNT_OF_COMPONENTS> _components;
-        std::vector<int> _componentIndicesCache;
+        std::unordered_map<std::type_index,std::unique_ptr<IComponent>> _components;
+        std::vector<std::type_index> _componentIndicesCache;
+
 
     public:
 //        std::unordered_set<boost::any> owners;
-        std::vector<std::string> componentNames;
         int _creationIndex = 0;
         bool _isEnabled = true;
 
-        using EntityChanged = std::function<void(const Entity &entity, int index, const std::unique_ptr<IComponent> &component)>;
-        using ComponentReplaced = std::function<void(const Entity &entity, int index, const std::unique_ptr<IComponent> &previousComponent,
-                                                     const std::unique_ptr<IComponent> &newComponent)>;
+        using EntityChanged = std::function<void(const Entity &entity, const IComponent &component)>;
+        using ComponentReplaced = std::function<void(const Entity &entity,const IComponent& previousComponent,const IComponent& newComponent)>;
+        using EntityReleased = std::function<void(const Entity &entity)>;
 
+        std::unique_ptr<Event<EntityReleased>> OnEntityReleased;
         std::unique_ptr<Event<EntityChanged>> OnComponentAdded;
         std::unique_ptr<Event<EntityChanged>> OnComponentRemoved;
         std::unique_ptr<Event<ComponentReplaced>> OnComponentReplaced;
@@ -48,38 +49,57 @@ namespace Entitas {
             //_components.fill(std::unique_ptr<IComponent>());
         }
 
-        Entity& addComponent(int index, IComponent &&component);
-
-        Entity& removeComponent(int index);
-
-        Entity& replaceComponent(int index, IComponent &&component);
-
-        template<typename T>
-        T& getComponent(int index){
-            if (!_components[index]) {
-                throw "Entity does not have component";
+        template <class Derived>
+        Entity& addComponent(Derived &&component) {
+            static_assert(std::is_base_of<IComponent, Derived>::value,"Failed: Not derived IComponent class!");
+            if (!_isEnabled)
+                throw "Cannot add component!";
+            auto key = std::type_index(typeid(component));
+            auto it = _components.find(key);
+            if (it == _components.end()) {
+                auto componentAdded = _components.insert(it, std::make_pair(key, std::unique_ptr<Derived>(&component)));
+                if (OnComponentAdded) {
+                    for (auto listener : OnComponentAdded->listeners())
+                        listener(*this, *componentAdded->second);
+                }
+                _componentIndicesCache.clear();
             }
-            return static_cast<T&>(*_components[index].get());
+            return *this;
         }
 
-        std::array<std::unique_ptr<IComponent>,MAX_AMOUNT_OF_COMPONENTS>& getComponents(){
+        template <typename Derived>
+        Entity& removeComponent();
+
+        template <typename Derived>
+        Entity& replaceComponent(Derived &&component);
+
+        template<typename Derived>
+        Derived& getComponent() {
+            auto it = _components.find(std::type_index(typeid(Derived)));
+            if (it != _components.end()) {
+                return static_cast<Derived&>(*it->second);
+            }
+            return  *(new Derived{});
+        }
+
+        std::unordered_map<std::type_index,std::unique_ptr<IComponent>>& getComponents(){
             return _components;
         }
 
-        std::vector<int>& getComponentIndices();
+        std::vector<std::type_index>& getComponentIndices();
 
-        bool hasComponent(int index);
+        template <typename Derived>
+        bool hasComponent(){
+            return _components.find(std::type_index(typeid(Derived))) != _components.end();
+        }
 
-        bool hasComponents(std::vector<int> &indices);
+        bool hasComponents(std::vector<std::type_index>& indices);
 
-        bool hasAnyComponent(std::vector<int> &indices);
+        bool hasAnyComponent(std::vector<std::type_index> &indices);
 
         void removeAllComponents();
 
         void destroy();
-
-        using EntityReleased = std::function<void(const Entity &entity)>;
-        std::unique_ptr<Event<EntityReleased>> OnEntityReleased;
 
         int getRetainCount() const;
 
