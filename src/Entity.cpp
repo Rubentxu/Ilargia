@@ -8,25 +8,6 @@ namespace Entitas {
     }
 
     template <typename Derived>
-    Entity &Entity::removeComponent() {
-        static_assert(std::is_base_of<IComponent, Derived>::value,"Failed: Not derived IComponent class!");
-        if (!_isEnabled)
-            throw "Cannot remove component!";
-
-        auto it = _components.find(typeid(Derived));
-        if (it != _components.end()) {
-                    if (OnComponentRemoved) {
-                for (auto listener : OnComponentRemoved->listeners()) {
-                    listener(*this, *it->second);
-                }
-            }
-            _components.erase(it);
-            _componentIndicesCache.clear();
-        }
-
-    }
-
-    template <typename Derived>
     Entity &Entity::replaceComponent(Derived &&component) {
         static_assert(std::is_base_of<IComponent, Derived>::value,"Failed: Not derived IComponent class!");
         if (!_isEnabled)

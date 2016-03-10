@@ -24,7 +24,7 @@ namespace Entitas {
     };
 
     class Entity {
-        std::unordered_map<std::type_index,std::unique_ptr<IComponent>> _components;
+        std::unordered_map<std::type_index, std::unique_ptr<IComponent>> _components;
         std::vector<std::type_index> _componentIndicesCache;
 
 
@@ -34,7 +34,8 @@ namespace Entitas {
         bool _isEnabled = true;
 
         using EntityChanged = std::function<void(const Entity &entity, const IComponent &component)>;
-        using ComponentReplaced = std::function<void(const Entity &entity,const IComponent& previousComponent,const IComponent& newComponent)>;
+        using ComponentReplaced = std::function<void(const Entity &entity, const IComponent &previousComponent,
+                                                     const IComponent &newComponent)>;
         using EntityReleased = std::function<void(const Entity &entity)>;
 
         std::unique_ptr<Event<EntityReleased>> OnEntityReleased;
@@ -45,16 +46,16 @@ namespace Entitas {
 
         const int &getCreationIndex() const;
 
-        Entity(){
+        Entity() {
             //_components.fill(std::unique_ptr<IComponent>());
         }
 
-        template <class Derived>
-        Entity& addComponent(Derived &&component) {
-            static_assert(std::is_base_of<IComponent, Derived>::value,"Failed: Not derived IComponent class!");
+        template<class Derived>
+        Entity &addComponent(Derived &&component) {
+            static_assert(std::is_base_of<IComponent, Derived>::value, "Failed: Not derived IComponent class!");
             if (!_isEnabled)
                 throw "Cannot add component!";
-            auto key = std::type_index(typeid(component));
+            auto key = std::type_index(typeid(Derived));
             auto it = _components.find(key);
             if (it == _components.end()) {
                 auto componentAdded = _components.insert(it, std::make_pair(key, std::unique_ptr<Derived>(&component)));
@@ -67,33 +68,50 @@ namespace Entitas {
             return *this;
         }
 
-        template <typename Derived>
-        Entity& removeComponent();
-
-        template <typename Derived>
-        Entity& replaceComponent(Derived &&component);
-
         template<typename Derived>
-        Derived& getComponent() {
+        Entity &removeComponent() {
+            static_assert(std::is_base_of<IComponent, Derived>::value,"Failed: Not derived IComponent class!");
+            if (!_isEnabled)
+                throw "Cannot remove component!";
+
             auto it = _components.find(std::type_index(typeid(Derived)));
             if (it != _components.end()) {
-                return static_cast<Derived&>(*it->second);
+                if (OnComponentRemoved) {
+                    for (auto listener : OnComponentRemoved->listeners()) {
+                        listener(*this, *it->second);
+                    }
+                }
+                it->second.reset();
+                _components.erase(it);
+                _componentIndicesCache.clear();
             }
-            return  *(new Derived{});
+            return *this;
         }
 
-        std::unordered_map<std::type_index,std::unique_ptr<IComponent>>& getComponents(){
+        template<typename Derived>
+        Entity &replaceComponent(Derived &&component);
+
+        template<typename Derived>
+        Derived &getComponent() {
+            auto it = _components.find(std::type_index(typeid(Derived)));
+            if (it != _components.end()) {
+                return static_cast<Derived &>(*it->second);
+            }
+            return *(new Derived{});
+        }
+
+        std::unordered_map<std::type_index, std::unique_ptr<IComponent>> &getComponents() {
             return _components;
         }
 
-        std::vector<std::type_index>& getComponentIndices();
+        std::vector<std::type_index> &getComponentIndices();
 
-        template <typename Derived>
-        bool hasComponent(){
+        template<typename Derived>
+        bool hasComponent() {
             return _components.find(std::type_index(typeid(Derived))) != _components.end();
         }
 
-        bool hasComponents(std::vector<std::type_index>& indices);
+        bool hasComponents(std::vector<std::type_index> &indices);
 
         bool hasAnyComponent(std::vector<std::type_index> &indices);
 

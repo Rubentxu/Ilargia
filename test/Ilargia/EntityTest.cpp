@@ -11,19 +11,35 @@ class EntityTest: public ::testing::Test {
 public:
     Entity* entity;
 
-    EntityTest() : entity{new Entity{}}  {};
+    EntityTest(): entity{new Entity} {}
 
     virtual void SetUp() override {
 
     }
-    virtual void TearDown(){}
+
+    virtual void TearDown( ){
+        //delete entity;
+    }
+
 };
 
 TEST_F(EntityTest, addComponent) {
     entity->addComponent(TestComponent{true});
+    EXPECT_EQ(true, entity->hasComponent<TestComponent>());
+}
+
+TEST_F(EntityTest, getComponent) {
+    entity->addComponent(TestComponent{true});
     TestComponent r = entity->getComponent<TestComponent>();
     EXPECT_EQ(true, r._test);
-    EXPECT_EQ(1, entity->getComponentIndices().size());
-    EXPECT_EQ(std::type_index(typeid(TestComponent)), entity->getComponentIndices()[0]);
-    EXPECT_EQ(true, entity->hasComponent<TestComponent>());
+
+}
+
+TEST_F(EntityTest, removeComponent) {
+    entity->addComponent(TestComponent{true});
+    TestComponent r = entity->getComponent<TestComponent>();
+    EXPECT_EQ(true, r._test);
+    entity->removeComponent<TestComponent>();
+    //EXPECT_EQ(false, entity->hasComponent<TestComponent>());
+
 }
