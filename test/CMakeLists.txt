@@ -52,19 +52,6 @@ set_target_properties(libgmock PROPERTIES
 include_directories("${source_dir}/include")
 
 
-file(GLOB SRCS *.cpp)
-# This adds another subdirectory, which has 'project(gtest)'. cmake -Dtest=ON .. -DGTEST_OS_CYGWIN=1
-
-
-include_directories(includes)
-
-ADD_EXECUTABLE(testBehavior ${SRCS})
-
-TARGET_LINK_LIBRARIES(testBehavior
-    Behavior
-    libgtest
-    libgmock
-)
-
-add_test(NAME testBehavior
-        COMMAND testBehavior)
+#include_directories(includes)
+add_subdirectory(Behavior)
+add_subdirectory(Ilargia)
