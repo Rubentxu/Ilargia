@@ -1,38 +1,40 @@
 #ifndef ILARGIA_GAME_STATE_H
-#define ILARGIA_GAME_STATE_H
-
-#include <types.hpp>
 
 namespace Ilargia {
 
     class GameStateStack;
 
     class GameState {
-        Game *_game;
+        Engine *_engine;
     public:
-        GameState() = delete;
+        GameState() = default;
 
-        GameState(Game* game) : _game(game) { }
+        void setEngine(Engine* engine) {
+            _engine = engine;
+        }
+
+        void removeEngine() {
+            delete _engine;
+        }
+
 
         virtual ~GameState() = 0;
 
-        Game &getGame() { return *_game; }
+        virtual void loadResources()  = 0;
 
-        const Game &getGame() const { return *_game; }
+        virtual void init() = 0;
 
-        virtual void init() { }
+        virtual void onResume() = 0;
 
-        virtual void loadResources() { }
+        virtual void onPause() = 0;
 
-        virtual void unloadResources() { }
+        virtual void unloadResources() = 0;
 
-        virtual void update(Ilargia::Seconds deltaTime) { }
+        virtual void handleInput() = 0;
 
-        virtual void render() { }
+        virtual void update(Ilargia::Time deltaTime) = 0;
 
-        virtual void onPause() { }
-
-        virtual void onResume() { }
+        virtual void render() = 0;
 
     };
 

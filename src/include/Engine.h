@@ -7,11 +7,11 @@ namespace Ilargia {
         int _errorState;
         bool _hasShutdown;
     public:
-        virtual void init(int argc, char *argv[]) =0;
+        virtual void configureEngine() =0;
 
         virtual void frameStart() = 0;
 
-        virtual void update(Ilargia::Seconds deltaTime) = 0;
+        virtual void update(Ilargia::Time deltaTime) = 0;
 
         virtual void frameEnd() = 0;
 

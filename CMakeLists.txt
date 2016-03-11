@@ -140,7 +140,7 @@ endif()
 include_directories(${Ilargia_SOURCE_DIR}/src/include)
 file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES})
+        ${ILARGIA_LIBRARY_SOURCES} src/Game.cpp)
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
