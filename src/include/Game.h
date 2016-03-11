@@ -1,9 +1,7 @@
 #ifndef ILARGIA_STATED_GAME_H
 #define ILARGIA_STATED_GAME_H
 
-#include "GameState.h"
 #include "GameStateStack.h"
-#include "Time.h"
 #include "Engine.h"
 
 namespace Ilargia {
@@ -13,9 +11,9 @@ namespace Ilargia {
         std::unique_ptr<Engine> _engine;
 
     public:
-        Game(Engine &&engine) : _engine{&std::move(engine)} { }
+        Game(Engine &&engine) : _engine(&engine) { }
 
-        std::unique_ptr<Engine>& getEngine() const { return _engine; }
+        std::unique_ptr<Engine>& getEngine() { return _engine; }
 
         int getErrorState() const { return _engine->getErrorState(); }
 
@@ -25,18 +23,17 @@ namespace Ilargia {
             _engine->configureEngine();
         }
 
+        float deltaTime();
+
         int runGame() {
-            const float MAX_FRAME_TIME = 1 / 4.f;
-            const float DELTA_TIME = 1 / 60.f;
-            Time currentTime{0};
-            Time accumulator{0};
+            const float MAX_FRAME_TIME = 1000 / 4.f;
+            const float DELTA_TIME = 1000 / 60.f;
+            float accumulator{0};
 
             while (isRunning()) {
                 _stack->frameStart();
 
-                Time newTime = Ilargia::time_now();
-                Time frameTime = newTime - currentTime;
-                currentTime = newTime;
+                float frameTime = deltaTime();
 
                 if (frameTime >= MAX_FRAME_TIME) {
                     frameTime = MAX_FRAME_TIME;
@@ -51,7 +48,6 @@ namespace Ilargia {
             }
             return getErrorState();
         }
-
     };
 }
 

@@ -1,8 +1,8 @@
 #ifndef ILARGIA_GAME_STATE_H
 
-namespace Ilargia {
+#include "Engine.h"
 
-    class GameStateStack;
+namespace Ilargia {
 
     class GameState {
         Engine *_engine;
@@ -32,7 +32,7 @@ namespace Ilargia {
 
         virtual void handleInput() = 0;
 
-        virtual void update(Ilargia::Time deltaTime) = 0;
+        virtual void update(float deltaTime) = 0;
 
         virtual void render() = 0;
 

@@ -11,7 +11,7 @@ namespace Ilargia {
 
         virtual void frameStart() = 0;
 
-        virtual void update(Ilargia::Time deltaTime) = 0;
+        virtual void update(float deltaTime) = 0;
 
         virtual void frameEnd() = 0;
 

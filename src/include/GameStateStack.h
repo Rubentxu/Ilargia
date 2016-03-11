@@ -1,23 +1,18 @@
 #ifndef ILARGIA_GAMESTATESTACK_H
 #define ILARGIA_GAMESTATESTACK_H
 
-#include <vector>
-#include <memory>
-#include <utility>
-#include <algorithm>
-#include <cassert>
 
-#include <GameState.h>
+#include <memory>
+#include <cassert>
+#include <stack>
+#include "GameState.h"
 
 namespace Ilargia {
 
     class GameStateStack {
-
-        // utility class used to delete game states
         struct GameStateDeleter {
             void operator()(GameState *gameState) const {
-
-                delete gameState->removeEngine();
+                gameState->removeEngine();
                 delete gameState;
             }
         };
@@ -28,20 +23,18 @@ namespace Ilargia {
         Engine *_engine;
 
     public:
-        explicit GameStateStack(Engine* engine, GameState &&gameState = nullptr) : _engine(engine) {
-            if (gameState) pushState(GameStatePtr(&gameState));
+        explicit GameStateStack(Engine* engine, GameState &&gameState) : _engine(engine) {
+           pushState(std::move(gameState));
         }
 
         ~GameStateStack() { clear(); }
 
         void pushState(GameState &&gameState) {
-            assert(gameState && "GameState is null, please offer a non-null GameState");
-
             _states.push(GameStatePtr(&gameState));
-            _states.top().setEngine(_engine);
-            _states.top().loadResources();
-            _states.top().init();
-            _states.top().onResume();
+            _states.top()->setEngine(_engine);
+            _states.top()->loadResources();
+            _states.top()->init();
+            _states.top()->onResume();
         }
 
         /// Pops the GameState stack
@@ -57,7 +50,7 @@ namespace Ilargia {
         void changeState(GameState &&gameState) {
             if(!_states.empty())
                 popState();
-            pushState(std::move(state));
+            pushState(std::move(gameState));
         }
 
         void frameStart() {
@@ -65,7 +58,7 @@ namespace Ilargia {
             _engine->frameStart();
         }
 
-        void update(Time deltaTime) {
+        void update(float deltaTime) {
             _engine->update(deltaTime);
             _states.top()->update(deltaTime);
 
@@ -83,7 +76,6 @@ namespace Ilargia {
             }
 
         }
-
     };
 }
 
