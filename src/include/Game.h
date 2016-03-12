@@ -1,17 +1,18 @@
 #ifndef ILARGIA_STATED_GAME_H
 #define ILARGIA_STATED_GAME_H
 
+#include <memory>
 #include "GameStateStack.h"
 #include "Engine.h"
 
 namespace Ilargia {
 
     class Game {
-        std::unique_ptr<GameStateStack> _stack;
         std::unique_ptr<Engine> _engine;
+        std::unique_ptr<GameStateStack> _stack;
 
     public:
-        Game(Engine &&engine) : _engine(&engine) { }
+        Game(Engine &&engine, GameState &&gameState) : _engine(&engine), _stack(new GameStateStack(std::move(gameState))) { }
 
         std::unique_ptr<Engine>& getEngine() { return _engine; }
 
@@ -19,9 +20,11 @@ namespace Ilargia {
 
         bool isRunning() const { return !_engine->hasShutdown(); }
 
-        virtual void init(int argc, char *argv[]) {
-            _engine->configureEngine();
+        void init(int argc, char *argv[]) {
+            _engine->configure();
         }
+
+        //virtual void processGameEvents(std::deque events) =0;
 
         float deltaTime();
 
@@ -31,7 +34,8 @@ namespace Ilargia {
             float accumulator{0};
 
             while (isRunning()) {
-                _stack->frameStart();
+                //processGameEvents(_engine.getEvents());
+                _engine->processInput();
 
                 float frameTime = deltaTime();
 
@@ -41,10 +45,10 @@ namespace Ilargia {
                 accumulator += frameTime;
 
                 while (accumulator >= DELTA_TIME) {
-                    _stack->update(DELTA_TIME);
+                    _engine->update(DELTA_TIME);
                     accumulator -= DELTA_TIME;
                 }
-                _stack->frameEnd();
+                _engine->render();
             }
             return getErrorState();
         }

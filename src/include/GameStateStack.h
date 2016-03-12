@@ -12,7 +12,7 @@ namespace Ilargia {
     class GameStateStack {
         struct GameStateDeleter {
             void operator()(GameState *gameState) const {
-                gameState->removeEngine();
+                delete gameState->_engine;
                 delete gameState;
             }
         };
@@ -20,18 +20,18 @@ namespace Ilargia {
         using  GameStatePtr = std::unique_ptr <GameState, GameStateDeleter> ;
         std::stack<GameStatePtr> _states;
 
-        Engine *_engine;
-
     public:
-        explicit GameStateStack(Engine* engine, GameState &&gameState) : _engine(engine) {
+
+        GameStateStack(GameState &&gameState) {
            pushState(std::move(gameState));
         }
+
+        GameStateStack& operator= ( GameStateStack && ) = default;
 
         ~GameStateStack() { clear(); }
 
         void pushState(GameState &&gameState) {
             _states.push(GameStatePtr(&gameState));
-            _states.top()->setEngine(_engine);
             _states.top()->loadResources();
             _states.top()->init();
             _states.top()->onResume();
@@ -51,22 +51,6 @@ namespace Ilargia {
             if(!_states.empty())
                 popState();
             pushState(std::move(gameState));
-        }
-
-        void frameStart() {
-            _states.top()->handleInput();
-            _engine->frameStart();
-        }
-
-        void update(float deltaTime) {
-            _engine->update(deltaTime);
-            _states.top()->update(deltaTime);
-
-        }
-
-        void frameEnd() {
-            _states.top()->render();
-            _engine->frameEnd();
         }
 
         /// Clears the GameStateStack

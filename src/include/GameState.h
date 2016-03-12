@@ -4,25 +4,16 @@
 
 namespace Ilargia {
 
-    class GameState {
+    struct GameState {
         Engine *_engine;
-    public:
-        GameState() = default;
 
-        void setEngine(Engine* engine) {
-            _engine = engine;
-        }
+        GameState() = delete;
 
-        void removeEngine() {
-            delete _engine;
-        }
-
-
-        virtual ~GameState() = 0;
+        GameState(Engine *engine) : _engine{engine} {}
 
         virtual void loadResources()  = 0;
 
-        virtual void init() = 0;
+        virtual void init()  = 0;
 
         virtual void onResume() = 0;
 
@@ -30,11 +21,6 @@ namespace Ilargia {
 
         virtual void unloadResources() = 0;
 
-        virtual void handleInput() = 0;
-
-        virtual void update(float deltaTime) = 0;
-
-        virtual void render() = 0;
 
     };
 

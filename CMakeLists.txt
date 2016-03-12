@@ -22,6 +22,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
 
+
 # uncomment to be in Release mode [default]
 # SET(CMAKE_BUILD_TYPE Release)
 
@@ -44,107 +45,68 @@ ENDIF (CMAKE_BUILD_TYPE STREQUAL "")
 
 MESSAGE(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-# ===============================================================
-# Detect different compilers and OS'es, tweak flags as necessary.
-
-IF (CMAKE_COMPILER_IS_GNUCXX)
-    IF (APPLE)
-        SET(CMAKE_C_FLAGS "-Wall -Wno-long-long -Wno-conversion")
-        SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
-        SET(CMAKE_C_FLAGS_PROFILE "-O0 -pg")
-        SET(CMAKE_C_FLAGS_RELEASE "-O2 -g0")
-        # Vital to do this otherwise unresolved symbols everywhere:
-        SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-flat_namespace,-undefined,dynamic_lookup")
-        SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-flat_namespace,-undefined,dynamic_lookup")
-    ELSE (APPLE)
-        #SET(CMAKE_C_FLAGS "-Wall -fPIC")
-        # SET(CMAKE_C_FLAGS "-Wl,--copy-dt-needed-entries")
-        SET(CMAKE_C_FLAGS_DEBUG "-ggdb3 -fstack-protector")
-        SET(CMAKE_C_FLAGS_PROFILE "-O2 -g3 -fstack-protector -pg")
-        SET(CMAKE_C_FLAGS_RELEASE "-O2 -g -fstack-protector")
-    ENDIF (APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-variadic-macros -fopenmp -std=gnu++11")
-
-    SET(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-    SET(CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE})
-    SET(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-
-    # Options for generating gcov code coverage output
-    SET(CMAKE_C_FLAGS_COVERAGE "-O0 -g -fprofile-arcs -ftest-coverage -fno-inline")
-    SET(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_C_FLAGS_COVERAGE} -fno-default-inline")
-    # Might be needed for some combinations of ln and gcc
-    IF (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-        LINK_LIBRARIES(gcov)
-    ENDIF (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
-# Do the windows build
-IF (WIN32)
-    ADD_DEFINITIONS(-DWIN32)
-    IF (CYGWIN)
-        ADD_DEFINITIONS(-DCYGWIN)
-        #   SET(WIN32 1)
-    ENDIF (CYGWIN)
-
-    # It is "not unix" when the code is compiled under windows but not
-    # under cygwin
-   IF (NOT UNIX)
-        LINK_LIBRARIES(pthread)
-        IF (CYGWIN)
-            SET(CMAKE_SHARED_LINKER_FLAGS "-Wl")
-        ELSE (CYGWIN)
-            SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-new-dtags")
-        ENDIF (CYGWIN)
-    ENDIF (NOT UNIX)
-ENDIF (WIN32)
-
 
 option(test "Build all tests." ON) #
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -std=c++11")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    endif()
 endif()
+
 
 
 add_subdirectory(libBehavior)
 #add_subdirectory(libEntitas)
-add_subdirectory(demos)
+#add_subdirectory(libBitScan)
+#add_subdirectory(demos)
 
 if (test)
     add_subdirectory(test)
-endif()
+endif ()
 
-set (ANAX_ROOT ../anax)
+#[[set (ANAX_ROOT ../anax)
 find_package(anax REQUIRED)
-if(ANAX_FOUND)
-    # add the include directories
+if (anax_FOUND)
+    MESSAGE("Anax Found: ${ANAX_INCLUDE_DIR}")
     include_directories(${ANAX_INCLUDE_DIR})
-ELSE(ANAX_FOUND)
+else(anax_FOUND)
     MESSAGE(FATAL_ERROR "Anax Not Found: ${ANAX_INCLUDE_DIR}  ::--> ${FIND_ANAX_PATHS}")
-endif()
+endif ()
 
-set (SFML_ROOT ../SFML)
+# find SFML 2
 find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 if(SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
 ELSE(SFML_FOUND)
     MESSAGE(FATAL_ERROR "SFML is needed to build ${PROJECT_NAME}!")
-endif()
+endif()]]
 
+# Look up SDL2 and add the include directory to our include path
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIR})
+
+#include(Config)
 
 # Add include directories
 include_directories(${Ilargia_SOURCE_DIR}/src/include)
+#include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES} src/Game.cpp)
+        ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
-        SOVERSION ${ILARGIA_VERSION_MAJOR} )
+        SOVERSION ${ILARGIA_VERSION_MAJOR}
+        )
+
+
 
 if(APPLE)
     set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES OSX_ARCHITECTURES "i386;x86_64;")
@@ -154,8 +116,10 @@ endif()
 target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
         Behavior
-        ${ANAX_LIBRARIES}
-        ${SFML_LIBRARIES}
+        #BitScan
+        #${ANAX_LIBRARY_NAME}
+        #${SFML_LIBRARIES}
+        ${SDL2_LIBRARY}
 )
 
 
