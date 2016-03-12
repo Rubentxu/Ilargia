@@ -22,6 +22,9 @@ namespace Ilargia {
             _hasShutdown = true;
         }
 
+        template <typename T>
+        virtual T* getSystem() =0;
+
         //virtual std::deque<Event> getEvents() const { return _errorState; }
 
         virtual int getErrorState() const { return _errorState; }

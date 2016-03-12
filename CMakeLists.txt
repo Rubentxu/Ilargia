@@ -95,11 +95,12 @@ include_directories(${SDL2_INCLUDE_DIR})
 #include(Config)
 
 # Add include directories
-include_directories(${Ilargia_SOURCE_DIR}/src/include)
+include_directories(${Ilargia_SOURCE_DIR}/src/core/include)
+include_directories(${Ilargia_SOURCE_DIR}/src/sdl2/include)
 #include_directories(${BitScan_SOURCE_DIR}/include)
-file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
+file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/sdl2/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES})
+        ${ILARGIA_LIBRARY_SOURCES} src/sdl2/SDL2Engine.cpp src/sdl2/SDL2Engine.h src/sdl2/StateInit.cpp src/sdl2/StateInit.h)
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
