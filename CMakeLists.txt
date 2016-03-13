@@ -71,15 +71,18 @@ if (test)
     add_subdirectory(test)
 endif ()
 
-#[[set (ANAX_ROOT ../anax)
+set (ANAX_ROOT ../anax)
 find_package(anax REQUIRED)
-if (anax_FOUND)
-    MESSAGE("Anax Found: ${ANAX_INCLUDE_DIR}")
-    include_directories(${ANAX_INCLUDE_DIR})
-else(anax_FOUND)
-    MESSAGE(FATAL_ERROR "Anax Not Found: ${ANAX_INCLUDE_DIR}  ::--> ${FIND_ANAX_PATHS}")
-endif ()
+include_directories(${ANAX_INCLUDE_DIR})
 
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIR})
+#[[
+set (GLM_ROOT_DIR ../glm)
+find_package (GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})]]
+
+#[[
 # find SFML 2
 find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 if(SFML_FOUND)
@@ -89,8 +92,8 @@ ELSE(SFML_FOUND)
 endif()]]
 
 # Look up SDL2 and add the include directory to our include path
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+
+
 
 #include(Config)
 
@@ -100,7 +103,7 @@ include_directories(${Ilargia_SOURCE_DIR}/src/sdl2/include)
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/sdl2/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES} src/sdl2/SDL2Engine.cpp src/sdl2/SDL2Engine.h src/sdl2/StateInit.cpp src/sdl2/StateInit.h)
+        ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
@@ -113,14 +116,11 @@ if(APPLE)
     set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES OSX_ARCHITECTURES "i386;x86_64;")
 endif()
 
-# link it with anax and SFML
 target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
         Behavior
         #BitScan
-        #${ANAX_LIBRARY_NAME}
+        ${ANAX_LIBRARY_NAME}
         #${SFML_LIBRARIES}
         ${SDL2_LIBRARY}
 )
-
-

@@ -15,6 +15,6 @@ namespace bt {
             return Status::SUCCESS;
         }
         return Status::RUNNING;
-    };
+    }
 
 }

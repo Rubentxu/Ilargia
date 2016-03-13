@@ -6,15 +6,12 @@
 namespace Ilargia {
 
     class StateInit : public GameState {
-        SDL_Texture* m_pTexture; // the new SDL_Texture variable
-        SDL_Rect m_sourceRectangle; // the first rectangle
-        SDL_Rect m_destinationRectangle; // another rectangle
 
 
         virtual void loadResources() {
-            SDL_Surface* pTempSurface = SDL_LoadBMP("assets/rider.bmp");
-            m_pTexture = SDL_CreateTextureFromSurface(_engine->getSystem<SDL_Renderer>(), pTempSurface);
-            SDL_FreeSurface(pTempSurface);
+           // SDL_Surface* pTempSurface = SDL_LoadBMP("assets/rider.bmp");
+          //  m_pTexture = SDL_CreateTextureFromSurface(_engine->getSystem<SDL_Renderer>(), pTempSurface);
+          //  SDL_FreeSurface(pTempSurface);
         }
 
         virtual void init()  = 0;

@@ -1,15 +1,21 @@
 #ifndef ILARGIA_ENGINE_H
 #define ILARGIA_ENGINE_H
 
+#include <memory>
+#include <type_traits>
+#include <anax/anax.hpp>
+
 namespace Ilargia {
 
     class Engine {
+    protected:
         int _errorState;
         bool _hasShutdown;
+        std::unique_ptr<anax::World> world;
     public:
-        virtual void configure() =0;
+        virtual void configure() {};
 
-        virtual void initSystems() =0;
+        virtual void initSystems() = 0;
 
         virtual void processInput() = 0;
 
@@ -21,9 +27,6 @@ namespace Ilargia {
             _errorState = errorCode;
             _hasShutdown = true;
         }
-
-        template <typename T>
-        virtual T* getSystem() =0;
 
         //virtual std::deque<Event> getEvents() const { return _errorState; }
 
