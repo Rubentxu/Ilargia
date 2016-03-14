@@ -8,7 +8,8 @@ namespace Ilargia {
     class StateInit : public GameState {
 
 
-        virtual void loadResources() {
+        virtual void loadResources(AssetManager assetManager) {
+            assetManager.loadTexture("assets/rider.bmp","Rider",)
            // SDL_Surface* pTempSurface = SDL_LoadBMP("assets/rider.bmp");
           //  m_pTexture = SDL_CreateTextureFromSurface(_engine->getSystem<SDL_Renderer>(), pTempSurface);
           //  SDL_FreeSurface(pTempSurface);
@@ -20,7 +21,7 @@ namespace Ilargia {
 
         virtual void onPause() = 0;
 
-        virtual void unloadResources() = 0;
+        virtual void unloadResources(AssetManager assetManager) = 0;
     };
 }
 

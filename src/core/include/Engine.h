@@ -4,6 +4,7 @@
 #include <memory>
 #include <type_traits>
 #include <anax/anax.hpp>
+#include "AssetManager.h"
 
 namespace Ilargia {
 
@@ -12,6 +13,7 @@ namespace Ilargia {
         int _errorState;
         bool _hasShutdown;
         std::unique_ptr<anax::World> world;
+
     public:
         virtual void configure() {};
 

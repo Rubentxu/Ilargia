@@ -4,12 +4,13 @@
 #include <anax/anax.hpp>
 #include "Util.h"
 #include "Components/ViewComponent.h"
+#include "AssetManager.h"
 
 namespace Ilargia {
     class RenderSystem : public anax::System<anax::Requires<ViewComponent>> {
-        RendererPtr _renderer;
+        std::shared_ptr<AssetManager> _assetManager;
 
-        void draw(ViewComponent &view);
+        void draw(ViewComponent &view, SDL_Renderer* renderer);
 
       /*  void drawFrame(SDL_Texture *texture, int x, int y, int width, int height, int currentRow, int currentFrame,
                        double angle, int alpha, SDL_RendererFlip flip = SDL_FLIP_NONE);
@@ -19,7 +20,7 @@ namespace Ilargia {
     public:
         RenderSystem() = default;
 
-        RenderSystem(SDL_Renderer *pRenderer);
+        RenderSystem(std::shared_ptr<AssetManager> assetManager);
 
         void render();
 
@@ -29,6 +30,5 @@ namespace Ilargia {
 
     };
 }
-
 
 #endif //ILARGIA_RENDERSYSTEM_H

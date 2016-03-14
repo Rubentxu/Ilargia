@@ -3,15 +3,14 @@
 
 #include "Util.h"
 #include "Engine.h"
-#include "TextureManager.h"
 #include "RenderSystem.h"
 
 namespace Ilargia {
 
     class SDL2Engine : public Engine {
-    public:
         WindowPtr _window;
-        std::unique_ptr<anax::World> world;
+        std::shared_ptr<AssetManager> _assetManager;
+    public:
 
         virtual void configure() override;
 

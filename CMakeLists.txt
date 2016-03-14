@@ -75,8 +75,10 @@ set (ANAX_ROOT ../anax)
 find_package(anax REQUIRED)
 include_directories(${ANAX_INCLUDE_DIR})
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+#set (SDL2 ../SDL/x86_64-w64-mingw32)
+set (SDLDIR ../SDL2-2.0.4/x86_64-w64-mingw32)
+find_package(SDL2 COMPONENTS mixer gfx image)
+include_directories(${SDL_INCLUDE_DIR})
 #[[
 set (GLM_ROOT_DIR ../glm)
 find_package (GLM REQUIRED)
@@ -122,5 +124,5 @@ target_link_libraries(
         #BitScan
         ${ANAX_LIBRARY_NAME}
         #${SFML_LIBRARIES}
-        ${SDL2_LIBRARY}
+        ${SDL_LIBRARY}
 )

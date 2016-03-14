@@ -6,6 +6,16 @@
 
 namespace Ilargia {
 
+    template<class T, class D = std::default_delete<T>>
+    struct shared_ptr_with_deleter : public std::shared_ptr<T> {
+        explicit shared_ptr_with_deleter(T* t = nullptr)
+                : std::shared_ptr<T>(t, D()) {}
+
+        void reset(T* t = nullptr) {
+            std::shared_ptr<T>::reset(t, D());
+        }
+    };
+
     struct SDL_Deleter {
         void operator()(SDL_Surface*  ptr) { if (ptr) SDL_FreeSurface(ptr); }
         void operator()(SDL_Texture*  ptr) { if (ptr) SDL_DestroyTexture(ptr); }
@@ -19,5 +29,12 @@ namespace Ilargia {
     using RendererPtr = std::unique_ptr<SDL_Renderer, SDL_Deleter>;
     using WindowPtr   = std::unique_ptr<SDL_Window,   SDL_Deleter>;
     using RWopsPtr    = std::unique_ptr<SDL_RWops,    SDL_Deleter>;
+
+    using SurfaceShPtr  = shared_ptr_with_deleter<SDL_Surface,  SDL_Deleter>;
+    using TextureShPtr  = shared_ptr_with_deleter<SDL_Texture,  SDL_Deleter>;
+    using RendererShPtr = shared_ptr_with_deleter<SDL_Renderer, SDL_Deleter>;
+    using WindowShPtr   = shared_ptr_with_deleter<SDL_Window,   SDL_Deleter>;
+    using RWopsShPtr    = shared_ptr_with_deleter<SDL_RWops,    SDL_Deleter>;
+
 }
 #endif //ILARGIA_UTIL_H

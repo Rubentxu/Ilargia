@@ -1,4 +1,6 @@
+#include <memory>
 #include "SDL2Engine.h"
+
 namespace Ilargia {
     void SDL2Engine::configure() {
         if (SDL_Init(SDL_INIT_EVERYTHING) >= 0) {
@@ -7,8 +9,9 @@ namespace Ilargia {
             SDL_Renderer* _renderer;
             if (_window) {
                 _renderer = SDL_CreateRenderer(_window.get(), -1, 0);
+                _assetManager = std::make_shared<AssetManager> (_renderer);
                 world = std::unique_ptr<anax::World>(new anax::World());
-                RenderSystem renderingSystem {_renderer};
+                RenderSystem renderingSystem {_assetManager};
                 world->addSystem(renderingSystem);
             }
         }

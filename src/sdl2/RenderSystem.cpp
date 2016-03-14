@@ -3,17 +3,32 @@
 
 namespace Ilargia {
 
-    RenderSystem::RenderSystem(SDL_Renderer *renderer) : _renderer(renderer) { }
+    RenderSystem::RenderSystem(std::shared_ptr<AssetManager> assetManager) :  _assetManager{std::move(assetManager)} { }
 
-    void RenderSystem::draw(ViewComponent &view) {
+    void RenderSystem::draw(ViewComponent &view, SDL_Renderer* renderer) {
         SDL_Rect srcRect;
         srcRect.x = 0;
         srcRect.y = 0;
         srcRect.w = view.w;
         srcRect.h = view.h;
-        SDL_SetTextureAlphaMod(view.texture, view.opacity);
-        SDL_RenderCopyEx(_renderer.get(), view.texture, &srcRect, &view, view.rotation, &view.center, view.flip);
+        SDL_Texture *texture = _assetManager->getTextureMap()[view.textureId];
+        SDL_SetTextureAlphaMod(texture, view.opacity);
+        SDL_RenderCopyEx(renderer,texture, &srcRect, &view, view.rotation, &view.center, view.flip);
     }
+
+    void RenderSystem::render() {
+        auto entities = getEntities();
+        SDL_Renderer* renderer = _assetManager->getRenderer().get();
+        for (auto &entity : entities) {
+            draw(entity.getComponent<ViewComponent>(),renderer);
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+    }
+
+
 
     /*void RenderSystem::drawFrame(SDL_Texture *texture, int x, int y, int width, int height, int currentRow, int currentFrame,
                                    double angle, int alpha, SDL_RendererFlip flip = SDL_FLIP_NONE) {
@@ -44,22 +59,4 @@ namespace Ilargia {
         SDL_RenderCopyEx(_renderer.get(), texture, &srcRect, &destRect, 0, 0, SDL_FLIP_NONE);
     }*/
 
-    void RenderSystem::render() {
-        auto entities = getEntities();
-        for (auto &entity : entities) {
-            draw(entity.getComponent<ViewComponent>());
-        }
-        SDL_SetRenderDrawColor(_renderer.get(), 0, 0, 0, 255);
-        SDL_RenderClear(_renderer.get());
-        SDL_RenderPresent(_renderer.get());
-    }
-
-    RendererPtr &RenderSystem::getRenderer() {
-       // assert(!isValid() && "Render system is not valid");
-        return _renderer;
-    }
-
-    bool RenderSystem::isValid() const {
-        return _renderer == nullptr;
-    }
 }
