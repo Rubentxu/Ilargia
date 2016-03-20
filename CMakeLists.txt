@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.2)
+cmake_minimum_required(VERSION 2.8.12.2)
 
 project(Ilargia)
 
@@ -79,19 +79,19 @@ include_directories(${ANAX_INCLUDE_DIR})
 set (SDLDIR ../SDL2-2.0.4/x86_64-w64-mingw32)
 find_package(SDL2 COMPONENTS mixer gfx image)
 include_directories(${SDL_INCLUDE_DIR})
-#[[
-set (GLM_ROOT_DIR ../glm)
-find_package (GLM REQUIRED)
-include_directories(${GLM_INCLUDE_DIRS})]]
 
-#[[
+#set (GLM_ROOT_DIR ../glm)
+#find_package (GLM REQUIRED)
+#include_directories(${GLM_INCLUDE_DIRS})
+
+
 # find SFML 2
-find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
-if(SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-ELSE(SFML_FOUND)
-    MESSAGE(FATAL_ERROR "SFML is needed to build ${PROJECT_NAME}!")
-endif()]]
+#find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
+#if(SFML_FOUND)
+#    include_directories(${SFML_INCLUDE_DIR})
+#ELSE(SFML_FOUND)
+#    MESSAGE(FATAL_ERROR "SFML is needed to build ${PROJECT_NAME}!")
+#endif()
 
 # Look up SDL2 and add the include directory to our include path
 

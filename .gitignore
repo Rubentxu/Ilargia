@@ -36,3 +36,8 @@ test/lib/*
 tem
 
 build/
+
+# Netbeans
+CMakeCache.txt
+nbproject/
+CMakeFiles/
