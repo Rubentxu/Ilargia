@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include <SDL.h>
-#include "Util.h"
+#include "SDLUtil.h"
 
 namespace Ilargia {
 

@@ -65,7 +65,7 @@ endif()
 add_subdirectory(libBehavior)
 #add_subdirectory(libEntitas)
 #add_subdirectory(libBitScan)
-#add_subdirectory(demos)
+add_subdirectory(demos)
 
 if (test)
     add_subdirectory(test)
@@ -100,10 +100,10 @@ include_directories(${SDL_INCLUDE_DIR})
 #include(Config)
 
 # Add include directories
-include_directories(${Ilargia_SOURCE_DIR}/src/core/include)
-include_directories(${Ilargia_SOURCE_DIR}/src/sdl2/include)
+include_directories(${Ilargia_SOURCE_DIR}/include)
+
 #include_directories(${BitScan_SOURCE_DIR}/include)
-file(GLOB ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/sdl2/*.cpp)
+file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
         ${ILARGIA_LIBRARY_SOURCES})
 
@@ -125,4 +125,8 @@ target_link_libraries(
         ${ANAX_LIBRARY_NAME}
         #${SFML_LIBRARIES}
         ${SDL_LIBRARY}
+)
+
+target_include_directories(${ILARGIA_LIBRARY_NAME} SYSTEM PUBLIC 
+    ${Ilargia_SOURCE_DIR}/include
 )

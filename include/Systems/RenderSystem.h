@@ -2,7 +2,7 @@
 #define ILARGIA_RENDERSYSTEM_H
 
 #include <anax/anax.hpp>
-#include "Util.h"
+#include "SDLUtil.h"
 #include "Components/ViewComponent.h"
 #include "AssetManager.h"
 

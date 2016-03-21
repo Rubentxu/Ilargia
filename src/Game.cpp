@@ -1,12 +1,15 @@
 #include "Game.h"
-#include <SFML/Graphics.hpp>
+#include <SDL.h>
 
-namespace Ilargia {
+namespace Ilargia {     
+    Uint32 thisTime = 0;
+    Uint32 lastTime = 0;
 
     inline float Game::deltaTime() {
-        static sf::Clock clock;
-        sf::Time elapsed = clock.restart();
-        return elapsed.asMilliseconds();
+        thisTime = SDL_GetTicks();
+        float deltaTime = (float) (thisTime - lastTime) / 1000;
+        lastTime = thisTime;
+        return deltaTime;
     }
 
 }

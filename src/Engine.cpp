@@ -1,9 +1,10 @@
 #include <memory>
-#include "SDL2Engine.h"
+#include "Engine.h"
+#include "Systems/RenderSystem.h"
 
 namespace Ilargia {
 
-    void SDL2Engine::configure() {
+    void Engine::configure() {
         int imgFlags = IMG_INIT_PNG;
         if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 && (IMG_Init(imgFlags) & imgFlags)
                 && TTF_Init() == -1) {
@@ -14,9 +15,9 @@ namespace Ilargia {
             if (_window) {
                 _renderer = SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED);
                 _assetManager = std::make_shared<AssetManager> (_renderer);
-                world = std::unique_ptr<anax::World>(new anax::World());
+                _world = std::unique_ptr<anax::World>(new anax::World());
                 RenderSystem renderingSystem{_assetManager};
-                world->addSystem(renderingSystem);
+                _world->addSystem(renderingSystem);
             }
         } else {
             Engine::shutdown(1);
@@ -24,7 +25,7 @@ namespace Ilargia {
 
     }
 
-    void SDL2Engine::processInput() {
+    void Engine::processInput() {
         SDL_Event event;
         if (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -37,10 +38,11 @@ namespace Ilargia {
         }
     }
 
-    void SDL2Engine::shutdown(int errorCode) {
-        Engine::shutdown(errorCode);
+    void Engine::shutdown(int errorCode) {
+        _errorState = errorCode;
+        _hasShutdown = true;
         _window.reset(); //SDL_DestroyWindow(iWindow);
-        world->removeSystem<RenderSystem>();
+        _world->removeSystem<RenderSystem>();
         TTF_Quit();
         IMG_Quit();
         SDL_Quit();
