@@ -1,12 +1,10 @@
 #include <Engine.h>
 #include <Game.h>
 
+int main(int argc, char *argv[]) {
 
-
-int main() {
-    Ilargia::Engine engine {};
-    engine.
-    Ilargia::Game {std::move(engine), nullptr};
+    Ilargia::Game game {Ilargia::Engine {}};
+    game.init(argc, argv);
 
     return 0;
 

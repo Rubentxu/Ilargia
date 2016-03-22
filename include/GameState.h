@@ -11,15 +11,15 @@ namespace Ilargia {
 
         GameState(Engine *engine) : _engine{engine} {}
 
-        virtual void loadResources()  = 0;
+        virtual void loadResources(AssetManager& assetManager)  = 0;
 
-        virtual void init()  = 0;
+        virtual void init(anax::World& world)  = 0;
 
-        virtual void onResume() = 0;
+        virtual void onResume(anax::World& world) = 0;
 
-        virtual void onPause() = 0;
+        virtual void onPause(anax::World& world) = 0;
 
-        virtual void unloadResources() = 0;
+        virtual void unloadResources(AssetManager& assetManager) = 0;
 
 
     };

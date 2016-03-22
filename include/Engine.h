@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <vector>
 #include <anax/anax.hpp>
 #include "AssetManager.h"
 #include "SDLUtil.h"
@@ -18,7 +19,10 @@ namespace Ilargia {
         std::shared_ptr<AssetManager> _assetManager;
 
     public:
-        void configure();
+
+        Engine() = default;
+
+        void configure(std::vector<std::string>& args);
 
         void initSystems();
 
@@ -35,13 +39,13 @@ namespace Ilargia {
         int getErrorState() const { return _errorState; }
 
         bool hasShutdown() const { return _hasShutdown; }
-        
-        std::unique_ptr<anax::World>& getWorld() {
-            return _world;
+
+        anax::World& getWorld() {
+            return *_world;
         }
         
-        std::shared_ptr<AssetManager>& getAssetManager() {
-            return _assetManager;
+        AssetManager& getAssetManager() {
+            return *_assetManager;
         }
 
     };

@@ -1,7 +1,7 @@
 #ifndef ILARGIA_UTIL_H
 #define ILARGIA_UTIL_H
 
-#include <SDL.h>
+//#include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -23,9 +23,9 @@ namespace Ilargia {
         void operator()(SDL_Surface*  ptr) { if (ptr) SDL_FreeSurface(ptr); }
         void operator()(SDL_Texture*  ptr) { if (ptr) SDL_DestroyTexture(ptr); }
         void operator()(SDL_Renderer* ptr) { if (ptr) SDL_DestroyRenderer(ptr); }
-        void operator()(SDL_Window*   ptr) { if (ptr) SDL_DestroyWindow(ptr); }
         void operator()(TTF_Font*   ptr) { if (ptr) TTF_CloseFont( ptr ); }
         void operator()(SDL_RWops*    ptr) { if (ptr) SDL_RWclose(ptr); }
+        void operator()(SDL_Window*   ptr) { if (ptr) SDL_DestroyWindow(ptr); }
     };
 
     using SurfacePtr  = std::unique_ptr<SDL_Surface,  SDL_Deleter>;

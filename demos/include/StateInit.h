@@ -2,29 +2,22 @@
 #define ILARGIA_STATEINIT_H
 
 #include "GameState.h"
+#include "AssetManager.h"
 
-namespace Ilargia {
+class AssetManager;
 
-    class StateInit : public GameState {
+class StateInit : public Ilargia::GameState {
 
+    virtual void loadResources(Ilargia::AssetManager& assetManager) override;
 
-        virtual void loadResources(AssetManager assetManager) {
-            assetManager.loadTexture("assets/rider.bmp","Rider",)
-           // SDL_Surface* pTempSurface = SDL_LoadBMP("assets/rider.bmp");
-          //  m_pTexture = SDL_CreateTextureFromSurface(_engine->getSystem<SDL_Renderer>(), pTempSurface);
-          //  SDL_FreeSurface(pTempSurface);
-        }
+    virtual void init(anax::World& world) override;
 
-        virtual void init()  = 0;
+    virtual void onResume(anax::World& world) override;
 
-        virtual void onResume() = 0;
+    virtual void onPause(anax::World& world) override;
 
-        virtual void onPause() = 0;
-
-        virtual void unloadResources(AssetManager assetManager) = 0;
-    };
-}
-
+    virtual void unloadResources(Ilargia::AssetManager& assetManager) override;
+};
 
 
 #endif //ILARGIA_STATEINIT_H

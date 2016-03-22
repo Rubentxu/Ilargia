@@ -4,7 +4,7 @@
 
 namespace Ilargia {
 
-    void Engine::configure() {
+    void Engine::configure(std::vector<std::string>& args) {
         int imgFlags = IMG_INIT_PNG;
         if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 && (IMG_Init(imgFlags) & imgFlags)
                 && TTF_Init() == -1) {
@@ -25,6 +25,10 @@ namespace Ilargia {
 
     }
 
+    void Engine::initSystems() {
+
+    }
+
     void Engine::processInput() {
         SDL_Event event;
         if (SDL_PollEvent(&event)) {
@@ -36,6 +40,14 @@ namespace Ilargia {
                     break;
             }
         }
+    }
+
+    void Engine::update(float deltaTime) {
+
+    }
+
+    void Engine::render() {
+
     }
 
     void Engine::shutdown(int errorCode) {

@@ -2,56 +2,53 @@
 #define ILARGIA_STATED_GAME_H
 
 #include <memory>
-#include "GameStateStack.h"
+#include <stack>
 #include "Engine.h"
+#include "GameState.h"
 
 namespace Ilargia {
 
     class Game {
+        struct GameStateDeleter {
+            void operator()(GameState *gameState) const {
+                delete gameState->_engine;
+                delete gameState;
+            }
+        };
+        using  GameStatePtr = std::unique_ptr <GameState, GameStateDeleter> ;
+        std::stack<GameStatePtr> _states;
         std::unique_ptr<Engine> _engine;
-        std::unique_ptr<GameStateStack> _stack;
+        Uint32 thisTime = 0;
+        Uint32 lastTime = 0;
 
     public:
-        Game(Engine &&engine, GameState &&gameState) : _engine(&engine), _stack(new GameStateStack(std::move(gameState))) { }
-
-        std::unique_ptr<Engine>& getEngine() { return _engine; }
+        Game(Engine &&engine) : _engine(&engine) {}
 
         int getErrorState() const { return _engine->getErrorState(); }
 
         bool isRunning() const { return !_engine->hasShutdown(); }
 
         void init(int argc, char *argv[]) {
-            _engine->configure();
+            std::vector<std::string> args;
+            for (int i=1;i<argc;i++){
+                args.push_back(argv[i]);
+            }
+            _engine->configure(args);
         }
 
         //virtual void processGameEvents(std::deque events) =0;
 
         float deltaTime();
 
-        int runGame() {
-            const float MAX_FRAME_TIME = 1000 / 4.f;
-            const float DELTA_TIME = 1000 / 60.f;
-            float accumulator{0};
+        int runGame();
 
-            while (isRunning()) {
-                //processGameEvents(_engine.getEvents());
-                _engine->processInput();
+        void pushState(GameState &&gameState);
 
-                float frameTime = deltaTime();
+        void popState();
 
-                if (frameTime >= MAX_FRAME_TIME) {
-                    frameTime = MAX_FRAME_TIME;
-                }
-                accumulator += frameTime;
+        void changeState(GameState &&gameState);
 
-                while (accumulator >= DELTA_TIME) {
-                    _engine->update(DELTA_TIME);
-                    accumulator -= DELTA_TIME;
-                }
-                _engine->render();
-            }
-            return getErrorState();
-        }
+        void clear();
     };
 }
 

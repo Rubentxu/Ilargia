@@ -126,7 +126,3 @@ target_link_libraries(
         #${SFML_LIBRARIES}
         ${SDL_LIBRARY}
 )
-
-target_include_directories(${ILARGIA_LIBRARY_NAME} SYSTEM PUBLIC 
-    ${Ilargia_SOURCE_DIR}/include
-)
