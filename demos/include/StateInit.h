@@ -4,7 +4,6 @@
 #include "GameState.h"
 #include "AssetManager.h"
 
-class AssetManager;
 
 class StateInit : public Ilargia::GameState {
 

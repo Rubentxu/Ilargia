@@ -20,7 +20,7 @@ set(Ilargia_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
 
 
 # uncomment to be in Release mode [default]
@@ -73,12 +73,15 @@ endif ()
 
 set (ANAX_ROOT ../anax)
 find_package(anax REQUIRED)
-include_directories(${ANAX_INCLUDE_DIR})
 
 #set (SDL2 ../SDL/x86_64-w64-mingw32)
 set (SDLDIR ../SDL2-2.0.4/x86_64-w64-mingw32)
-find_package(SDL2 COMPONENTS mixer gfx image)
-include_directories(${SDL_INCLUDE_DIR})
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_mixer REQUIRED)
+
+
 
 #set (GLM_ROOT_DIR ../glm)
 #find_package (GLM REQUIRED)
@@ -100,7 +103,12 @@ include_directories(${SDL_INCLUDE_DIR})
 #include(Config)
 
 # Add include directories
-include_directories(${Ilargia_SOURCE_DIR}/include)
+include_directories(${ANAX_INCLUDE_DIR}
+        ${SDL2_INCLUDE_DIR}
+        ${SDL2_IMAGE_INCLUDE_DIR}
+        ${SDL2_TTF_INCLUDE_DIR}
+        ${SDL2_MIXER_INCLUDE_DIR}
+        ${Ilargia_SOURCE_DIR}/include)
 
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
@@ -120,9 +128,12 @@ endif()
 
 target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
-        Behavior
+        PUBLIC Behavior
         #BitScan
-        ${ANAX_LIBRARY_NAME}
+        PUBLIC ${ANAX_LIBRARY_NAME}
         #${SFML_LIBRARIES}
-        ${SDL_LIBRARY}
+        PUBLIC ${SDL2_LIBRARY}
+        PUBLIC ${SDL2_IMAGE_LIBRARIES}
+        PUBLIC ${SDL2_TTF_LIBRARIES}
+        PUBLIC ${SDL2_MIXER_LIBRARIES}
 )

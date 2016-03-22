@@ -5,8 +5,8 @@
 #include <type_traits>
 #include <vector>
 #include <anax/anax.hpp>
-#include "AssetManager.h"
 #include "SDLUtil.h"
+#include "AssetManager.h"
 
 namespace Ilargia {
 

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <SDL.h>
 #include "SDLUtil.h"
 
 namespace Ilargia {
