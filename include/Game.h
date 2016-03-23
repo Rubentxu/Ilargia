@@ -9,13 +9,8 @@
 namespace Ilargia {
 
     class Game {
-        struct GameStateDeleter {
-            void operator()(GameState *gameState) const {
-                delete gameState->_engine;
-                delete gameState;
-            }
-        };
-        using  GameStatePtr = std::unique_ptr <GameState, GameStateDeleter> ;
+
+        using  GameStatePtr = std::unique_ptr <GameState> ;
         std::stack<GameStatePtr> _states;
         std::unique_ptr<Engine> _engine;
         Uint32 thisTime = 0;
@@ -34,6 +29,7 @@ namespace Ilargia {
                 args.push_back(argv[i]);
             }
             _engine->configure(args);
+            _engine->initSystems();
         }
 
         //virtual void processGameEvents(std::deque events) =0;

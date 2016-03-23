@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
         ${SDL2_MIXER_INCLUDE_DIR}
         ${Ilargia_SOURCE_DIR}/include)
 
-#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 link_directories(../../anax/lib)
 

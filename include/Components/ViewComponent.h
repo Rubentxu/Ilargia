@@ -7,13 +7,14 @@
 
 namespace Ilargia {
 
-    struct ViewComponent : anax::Component, public SDL_Rect {
+    struct ViewComponent : anax::Component {
         std::string textureId;
+        SDL_Rect bounds;
         double rotation = 0;
-        Uint8 opacity = 1;
-        int layer;
+        Uint8 opacity = 255;
+        int layer=1;
         SDL_Point center;
-        SDL_Color color;
+        SDL_Color color = {255,165,255,255};
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
     };

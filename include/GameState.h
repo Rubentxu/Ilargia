@@ -1,15 +1,15 @@
 #ifndef ILARGIA_GAME_STATE_H
+#define ILARGIA_GAME_STATE_H
 
 #include "Engine.h"
+#include "AssetManager.h"
+#include <anax/anax.hpp>
 
 namespace Ilargia {
 
-    struct GameState {
-        Engine *_engine;
-
-        GameState() = delete;
-
-        GameState(Engine *engine) : _engine{engine} {}
+    class GameState {
+    public:
+        GameState() = default;
 
         virtual void loadResources(AssetManager& assetManager)  = 0;
 

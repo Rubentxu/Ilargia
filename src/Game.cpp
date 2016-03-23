@@ -6,7 +6,6 @@ namespace Ilargia {
         const float MAX_FRAME_TIME = 1000 / 4.f;
         const float DELTA_TIME = 1000 / 60.f;
         float accumulator{0};
-        _engine->initSystems();
 
         while (isRunning()) {
             //processGameEvents(_engine.getEvents());

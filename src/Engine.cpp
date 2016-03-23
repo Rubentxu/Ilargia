@@ -6,8 +6,8 @@ namespace Ilargia {
 
     void Engine::configure(std::vector<std::string>& args) {
         int imgFlags = IMG_INIT_PNG;
-        if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 && (IMG_Init(imgFlags) & imgFlags)
-                && TTF_Init() == -1) {
+        if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 ) {
+            TTF_Init();
             _window = WindowPtr(SDL_CreateWindow("Testing Ilargia", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                     640, 480, SDL_WINDOW_SHOWN));
 
@@ -15,9 +15,7 @@ namespace Ilargia {
             if (_window) {
                 _renderer = SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED);
                 _assetManager = std::make_shared<AssetManager> (_renderer);
-                _world = std::unique_ptr<anax::World>(new anax::World());
-                RenderSystem renderingSystem{_assetManager};
-                _world->addSystem(renderingSystem);
+
             }
         } else {
             Engine::shutdown(1);
@@ -26,7 +24,9 @@ namespace Ilargia {
     }
 
     void Engine::initSystems() {
-
+        _world = std::unique_ptr<anax::World>(new anax::World());
+         renderingSystem.setAssetManager(_assetManager);
+        _world->addSystem(renderingSystem);
     }
 
     void Engine::processInput() {
@@ -40,14 +40,16 @@ namespace Ilargia {
                     break;
             }
         }
+
     }
 
     void Engine::update(float deltaTime) {
+        _world->refresh();
 
     }
 
     void Engine::render() {
-
+        renderingSystem.render();
     }
 
     void Engine::shutdown(int errorCode) {

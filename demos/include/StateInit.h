@@ -2,7 +2,6 @@
 #define ILARGIA_STATEINIT_H
 
 #include "GameState.h"
-#include "AssetManager.h"
 
 
 class StateInit : public Ilargia::GameState {

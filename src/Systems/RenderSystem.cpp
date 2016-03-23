@@ -3,31 +3,30 @@
 
 namespace Ilargia {
 
-    RenderSystem::RenderSystem(std::shared_ptr<AssetManager> assetManager)
-    : _assetManager{std::move(assetManager)}
-    {
+    void RenderSystem::setAssetManager(std::shared_ptr<AssetManager> assetManager) {
+        _assetManager = std::move(assetManager);
     }
 
     void RenderSystem::draw(ViewComponent &view, SDL_Renderer* renderer) {
         SDL_Rect srcRect;
         srcRect.x = 0;
         srcRect.y = 0;
-        srcRect.w = view.w;
-        srcRect.h = view.h;
+        srcRect.w = view.bounds.w;
+        srcRect.h = view.bounds.h;
         SDL_Texture *texture = _assetManager->getTexture(view.textureId);
         SDL_SetTextureAlphaMod(texture, view.opacity);
-        SDL_RenderCopyEx(renderer, texture, &srcRect, &view, view.rotation, &view.center, view.flip);
+        //SDL_RenderCopy( renderer, texture, NULL, NULL );
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &view.bounds, view.rotation, &view.center, view.flip);
     }
 
     void RenderSystem::render() {
         auto entities = getEntities();
         SDL_Renderer* renderer = _assetManager->getRenderer().get();
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        SDL_RenderClear(renderer);
         for (auto &entity : entities) {
             draw(entity.getComponent<ViewComponent>(), renderer);
         }
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
     }
 

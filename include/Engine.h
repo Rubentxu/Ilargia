@@ -7,6 +7,7 @@
 #include <anax/anax.hpp>
 #include "SDLUtil.h"
 #include "AssetManager.h"
+#include "Systems/RenderSystem.h"
 
 namespace Ilargia {
 
@@ -17,6 +18,7 @@ namespace Ilargia {
         std::unique_ptr<anax::World> _world;
         WindowPtr _window;
         std::shared_ptr<AssetManager> _assetManager;
+        RenderSystem renderingSystem;
 
     public:
 

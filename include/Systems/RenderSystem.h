@@ -18,13 +18,12 @@ namespace Ilargia {
         void drawTile(SDL_Texture *texture, int margin, int spacing, int x, int y, int width, int height, int currentRow, int currentFrame);*/
 
     public:
-        RenderSystem() = default;
 
-        RenderSystem(std::shared_ptr<AssetManager> assetManager);
+        RenderSystem() {};
+
+        void setAssetManager(std::shared_ptr<AssetManager> assetManager);
 
         void render();
-
-        RendererPtr& getRenderer();
 
         bool isValid() const;
 
