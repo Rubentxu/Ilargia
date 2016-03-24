@@ -113,7 +113,7 @@ include_directories(${ANAX_INCLUDE_DIR}
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES})
+        ${ILARGIA_LIBRARY_SOURCES} include/sensors/Sensor.h include/LogicBrick.h include/sensors/MouseSensor.h)
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}

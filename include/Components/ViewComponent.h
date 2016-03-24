@@ -11,10 +11,9 @@ namespace Ilargia {
         std::string textureId;
         SDL_Rect bounds;
         double rotation = 0;
-        Uint8 opacity = 255;
         int layer=1;
         SDL_Point center;
-        SDL_Color color = {255,165,255,255};
+        SDL_Color color = {255,255,255,255};
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
     };

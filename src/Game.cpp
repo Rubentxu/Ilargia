@@ -19,9 +19,9 @@ namespace Ilargia {
             accumulator += frameTime;
 
             while (accumulator >= DELTA_TIME) {
-                _engine->update(DELTA_TIME);
                 accumulator -= DELTA_TIME;
             }
+            _engine->update(DELTA_TIME);
             _engine->render();
         }
         return getErrorState();

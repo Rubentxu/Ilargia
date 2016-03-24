@@ -14,8 +14,8 @@ namespace Ilargia {
         srcRect.w = view.bounds.w;
         srcRect.h = view.bounds.h;
         SDL_Texture *texture = _assetManager->getTexture(view.textureId);
-        SDL_SetTextureAlphaMod(texture, view.opacity);
-        //SDL_RenderCopy( renderer, texture, NULL, NULL );
+        SDL_SetTextureAlphaMod(texture, view.color.a);
+        SDL_SetTextureColorMod( texture, view.color.r, view.color.g,view.color.b );
         SDL_RenderCopyEx(renderer, texture, &srcRect, &view.bounds, view.rotation, &view.center, view.flip);
     }
 
@@ -25,6 +25,7 @@ namespace Ilargia {
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF );
         SDL_RenderClear(renderer);
         for (auto &entity : entities) {
+            // TODO ordenar View por layer y renderizar por orden
             draw(entity.getComponent<ViewComponent>(), renderer);
         }
         SDL_RenderPresent(renderer);
