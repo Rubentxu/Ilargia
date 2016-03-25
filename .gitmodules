@@ -4,3 +4,6 @@
 [submodule "externalLib/anax"]
 	path = externalLib/anax
 	url = https://github.com/miguelmartin75/anax.git
+[submodule "externalLib/Box2D"]
+	path = externalLib/Box2D
+	url = https://github.com/erincatto/Box2D.git
