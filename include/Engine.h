@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 #include <vector>
-#include <anax/anax.hpp>
+
 #include "SDLUtil.h"
 #include "AssetManager.h"
 #include "Systems/RenderSystem.h"

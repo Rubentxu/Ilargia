@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include <SDL_rect.h>
+#include <string>
 #include <anax/Component.hpp>
 
 namespace Ilargia {

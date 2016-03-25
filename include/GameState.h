@@ -21,7 +21,6 @@ namespace Ilargia {
 
         virtual void unloadResources(AssetManager& assetManager) = 0;
 
-
     };
 
 }

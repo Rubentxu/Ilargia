@@ -1,10 +1,10 @@
 #ifndef ILARGIA_RENDERSYSTEM_H
 #define ILARGIA_RENDERSYSTEM_H
 
-#include <anax/anax.hpp>
 #include "SDLUtil.h"
 #include "Components/ViewComponent.h"
 #include "AssetManager.h"
+#include <anax/anax.hpp>
 
 namespace Ilargia {
     class RenderSystem : public anax::System<anax::Requires<ViewComponent>> {
@@ -20,6 +20,8 @@ namespace Ilargia {
     public:
 
         RenderSystem() {};
+
+        ~RenderSystem();
 
         void setAssetManager(std::shared_ptr<AssetManager> assetManager);
 

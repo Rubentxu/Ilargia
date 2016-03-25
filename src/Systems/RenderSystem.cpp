@@ -3,6 +3,8 @@
 
 namespace Ilargia {
 
+    RenderSystem::~RenderSystem() {};
+
     void RenderSystem::setAssetManager(std::shared_ptr<AssetManager> assetManager) {
         _assetManager = std::move(assetManager);
     }

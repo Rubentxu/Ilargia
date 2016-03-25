@@ -2,6 +2,7 @@
 #include "Components/ViewComponent.h"
 
 
+
 void StateInit::loadResources(Ilargia::AssetManager& assetManager) {
     assetManager.loadTexture("assets/avatar.png","Avatar");
 }
@@ -23,5 +24,7 @@ void StateInit::init(anax::World &world) {
     view.color = {100,150,130,100};
     entity.activate();
 }
+
 void StateInit::onResume(anax::World &world) { }
+
 void StateInit::onPause(anax::World &world) { }

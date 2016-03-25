@@ -3,7 +3,6 @@
 
 #include "GameState.h"
 
-
 class StateInit : public Ilargia::GameState {
 
     virtual void loadResources(Ilargia::AssetManager& assetManager) override;

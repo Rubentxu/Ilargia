@@ -63,16 +63,30 @@ endif()
 
 
 add_subdirectory(libBehavior)
-#add_subdirectory(libEntitas)
-#add_subdirectory(libBitScan)
+set(BUILD_SHARED_LIBS false CACHE BOOL "")
+set(ANAX_STATIC_LIBRARIES true)
+add_subdirectory(externalLib/anax)
+
+find_path(ANAX_INCLUDE_DIR anax/anax.hpp PATH_SUFFIXES include PATHS ${ANAX_SOURCE_DIR})
+# debug
+find_library(ANAX_LIBRARY NAMES "anax_d_s" "libanax_d_s" PATH_SUFFIXES lib lib64 PATHS ${EXECUTABLE_OUTPUT_PATH})
+# release
+#find_library(ANAX_LIBRARY NAMES "anax_s" "libanax_s" PATH_SUFFIXES lib lib64 PATHS ${EXECUTABLE_OUTPUT_PATH})
+
+
+
+set(dependencies_root "${Ilargia_SOURCE_DIR}/externalLib/mathfu/dependencies" CACHE PATH "Directory holding the dependencies pulled from github.")
+set(mathfu_build_benchmarks OFF CACHE BOOL "")
+set(mathfu_build_tests OFF CACHE BOOL "")
+add_subdirectory(externalLib/mathfu)
+
+
 add_subdirectory(demos)
 
 if (test)
     add_subdirectory(test)
 endif ()
 
-set (ANAX_ROOT ../anax)
-find_package(anax REQUIRED)
 
 #set (SDL2 ../SDL/x86_64-w64-mingw32)
 set (SDLDIR ../SDL2-2.0.4/x86_64-w64-mingw32)
@@ -80,27 +94,6 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(SDL2_mixer REQUIRED)
-
-
-
-#set (GLM_ROOT_DIR ../glm)
-#find_package (GLM REQUIRED)
-#include_directories(${GLM_INCLUDE_DIRS})
-
-
-# find SFML 2
-#find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
-#if(SFML_FOUND)
-#    include_directories(${SFML_INCLUDE_DIR})
-#ELSE(SFML_FOUND)
-#    MESSAGE(FATAL_ERROR "SFML is needed to build ${PROJECT_NAME}!")
-#endif()
-
-# Look up SDL2 and add the include directory to our include path
-
-
-
-#include(Config)
 
 # Add include directories
 include_directories(${ANAX_INCLUDE_DIR}
@@ -113,13 +106,12 @@ include_directories(${ANAX_INCLUDE_DIR}
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
 add_library(${ILARGIA_LIBRARY_NAME}
-        ${ILARGIA_LIBRARY_SOURCES} include/sensors/Sensor.h include/LogicBrick.h include/sensors/MouseSensor.h)
+        ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION ${ILARGIA_VERSION_MAJOR}
         )
-
 
 
 if(APPLE)
@@ -130,7 +122,7 @@ target_link_libraries(
         ${ILARGIA_LIBRARY_NAME}
         PUBLIC Behavior
         #BitScan
-        PUBLIC ${ANAX_LIBRARY_NAME}
+        PUBLIC ${ANAX_LIBRARY}
         #${SFML_LIBRARIES}
         PUBLIC ${SDL2_LIBRARY}
         PUBLIC ${SDL2_IMAGE_LIBRARIES}
