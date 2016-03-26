@@ -3,6 +3,7 @@
 
 #include <SDL_events.h>
 #include <anax/Entity.hpp>
+#include <"mathfu/vector.h">
 #include "Sensor.h"
 
 namespace Ilargia {
@@ -14,7 +15,9 @@ namespace Ilargia {
         MouseEvent mouseEvent = MouseEvent::MOUSEMOTION;
         anax::Entity target;
 
-
+        MouseEvent mouseEventSignal;
+        mathfu::vec2 positionSignal;
+        int amountScrollSignal;
 
     };
 }

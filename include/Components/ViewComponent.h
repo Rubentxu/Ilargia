@@ -1,5 +1,5 @@
-#ifndef ILARGIA_TEXTURECOMPONENT_H
-#define ILARGIA_TEXTURECOMPONENT_H
+#ifndef ILARGIA_VIEWCOMPONENT_H
+#define ILARGIA_VIEWCOMPONENT_H
 
 #include "SDL.h"
 #include <SDL_rect.h>
@@ -20,4 +20,4 @@ namespace Ilargia {
     };
 
 }
-#endif //ILARGIA_TEXTURECOMPONENT_H
+#endif //ILARGIA_VIEWCOMPONENT_H
