@@ -13,7 +13,7 @@ class SensorSystem : public anax::System<anax::Requires<SensorComponent>>{
 public:
 
     void update(float deltaTime) {
-        for(auto entity : getEntities()) {
+        for(anax::Entity entity : getEntities()) {
             processEntity(entity, deltaTime);
         }
     }
