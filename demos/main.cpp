@@ -1,10 +1,12 @@
-#include <Engine.h>
+#include "SDLEngine.h"
 #include <Game.h>
 #include <StateInit.h>
+#include<SDL.h>
 
 using namespace Ilargia;
 
-int main(int argc, char *argv[]) {
+
+int main(int argc, char **argv) {
 
     Game game {Engine {}};
     game.init(argc, argv);

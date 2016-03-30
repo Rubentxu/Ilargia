@@ -24,7 +24,7 @@ namespace Ilargia {
         TapMode firstTap = TapMode::TAP_IN;
         TapMode lastTap = TapMode::TAP_OUT;
 
-        Derived& get() {
+        Derived& instance() {
             return static_cast<Derived&>(*this);
         }
 

@@ -1,11 +1,12 @@
 #include "Systems/RenderSystem.h"
+#include "core/AssetsManager.h"
 
 
 namespace Ilargia {
 
     RenderSystem::~RenderSystem() {};
 
-    void RenderSystem::setAssetManager(std::shared_ptr<AssetManager> assetManager) {
+    void RenderSystem::setAssetManager(std::shared_ptr<AssetsManager> assetManager) {
         _assetManager = std::move(assetManager);
     }
 

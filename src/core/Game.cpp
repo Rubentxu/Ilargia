@@ -1,6 +1,7 @@
-#include "Game.h"
+#include "core/Game.h"
+#include "SDLUtil.h"
 
-namespace Ilargia {     
+namespace Ilargia {
 
     int Game::runGame() {
         const float MAX_FRAME_TIME = 1000 / 4.f;
@@ -36,15 +37,15 @@ namespace Ilargia {
 
     void Game::pushState(GameState &&gameState) {
         _states.push(GameStatePtr(&gameState));
-        _states.top()->loadResources(_engine->getAssetManager());
-        _states.top()->init(_engine->getWorld());
-        _states.top()->onResume(_engine->getWorld());
+        _states.top()->loadResources(*_engine);
+        _states.top()->init(*_engine);
+        _states.top()->onResume(*_engine);
     }
 
     void Game::popState() {
         if (_states.empty()) return;
 
-        _states.top()->onPause(_engine->getWorld());
+        _states.top()->onPause(*_engine);
         _states.top()->unloadResources(_engine->getAssetManager());
         _states.pop();
 

@@ -1,11 +1,11 @@
 #include <memory>
 #include <anax/anax.hpp>
-#include "Engine.h"
-#include "Systems/RenderSystem.h"
+#include "SDLEngine.h"
+#include "SDLEngine.h"
 
 namespace Ilargia {
 
-    void Engine::configure(std::vector<std::string>& args) {
+    void SDLEngine::configure(std::vector<std::string>& args) {
         int imgFlags = IMG_INIT_PNG;
         if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 ) {
             TTF_Init();
@@ -15,27 +15,26 @@ namespace Ilargia {
             SDL_Renderer* _renderer;
             if (_window) {
                 _renderer = SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED);
-                _assetManager = std::make_shared<AssetManager> (_renderer);
+                _assetsManager = std::make_shared<AssetsManager> ();
 
             }
         } else {
-            Engine::shutdown(1);
+            Engine::shutdownEngine(1);
         }
 
     }
 
-    void Engine::initSystems() {
+    void SDLEngine::initSystems() {
         _world = std::unique_ptr<anax::World>(new anax::World());
-         renderingSystem.setAssetManager(_assetManager);
-        _world->addSystem(renderingSystem);
+        _world->addSystem(_renderingSystem);
     }
 
-    void Engine::processInput() {
+    void SDLEngine::processInput() {
         SDL_Event event;
         if (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
-                    shutdown(0);
+                    Engine::shutdownEngine(0);
                     break;
                 default:
                     break;
@@ -44,18 +43,16 @@ namespace Ilargia {
 
     }
 
-    void Engine::update(float deltaTime) {
+    void SDLEngine::update(float deltaTime) {
         _world->refresh();
 
     }
 
-    void Engine::render() {
-        renderingSystem.render();
+    void SDLEngine::render() {
+        _renderingSystem.render();
     }
 
-    void Engine::shutdown(int errorCode) {
-        _errorState = errorCode;
-        _hasShutdown = true;
+    void SDLEngine::shutdown() {
         _window.reset(); //SDL_DestroyWindow(iWindow);
         _world->removeSystem<RenderSystem>();
         TTF_Quit();

@@ -1,13 +1,7 @@
 set (EXAMPLE_NAME Demo)
 
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${ANAX_INCLUDE_DIR}
-        ${SDL2_INCLUDE_DIR}
-        ${SDL2_IMAGE_INCLUDE_DIR}
-        ${SDL2_TTF_INCLUDE_DIR}
-        ${SDL2_MIXER_INCLUDE_DIR}
-        ${Ilargia_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${ILARGIA_INCLUDE_DIRS})
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
@@ -16,6 +10,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_
 
 file(GLOB_RECURSE EXAMPLE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_executable(${EXAMPLE_NAME} ${EXAMPLE_SOURCES})
+
 target_link_libraries(
         ${EXAMPLE_NAME}
         ${ILARGIA_LIBRARY_NAME}
