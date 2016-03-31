@@ -1,7 +1,6 @@
 #include <memory>
 #include <anax/anax.hpp>
-#include "SDLEngine.h"
-#include "SDLEngine.h"
+#include "isdl/SDLEngine.h"
 
 namespace Ilargia {
 
@@ -15,9 +14,7 @@ namespace Ilargia {
             SDL_Renderer* _renderer;
             if (_window) {
                 _renderer = SDL_CreateRenderer(_window.get(), -1, SDL_RENDERER_ACCELERATED);
-                _assetsManager = std::make_shared<AssetsManager> ();
-
-            }
+                            }
         } else {
             Engine::shutdownEngine(1);
         }
@@ -26,7 +23,9 @@ namespace Ilargia {
 
     void SDLEngine::initSystems() {
         _world = std::unique_ptr<anax::World>(new anax::World());
-        _world->addSystem(_renderingSystem);
+        for(auto systemPtr: _systems) {
+            _world->addSystem(systemPtr);
+        }
     }
 
     void SDLEngine::processInput() {
@@ -49,7 +48,7 @@ namespace Ilargia {
     }
 
     void SDLEngine::render() {
-        _renderingSystem.render();
+        //_renderingSystem.render();
     }
 
     void SDLEngine::shutdown() {

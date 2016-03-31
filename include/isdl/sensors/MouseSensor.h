@@ -4,7 +4,7 @@
 #include <SDL_events.h>
 #include <anax/Entity.hpp>
 #include <mathfu/vector.h>
-#include "Sensor.h"
+#include "core/Sensor.h"
 
 namespace Ilargia {
     enum class MouseEvent {

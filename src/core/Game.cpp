@@ -1,5 +1,5 @@
 #include "core/Game.h"
-#include "SDLUtil.h"
+#include "isdl/SDLUtil.h"
 
 namespace Ilargia {
 
@@ -46,7 +46,7 @@ namespace Ilargia {
         if (_states.empty()) return;
 
         _states.top()->onPause(*_engine);
-        _states.top()->unloadResources(_engine->getAssetManager());
+        _states.top()->unloadResources(*_engine);
         _states.pop();
 
     }

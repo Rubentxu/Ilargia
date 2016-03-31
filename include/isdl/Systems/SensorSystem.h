@@ -6,8 +6,8 @@
 #include <anax/FilterOptions.hpp>
 #include <anax/detail/BaseSystem.hpp>
 #include <anax/detail/ClassTypeId.hpp>
-#include <Components/SensorComponents.h>
-#include <Components/StateComponent.h>
+#include <isdl/Components/SensorComponents.h>
+#include <isdl/Components/StateComponent.h>
 
 
 namespace Ilargia {

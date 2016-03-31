@@ -1,7 +1,7 @@
 #ifndef ILARGIA_SENSOR_H
 #define ILARGIA_SENSOR_H
 
-#include <LogicBrick.h>
+#include <core/LogicBrick.h>
 
 namespace Ilargia {
 

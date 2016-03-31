@@ -1,4 +1,4 @@
-#include "Systems/SensorSystem.h"
+#include "isdl/Systems/SensorSystem.h"
 
 namespace Ilargia {
 

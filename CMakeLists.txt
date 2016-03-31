@@ -65,7 +65,7 @@ endif()
 
 #anax
 add_subdirectory(libBehavior)
-set(BUILD_SHARED_LIBS true CACHE BOOL "")
+set(BUILD_SHARED_LIBS false CACHE BOOL "")
 set(ANAX_STATIC_LIBRARIES true CACHE BOOL "")
 add_subdirectory(externalLib/anax)
 
@@ -76,7 +76,7 @@ find_library(ANAX_LIBRARY NAMES "anax_d_s" "libanax_d_s" PATH_SUFFIXES lib lib64
 #find_library(ANAX_LIBRARY NAMES "anax_s" "libanax_s" PATH_SUFFIXES lib lib64 PATHS ${EXECUTABLE_OUTPUT_PATH})
 if(ANAX_LIBRARY)
 else()
-    set(ANAX_LIBRARY "" CACHE STRING "" FORCE)
+    set(ANAX_LIBRARY ${EXECUTABLE_OUTPUT_PATH}/lib/libanax_d_s.a CACHE STRING "" FORCE)
 endif(ANAX_LIBRARY)
 
 #mathfu
@@ -118,7 +118,7 @@ include_directories(${ILARGIA_INCLUDE_DIRS})
 
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
-add_library(${ILARGIA_LIBRARY_NAME} SHARED ${ILARGIA_LIBRARY_SOURCES} include/core/Timer.h src/Timer.cpp include/core/Actuator.h)
+add_library(${ILARGIA_LIBRARY_NAME} SHARED ${ILARGIA_LIBRARY_SOURCES})
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}

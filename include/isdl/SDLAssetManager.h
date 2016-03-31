@@ -3,35 +3,34 @@
 
 #include <iostream>
 #include "SDLUtil.h"
-#include "core/AssetsManager.h"
+#include "core/AssetManager.h"
 
 namespace Ilargia {
     class Texture: public AssetMap<SDL_Texture>{
-        RendererPtr _renderer;
     public:
-        virtual bool loadAsset(std::string fileName, std::string id) override {
-            SDL_Surface *pTempSurface = IMG_Load(fileName.c_str());
+        bool loadAsset(std::string fileName, std::string id, SDL_Renderer* renderer);
 
-            if (pTempSurface == 0) {
-                std::cout << IMG_GetError();
-                return false;
-            }
-
-            SDL_Texture *pTexture = SDL_CreateTextureFromSurface(_renderer.get(), pTempSurface);
-            SDL_FreeSurface(pTempSurface);
-
-            if (pTexture != 0) {
-                auto pair = std::make_pair<std::string,AssetPtr>(std::move(id),AssetPtr (pTexture));
-                _map.insert(pair);
-                return true;
-            }
-            return false;
-        }
-
-        virtual void destroy(SDL_Texture* ptr) override { SDL_DestroyTexture(ptr); }
     };
 
-    class SDLAssetManager : public AssetsManager<Texture> {
+    class Music: public AssetMap<Mix_Music>{
+    public:
+        bool loadAsset(std::string fileName, std::string id);
+
+    };
+
+    class SoundFX: public AssetMap<Mix_Chunk>{
+    public:
+        bool loadAsset(std::string fileName, std::string id);
+
+    };
+
+    class TFont: public AssetMap<TTF_Font>{
+    public:
+        bool loadAsset(std::string fileName, std::string id, int size);
+
+    };
+
+    class SDLAssetManager : public AssetManager<Texture, Music, SoundFX, TFont> {
     public:
         SDLAssetManager();
         

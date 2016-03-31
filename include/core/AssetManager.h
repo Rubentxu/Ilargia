@@ -1,5 +1,5 @@
-#ifndef __AssetsManager__
-#define __AssetsManager__
+#ifndef __AssetManager__
+#define __AssetManager__
 
 #include <string>
 #include <unordered_map>
@@ -10,17 +10,18 @@ namespace Ilargia {
     template <class Value, class Key = std::string>
     class AssetMap {
     protected:
-        virtual void destroy(Value* ptr) { if(ptr) delete ptr; }
-        using AssetPtr = std::unique_ptr<Value,decltype(&destroy)>;
-        std::unordered_map<Key, AssetPtr> _map;
+        struct Free_Functor {
+            void operator() (Value *ptr);
+        };
+        std::unordered_map<Key, std::unique_ptr<Value,Free_Functor>> _map;
     public:
-
-        virtual bool loadAsset(std::string fileName, std::string id) = 0;
+        template <typename... Args>
+        bool loadAsset(std::string fileName, Key id,Args... args);
 
         Value* &getAsset(Key id) {
             auto it = _map.find(id);
             if (it == _map.end()) {
-                auto result = _map.insert(std::make_pair(id, std::unique_ptr<Value,decltype(&destroy)>(Value{})));
+                auto result = _map.insert(std::make_pair(id, std::unique_ptr<Value,Free_Functor>(Value{})));
                 return result.first->second.get();
             }
             return it->second.get();
@@ -34,30 +35,30 @@ namespace Ilargia {
 
 
     template <class... AssetMaps>
-    class AssetsManager : AssetMaps... {
+    class AssetManager : AssetMaps... {
 
     public:
 
-        AssetsManager();
+        AssetManager();
 
-        AssetsManager(const AssetsManager &) = delete;
+        AssetManager(const AssetManager &) = delete;
 
-        AssetsManager &operator=(const AssetsManager &) = delete;
+        AssetManager &operator=(const AssetManager &) = delete;
 
-        ~AssetsManager() {
+        ~AssetManager() {
 
         }
 
         template <class Value, class Key = std::string>
         void loadAsset(std::string fileName, Key id) {
-            static_assert(std::is_base_of<AssetMap<Value, Key>, AssetsManager<AssetMaps...>>::value,
+            static_assert(std::is_base_of<AssetMap<Value, Key>, AssetManager<AssetMaps...>>::value,
                     "Please ensure that this type or this key exists in this repository");
             AssetMap<Value, Key>::loadAsset(fileName,id);
         }
 
         template <class Value, class Key = std::string>
-        std::unique_ptr<Value>& getAsset(std::string fileName, Key id) {
-            static_assert(std::is_base_of<AssetMap<Value, Key>, AssetsManager<AssetMaps...>>::value,
+        std::unique_ptr<Value>& getAsset(Key id) {
+            static_assert(std::is_base_of<AssetMap<Value, Key>, AssetManager<AssetMaps...>>::value,
                           "Please ensure that this type or this key exists in this repository");
             AssetMap<Value, Key>::getAsset(id);
         }

@@ -1,13 +1,15 @@
 #ifndef ILARGIA_RenderSystem_H
 #define ILARGIA_RenderSystem_H
 
-#include "SDLUtil.h"
-#include "Components/ViewComponent.h"
-#include "core/AssetsManager.h"
+#include "isdl/SDLUtil.h"
+#include "isdl/Components/ViewComponent.h"
+#include "isdl/SDLAssetManager.h"
 #include <anax/anax.hpp>
 
 namespace Ilargia {
     class RenderSystem: public anax::System<anax::Requires<ViewComponent>> {
+        std::shared_ptr<SDLAssetManager> _assetManager;
+        RendererShPtr _renderer;
 
         void draw(ViewComponent &view, SDL_Renderer* renderer);
 
@@ -18,13 +20,12 @@ namespace Ilargia {
 
     public:
 
-        RenderSystem(std::shared_ptr<AssetsManager> assetManager) :RenderSystem{assetManager} {};
+        RenderSystem(std::shared_ptr<SDLAssetManager> assetManager, RendererShPtr _renderer)
+                :_assetManager(std::move(assetManager)),_renderer(std::move(_renderer)){};
 
         ~RenderSystem();
 
-
-
-        virtual void render(SDLAssetManager& assetManager);
+        virtual void render();
 
         virtual bool isValid() const;
 

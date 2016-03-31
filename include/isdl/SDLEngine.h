@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "SDLUtil.h"
-#include "core/AssetsManager.h"
+#include "core/AssetManager.h"
 #include "Systems/RenderSystem.h"
 #include "core/Engine.h"
 

@@ -1,31 +1,25 @@
-#include "Systems/RenderSystem.h"
-#include "core/AssetsManager.h"
+#include "isdl/Systems/RenderSystem.h"
 
 
 namespace Ilargia {
 
-    RenderSystem::~RenderSystem() {};
 
-    void RenderSystem::setAssetManager(std::shared_ptr<AssetsManager> assetManager) {
-        _assetManager = std::move(assetManager);
-    }
-
-    void RenderSystem::draw(ViewComponent &view, SDL_Renderer* renderer) {
+    void RenderSystem::draw(ViewComponent &view, SDL_Renderer *renderer) {
         SDL_Rect srcRect;
         srcRect.x = 0;
         srcRect.y = 0;
         srcRect.w = view.bounds.w;
         srcRect.h = view.bounds.h;
-        SDL_Texture *texture = _assetManager->getTexture(view.textureId);
+        SDL_Texture *texture = _assetManager->getAsset<SDL_Texture>(view.textureId).get();
         SDL_SetTextureAlphaMod(texture, view.color.a);
-        SDL_SetTextureColorMod( texture, view.color.r, view.color.g,view.color.b );
+        SDL_SetTextureColorMod(texture, view.color.r, view.color.g, view.color.b);
         SDL_RenderCopyEx(renderer, texture, &srcRect, &view.bounds, view.rotation, &view.center, view.flip);
     }
 
     void RenderSystem::render() {
         auto entities = getEntities();
-        SDL_Renderer* renderer = _assetManager->getRenderer().get();
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        SDL_Renderer *renderer = _renderer.get();
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(renderer);
         for (auto &entity : entities) {
             // TODO ordenar View por layer y renderizar por orden

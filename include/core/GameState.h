@@ -2,7 +2,7 @@
 #define ILARGIA_GAME_STATE_H
 
 #include "Engine.h"
-#include "AssetsManager.h"
+#include "AssetManager.h"
 #include <anax/anax.hpp>
 
 namespace Ilargia {

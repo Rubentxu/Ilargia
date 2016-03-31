@@ -3,7 +3,7 @@
 
 #include <anax/Component.hpp>
 #include <vector>
-#include "sensors/MouseSensor.h"
+#include "isdl/sensors/MouseSensor.h"
 
 namespace Ilargia {
 
