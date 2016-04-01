@@ -6,11 +6,12 @@
 #include <vector>
 
 #include "SDLUtil.h"
-#include "core/AssetManager.h"
+#include "core/Manager.h"
 #include "Systems/RenderSystem.h"
 #include "core/Engine.h"
 
 namespace Ilargia {
+
 
     class SDLEngine : public Engine {
     private:

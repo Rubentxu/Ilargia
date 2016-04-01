@@ -1,19 +1,19 @@
 #ifndef ILARGIA_STATEINIT_H
 #define ILARGIA_STATEINIT_H
 
-#include "GameState.h"
+#include "core/GameState.h"
 
 class StateInit : public Ilargia::GameState {
 
-    virtual void loadResources(Ilargia::AssetManager& assetManager) override;
+    virtual void loadResources(Ilargia::Engine& engine) override;
 
-    virtual void init(anax::World& world) override;
+    virtual void init(Ilargia::Engine& engine) override;
 
-    virtual void onResume(anax::World& world) override;
+    virtual void onResume(Ilargia::Engine& engine) override;
 
-    virtual void onPause(anax::World& world) override;
+    virtual void onPause(Ilargia::Engine& engine) override;
 
-    virtual void unloadResources(Ilargia::AssetManager& assetManager) override;
+    virtual void unloadResources(Ilargia::Engine& engine) override;
 };
 
 

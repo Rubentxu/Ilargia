@@ -10,7 +10,7 @@ namespace Ilargia {
         srcRect.y = 0;
         srcRect.w = view.bounds.w;
         srcRect.h = view.bounds.h;
-        SDL_Texture *texture = _assetManager->getAsset<SDL_Texture>(view.textureId).get();
+        SDL_Texture *texture = _assetManager->getAsset<TexturePtr>(view.textureId).get();
         SDL_SetTextureAlphaMod(texture, view.color.a);
         SDL_SetTextureColorMod(texture, view.color.r, view.color.g, view.color.b);
         SDL_RenderCopyEx(renderer, texture, &srcRect, &view.bounds, view.rotation, &view.center, view.flip);

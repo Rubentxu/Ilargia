@@ -14,18 +14,12 @@ namespace Ilargia {
         SDL_FreeSurface(pTempSurface);
 
         if (pTexture != 0) {
-            _map[id] = std::unique_ptr<SDL_Texture> (pTexture);
+            _map[id] = TexturePtr(pTexture);
             return true;
         }
         return false;
 
     }
-
-    void Texture::Free_Functor::operator() (SDL_Texture* ptr) {
-        SDL_DestroyTexture(ptr);
-        ptr = nullptr;
-    }
-
 
 
     bool Music::loadAsset(std::string fileName, std::string id) {
@@ -34,14 +28,10 @@ namespace Ilargia {
             std::cout << "Could not load music: ERROR - " << Mix_GetError() << std::endl;
             return false;
         }
-        _map[id] = std::unique_ptr<Mix_Music,Free_Functor> (pMusic);
+        _map[id] = MusicPtr(pMusic);
         return true;
     }
 
-    void Music::destroy(Mix_Music* ptr) {
-        Mix_FreeMusic(ptr);
-        ptr = nullptr;
-    }
 
     bool SoundFX::loadAsset(std::string fileName, std::string id)  {
         Mix_Chunk* pChunk = Mix_LoadWAV(fileName.c_str());
@@ -49,13 +39,8 @@ namespace Ilargia {
             std::cout << "Could not load SFX: ERROR - " << Mix_GetError() << std::endl;
             return false;
         }
-        _map[id] = std::unique_ptr<Mix_Chunk,Free_Functor> (pChunk);
+        _map[id] = SoundFXPtr(pChunk);
         return true;
-    }
-
-    void SoundFX::destroy(Mix_Chunk* ptr) {
-        Mix_FreeChunk(ptr);
-        ptr = nullptr;
     }
 
     bool TFont::loadAsset(std::string fileName, std::string id, int size)  {
@@ -65,13 +50,8 @@ namespace Ilargia {
             std::cout << TTF_GetError();
             return false;
         }
-        _map[id] = std::unique_ptr<TTF_Font,Free_Functor> (gFont);
+        _map[id] = FontPtr(gFont);
         return true;
-    }
-
-    void TFont::destroy(TTF_Font* ptr) {
-        TTF_CloseFont(ptr);
-        ptr = nullptr;
     }
 
 }

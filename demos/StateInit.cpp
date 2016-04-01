@@ -1,16 +1,16 @@
 #include "StateInit.h"
-#include "Components/ViewComponent.h"
+#include "isdl/Components/ViewComponent.h"
 
 
 
-void StateInit::loadResources(Ilargia::AssetManager& assetManager) {
+void StateInit::loadResources(Ilargia::Engine& assetManager) {
     assetManager.loadTexture("assets/avatar.png","Avatar");
 }
-void StateInit::unloadResources(Ilargia::AssetManager& assetManager) {
+void StateInit::unloadResources(Ilargia::Engine& assetManager) {
     assetManager.clearTextureMap();
 }
 
-void StateInit::init(anax::World &world) {
+void StateInit::init(Ilargia::Engine& engine) {
     auto entity = world.createEntity();
 
     Ilargia::ViewComponent& view = entity.addComponent<Ilargia::ViewComponent>();
@@ -25,6 +25,6 @@ void StateInit::init(anax::World &world) {
     entity.activate();
 }
 
-void StateInit::onResume(anax::World &world) { }
+void StateInit::onResume(Ilargia::Engine& engine) { }
 
-void StateInit::onPause(anax::World &world) { }
+void StateInit::onPause(Ilargia::Engine& engine) { }

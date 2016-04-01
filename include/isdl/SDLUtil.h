@@ -20,16 +20,20 @@ namespace Ilargia {
     };
 
     struct SDL_Deleter {
-        void operator()(SDL_Surface*  ptr) { if (ptr) SDL_FreeSurface(ptr); }
-        void operator()(SDL_Texture*  ptr) { if (ptr) SDL_DestroyTexture(ptr); }
-        void operator()(SDL_Renderer* ptr) { if (ptr) SDL_DestroyRenderer(ptr); }
-        void operator()(TTF_Font*   ptr) { if (ptr) TTF_CloseFont( ptr ); }
-        void operator()(SDL_RWops*    ptr) { if (ptr) SDL_RWclose(ptr); }
-        void operator()(SDL_Window*   ptr) { if (ptr) SDL_DestroyWindow(ptr); }
+        void operator()(SDL_Surface*  ptr) { if (ptr) SDL_FreeSurface(ptr); ; ptr = nullptr;}
+        void operator()(SDL_Texture*  ptr) { if (ptr) SDL_DestroyTexture(ptr); ; ptr = nullptr;}
+        void operator()(Mix_Music*  ptr) { if (ptr)  Mix_FreeMusic(ptr); ptr = nullptr; }
+        void operator()(Mix_Chunk*  ptr) { if (ptr)  Mix_FreeChunk(ptr); ptr = nullptr; }
+        void operator()(SDL_Renderer* ptr) { if (ptr) SDL_DestroyRenderer(ptr); ; ptr = nullptr;}
+        void operator()(TTF_Font*   ptr) { if (ptr) TTF_CloseFont( ptr ); ; ptr = nullptr;}
+        void operator()(SDL_RWops*    ptr) { if (ptr) SDL_RWclose(ptr); ; ptr = nullptr;}
+        void operator()(SDL_Window*   ptr) { if (ptr) SDL_DestroyWindow(ptr); ; ptr = nullptr;}
     };
 
     using SurfacePtr  = std::unique_ptr<SDL_Surface,  SDL_Deleter>;
     using TexturePtr  = std::unique_ptr<SDL_Texture,  SDL_Deleter>;
+    using MusicPtr  = std::unique_ptr<Mix_Music,  SDL_Deleter>;
+    using SoundFXPtr  = std::unique_ptr<Mix_Chunk,  SDL_Deleter>;
     using FontPtr  =    std::unique_ptr<TTF_Font,     SDL_Deleter>;
     using RendererPtr = std::unique_ptr<SDL_Renderer, SDL_Deleter>;
     using WindowPtr   = std::unique_ptr<SDL_Window,   SDL_Deleter>;

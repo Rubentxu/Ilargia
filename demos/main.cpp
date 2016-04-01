@@ -1,5 +1,5 @@
-#include "SDLEngine.h"
-#include <Game.h>
+#include "isdl/SDLEngine.h"
+#include <core/Game.h>
 #include <StateInit.h>
 #include<SDL.h>
 

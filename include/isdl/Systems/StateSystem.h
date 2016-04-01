@@ -2,7 +2,7 @@
 #define ILARGIA_STATESYSTEM_H
 
 #include <anax/anax.hpp>
-#include "Components/StateComponent.h"
+#include "isdl/Components/StateComponent.h"
 
 namespace Ilargia {
     class StateSystem : public anax::System<anax::Requires <StateComponent>> {

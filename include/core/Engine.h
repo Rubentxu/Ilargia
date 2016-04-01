@@ -4,31 +4,13 @@
 #include <memory>
 #include <type_traits>
 #include <vector>
-
+#include "core/Manager.h"
 
 namespace Ilargia {
 
-    class Manager {
-    public:
-        virtual ~Manager() { }
-    };
-
-    class System {
-    public:
-        virtual void update(float deltaTime) = 0;
-
-        virtual ~System() { }
-    };
 
     class Engine {
-        static int s_nextTypeSystemId;
         static int s_nextTypeManagerId;
-
-        template<typename T>
-        static int getTypeSystemID() {
-            static int typeId = s_nextTypeSystemId++;
-            return typeId;
-        }
 
         template<typename T>
         static int getTypeManagerID() {
@@ -38,7 +20,6 @@ namespace Ilargia {
 
     protected:
         std::vector<std::unique_ptr<Manager>> _managers;
-        std::vector<std::unique_ptr<System>> _systems;
 
         int _errorState;
         bool _hasShutdown;
@@ -47,21 +28,13 @@ namespace Ilargia {
 
         template <class T>
         Engine(std::unique_ptr<T> n) {
-            addDelegate(std::forward(n));
+            _managers.push_back(std::forward(n));
         }
 
         template <class T, class... T2>
         Engine(std::unique_ptr<T> n, std::unique_ptr<T2>... rest) {
-            addDelegate(n);
+            _managers.push_back(std::forward(n));
             Engine(std::forward(rest)...);
-        }
-
-        template <class T>
-        void addDelegate(std::unique_ptr<T> n) {
-            if(dynamic_cast<Manager *>(n.get()))
-                _managers.push_back(std::forward(n));
-            if(dynamic_cast<System *>(n.get()))
-                _systems.push_back(std::forward(n));
         }
 
         Engine() { };
@@ -89,13 +62,6 @@ namespace Ilargia {
         int getErrorState() const { return _errorState; }
 
         bool hasShutdown() const { return _hasShutdown; }
-
-
-        template<typename S>
-        std::unique_ptr<S>& getSystem() {
-            auto typeId = getTypeSystemID<S>();
-            return _systems[typeId];
-        }
 
         template<typename M>
         std::unique_ptr<M>& getManager() {

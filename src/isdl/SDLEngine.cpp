@@ -23,9 +23,9 @@ namespace Ilargia {
 
     void SDLEngine::initSystems() {
         _world = std::unique_ptr<anax::World>(new anax::World());
-        for(auto systemPtr: _systems) {
-            _world->addSystem(systemPtr);
-        }
+        /*for(auto& systemPtr: _systems) {
+            _world->addSystem(dynamic_cast<anax::System>(systemPtr));
+        }*/
     }
 
     void SDLEngine::processInput() {
