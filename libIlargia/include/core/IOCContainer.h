@@ -26,54 +26,53 @@ public:
     public:
         ~CFactory() { }
 
-        CFactory(std::function<std::shared_ptr<T>()> functor): m_functor(functor) { }
+        CFactory(std::function<std::shared_ptr<T>()> functor) : m_functor(functor) { }
 
-        std::shared_ptr<T> GetObject() {
+        std::shared_ptr<T> getObject() {
             return m_functor();
         }
     };
 
     template<typename T>
-    std::shared_ptr<T> GetObject() {
+    std::shared_ptr<T> getObject() {
         auto typeId = getTypeID<T>();
         auto factoryBase = m_factories[typeId];
         auto factory = std::static_pointer_cast<CFactory<T>>(factoryBase);
-        return factory->GetObject();
+        return factory->getObject();
     }
 
     //Most basic implementation - register a functor
     template<typename TInterface, typename ...TS>
-    void RegisterFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TS> ...ts)> functor) {
+    void registerFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TS> ...ts)> functor) {
         m_factories[getTypeID<TInterface>()] = std::make_shared<CFactory<TInterface>>(
-                [=] { return functor(GetObject<TS>()...); });
-    }
+                [=] { return functor(getObject<TS>()...); });  }
 
-    //Register one instance of an object
-    template<typename TInterface>
-    void RegisterInstance(std::shared_ptr<TInterface> t) {
-        m_factories[getTypeID<TInterface>()] = std::make_shared<CFactory<TInterface>>([=] { return t; });
-    }
 
     //Supply a function pointer
     template<typename TInterface, typename ...TS>
-    void RegisterFunctor(std::shared_ptr<TInterface> (*functor)(std::shared_ptr<TS> ...ts)) {
-        RegisterFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TS> ...ts)>(functor));
+    void registerFunctor(std::shared_ptr<TInterface> (*functor)(std::shared_ptr<TS> ...ts)) {
+        registerFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TS> ...ts)>(functor));
     }
 
     //A factory that will call the constructor, per instance required
     template<typename TInterface, typename TConcrete, typename ...TArguments>
-    void RegisterFactory() {
-        RegisterFunctor(
-                std::function<std::shared_ptr<TInterface>(std::shared_ptr<TArguments> ...ts)>(
+    void registerFactory() {
+        registerFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TArguments> ...ts)>(
                         [](std::shared_ptr<TArguments>...arguments) -> std::shared_ptr<TInterface> {
                             return std::make_shared<TConcrete>(std::forward<std::shared_ptr<TArguments>>(arguments)...);
                         }));
     }
 
+    //Register one instance of an object
+    template<typename TInterface>
+    void registerInstance(std::shared_ptr<TInterface> t) {
+        m_factories[getTypeID<TInterface>()] = std::make_shared<CFactory<TInterface>>([=] { return t; });
+    }
+
     //A factory that will return one instance for every request
     template<typename TInterface, typename TConcrete, typename ...TArguments>
-    void RegisterInstance() {
-        RegisterInstance<TInterface>(std::make_shared<TConcrete>(GetObject<TArguments>()...));
+    void registerInstance() {
+        registerInstance<TInterface>(std::make_shared<TConcrete>(getObject<TArguments>()...));
     }
 
 };
