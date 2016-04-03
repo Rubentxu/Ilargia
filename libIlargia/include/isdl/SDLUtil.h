@@ -9,15 +9,6 @@
 
 namespace Ilargia {
 
-    template<class T, class D = std::default_delete<T>>
-    struct shared_ptr_with_deleter : public std::shared_ptr<T> {
-        explicit shared_ptr_with_deleter(T* t = nullptr)
-                : std::shared_ptr<T>(t, D()) {}
-
-        void reset(T* t = nullptr) {
-            std::shared_ptr<T>::reset(t, D());
-        }
-    };
 
     struct SDL_Deleter {
         void operator()(SDL_Surface*  ptr) { if (ptr) SDL_FreeSurface(ptr); ; ptr = nullptr;}

@@ -9,15 +9,15 @@ namespace Ilargia {
     public:
         GameState() = default;
 
-        virtual void loadResources(Engine& engine)  = 0;
+        virtual void loadResources()  = 0;
 
-        virtual void init(Engine& engine)  = 0;
+        virtual void init()  = 0;
 
-        virtual void onResume(Engine& engine) = 0;
+        virtual void onResume() = 0;
 
-        virtual void onPause(Engine& engine) = 0;
+        virtual void onPause() = 0;
 
-        virtual void unloadResources(Engine& engine) = 0;
+        virtual void unloadResources() = 0;
 
     };
 

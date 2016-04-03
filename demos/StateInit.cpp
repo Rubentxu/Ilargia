@@ -4,7 +4,7 @@
 
 
 void StateInit::loadResources(Ilargia::Engine& assetManager) {
-    assetManager.loadTexture("assets/avatar.png","Avatar");
+    assetManager.load<SDL_Texture>("assets/avatar.png","Avatar");
 }
 void StateInit::unloadResources(Ilargia::Engine& assetManager) {
     assetManager.clearTextureMap();

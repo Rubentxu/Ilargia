@@ -12,7 +12,7 @@ namespace Ilargia {
 
         using  GameStatePtr = std::unique_ptr <GameState> ;
         std::stack<GameStatePtr> _states;
-        std::unique_ptr<Engine> _engine;
+        std::shared_ptr<Engine> _engine;
         unsigned int thisTime = 0;
         unsigned int lastTime = 0;
 

@@ -37,6 +37,8 @@ namespace Ilargia {
 
     };
 
+    t
+    Texture
 
     template <class... AssetMaps>
     class AssetManager : public Manager, public AssetMaps... {
