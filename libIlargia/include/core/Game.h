@@ -1,5 +1,5 @@
-#ifndef ILARGIA_STATED_GAME_H
-#define ILARGIA_STATED_GAME_H
+#ifndef ILARGIA_GAME_H
+#define ILARGIA_GAME_H
 
 #include <memory>
 #include <stack>
@@ -10,14 +10,14 @@ namespace Ilargia {
 
     class Game {
 
-        using  GameStatePtr = std::unique_ptr <GameState> ;
+        using  GameStatePtr = std::shared_ptr<GameState> ;
         std::stack<GameStatePtr> _states;
         std::shared_ptr<Engine> _engine;
         unsigned int thisTime = 0;
         unsigned int lastTime = 0;
 
     public:
-        Game(Engine &&engine) : _engine(&engine) {}
+        Game(std::shared_ptr<Engine> engine) : _engine(engine) {}
 
         int getErrorState() const { return _engine->getErrorState(); }
 
@@ -48,4 +48,4 @@ namespace Ilargia {
     };
 }
 
-#endif // ILARGIA_STATED_GAME_H
+#endif // ILARGIA_GAME_H

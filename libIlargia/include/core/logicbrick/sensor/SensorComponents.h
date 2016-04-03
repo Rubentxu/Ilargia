@@ -7,10 +7,13 @@
 
 namespace Ilargia {
 
-    template<typename Sensor>
-    struct SensorComponents : anax::Component {
+    struct DefaultBase {};
+
+    template<typename Sensor, typename BaseComponent = DefaultBase>
+    struct SensorComponents : BaseComponent {
         std::vector<std::vector<Sensor>> sensors;
     };
+
 
     struct MouseSensorComponents : SensorComponents<MouseSensor> { };
 

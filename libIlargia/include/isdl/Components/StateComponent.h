@@ -3,16 +3,12 @@
 
 #include <anax/Component.hpp>
 #include <string>
+#include "core/logicbrick/State.h"
 
 namespace Ilargia {
 
-    struct StateComponent : anax::Component {
-        float time = 0.0f;
-        int oldState = -1;
-        bool isChanged = false;
-        std::vector<std::string> states;
-        int typeIndex = -1;
-        int currentState = 0;
+    struct StateComponent : Ilargia::State, anax::Component {
+
     };
 }
 

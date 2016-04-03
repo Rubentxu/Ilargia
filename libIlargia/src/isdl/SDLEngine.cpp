@@ -5,7 +5,14 @@
 namespace Ilargia {
 
     void SDLEngine::configure(std::vector<std::string>& args) {
-        int imgFlags = IMG_INIT_PNG;
+        SDL2pp::SDL sdl(SDL_INIT_VIDEO);
+/*
+        // Initialize SDL_ttf library
+        SDL2pp::SDLTTF ttf;
+
+        _window =SDL2pp::Window ("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                      640, 480, SDL_WINDOW_RESIZABLE);
+
         if (SDL_Init(SDL_INIT_EVERYTHING) >= 0 ) {
             TTF_Init();
             _window = WindowPtr(SDL_CreateWindow("Testing Ilargia", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -17,7 +24,7 @@ namespace Ilargia {
                             }
         } else {
             Engine::shutdownEngine(1);
-        }
+        }*/
 
     }
 
@@ -52,11 +59,11 @@ namespace Ilargia {
     }
 
     void SDLEngine::shutdown() {
-        _window.reset(); //SDL_DestroyWindow(iWindow);
+      /*  _window.reset(); //SDL_DestroyWindow(iWindow);
         _world->removeSystem<RenderSystem>();
         TTF_Quit();
         IMG_Quit();
-        SDL_Quit();
+        SDL_Quit();*/
     }
 
 

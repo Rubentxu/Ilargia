@@ -6,8 +6,9 @@
 namespace Ilargia {
 
     class GameState {
+        std::shared_ptr<Engine> _engine;
     public:
-        GameState() = default;
+        GameState(std::shared_ptr<Engine> engine) : _engine(engine) {}
 
         virtual void loadResources()  = 0;
 

@@ -19,7 +19,7 @@ namespace Ilargia {
         }
 
     protected:
-        std::vector<std::unique_ptr<Manager>> _managers;
+        std::vector<std::shared_ptr<Manager>> _managers;
 
         int _errorState;
         bool _hasShutdown;
@@ -27,17 +27,15 @@ namespace Ilargia {
     public:
 
         template <class T>
-        Engine(std::unique_ptr<T> n) {
-            _managers.push_back(std::forward(n));
+        Engine(std::shared_ptr<T> n) {
+            _managers[getTypeManagerID<T>] = n;
         }
 
         template <class T, class... T2>
-        Engine(std::unique_ptr<T> n, std::unique_ptr<T2>... rest) {
-            _managers.push_back(std::forward(n));
+        Engine(std::shared_ptr<T> n, std::shared_ptr<T2>... rest) {
+            _managers[getTypeManagerID<T>] = n;
             Engine(std::forward(rest)...);
         }
-
-        Engine() { };
 
         Engine &operator=(const Engine &other) = delete;
 

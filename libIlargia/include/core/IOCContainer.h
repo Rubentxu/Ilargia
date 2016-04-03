@@ -5,16 +5,6 @@
 #include <vector>
 namespace Ilargia {
 
-    template<class T, class D = std::default_delete<T>>
-    struct sharedPtrDeleter : public std::shared_ptr<T> {
-        explicit sharedPtrDeleter(T* t = nullptr)
-                : std::shared_ptr<T>(t, D()) {}
-
-        void reset(T* t = nullptr) {
-            std::shared_ptr<T>::reset(t, D());
-        }
-    };
-
     class IOCContainer {
         static int s_nextTypeId;
     public:

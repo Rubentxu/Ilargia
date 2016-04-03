@@ -1,56 +1,27 @@
 #include "isdl/SDLAssetManager.h"
+#include <unordered_map>
 
 namespace Ilargia {
 
-    bool Texture::loadAsset(std::string fileName, std::string id, SDL_Renderer* renderer) {
-        SDL_Surface *pTempSurface = IMG_Load(fileName.c_str());
-
-        if (pTempSurface == 0) {
-            std::cout << IMG_GetError();
-            return false;
-        }
-
-        SDL_Texture *pTexture = SDL_CreateTextureFromSurface(renderer, pTempSurface);
-        SDL_FreeSurface(pTempSurface);
-
-        if (pTexture != 0) {
-            _map[id] = TexturePtr(pTexture);
-            return true;
-        }
-        return false;
-
-    }
-
-
-    bool Music::loadAsset(std::string fileName, std::string id) {
-        Mix_Music* pMusic = Mix_LoadMUS(fileName.c_str());
-        if (pMusic == 0) {
-            std::cout << "Could not load music: ERROR - " << Mix_GetError() << std::endl;
-            return false;
-        }
-        _map[id] = MusicPtr(pMusic);
+    bool ILTexture::loadAsset(std::string fileName, std::string id) {        
+        _map.insert(std::make_pair<std::string,SDL2pp::Texture>(std::move(id), SDL2pp::Texture(*_renderer,fileName)));
         return true;
     }
 
 
-    bool SoundFX::loadAsset(std::string fileName, std::string id)  {
-        Mix_Chunk* pChunk = Mix_LoadWAV(fileName.c_str());
-        if (pChunk == 0) {
-            std::cout << "Could not load SFX: ERROR - " << Mix_GetError() << std::endl;
-            return false;
-        }
-        _map[id] = SoundFXPtr(pChunk);
+    bool ILMusic::loadAsset(std::string fileName, std::string id) {
+        _map.insert(std::make_pair<std::string,SDL2pp::Music>(std::move(id), SDL2pp::Music(fileName)));
         return true;
     }
 
-    bool TFont::loadAsset(std::string fileName, std::string id, int size)  {
-        TTF_Font *gFont = TTF_OpenFont(fileName.c_str(), size);
 
-        if (gFont == 0) {
-            std::cout << TTF_GetError();
-            return false;
-        }
-        _map[id] = FontPtr(gFont);
+    bool ILSoundFX::loadAsset(std::string fileName, std::string id) {
+        _map.insert(std::make_pair<std::string,SDL2pp::Chunk>(std::move(id), SDL2pp::Chunk(fileName)));
+        return true;
+    }
+
+    bool ILFont::loadAsset(std::string fileName, std::string id, int size) {
+        _map.insert(std::make_pair<std::string,SDL2pp::Font>(std::move(id), SDL2pp::Font(fileName, size)));
         return true;
     }
 

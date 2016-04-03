@@ -70,8 +70,16 @@ add_subdirectory(externalLib/mathfu)
 set(BOX2D_BUILD_EXAMPLES OFF CACHE BOOL "")
 add_subdirectory(externalLib/Box2D/Box2D)
 
+set(SDL2PP_WITH_EXAMPLES OFF CACHE BOOL "")
+set(SDL2PP_WITH_TESTS OFF CACHE BOOL "")
+set(SDL2PP_ENABLE_LIVE_TESTS OFF CACHE BOOL "")
+SET(SDL2PP_WITH_IMAGE ON) # if you need SDL_image support
+SET(SDL2PP_WITH_MIXER ON) # if you need SDL_mixer support
+SET(SDL2PP_WITH_TTF ON) # if you need SDL_ttf support
+add_subdirectory(externalLib/libSDL2pp)
+
 add_subdirectory(libIlargia)
-add_subdirectory(demos)
+#add_subdirectory(demos)
 
 if (test)
     add_subdirectory(test)

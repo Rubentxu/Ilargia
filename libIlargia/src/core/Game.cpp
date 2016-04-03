@@ -1,5 +1,5 @@
 #include "core/Game.h"
-#include "isdl/SDLUtil.h"
+#include <SDL2pp/SDL2pp.hh>
 
 namespace Ilargia {
 
@@ -37,16 +37,16 @@ namespace Ilargia {
 
     void Game::pushState(GameState &&gameState) {
         _states.push(GameStatePtr(&gameState));
-        _states.top()->loadResources(*_engine);
-        _states.top()->init(*_engine);
-        _states.top()->onResume(*_engine);
+        _states.top()->loadResources();
+        _states.top()->init();
+        _states.top()->onResume();
     }
 
     void Game::popState() {
         if (_states.empty()) return;
 
-        _states.top()->onPause(*_engine);
-        _states.top()->unloadResources(*_engine);
+        _states.top()->onPause();
+        _states.top()->unloadResources();
         _states.pop();
 
     }

@@ -4,8 +4,6 @@
 #include <memory>
 #include <type_traits>
 #include <vector>
-
-#include "SDLUtil.h"
 #include "core/Manager.h"
 #include "Systems/RenderSystem.h"
 #include "core/Engine.h"
@@ -16,7 +14,7 @@ namespace Ilargia {
     class SDLEngine : public Engine {
     private:
         std::unique_ptr<anax::World> _world;
-        WindowPtr _window;
+        SDL2pp::Window _window;
 
     public:
 

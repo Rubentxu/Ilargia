@@ -14,10 +14,6 @@ namespace Ilargia {
     class AssetMap {
     protected:
 
-        bool storeAsset(Key id, Value value) {
-             _map[id] = value;
-        }
-
     public:
         void destroy (Value *ptr);
 
@@ -37,8 +33,6 @@ namespace Ilargia {
 
     };
 
-    t
-    Texture
 
     template <class... AssetMaps>
     class AssetManager : public Manager, public AssetMaps... {
@@ -63,8 +57,7 @@ namespace Ilargia {
 
         template <class Value, class Key = std::string>
         Value& getAsset(Key id) {
-
-            AssetMap<Value, Key>::getAsset(id);
+            return AssetMap<Value, Key>::getAsset(id);
         }
 
     };

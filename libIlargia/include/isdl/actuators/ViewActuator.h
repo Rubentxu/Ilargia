@@ -2,7 +2,7 @@
 #define ILARGIA_VIEW_ACTUATOR_H
 
 #include <core/Actuator.h>
-#include "Components/ViewComponent.h"
+#include "isdl/Components/ViewComponent.h"
 
 namespace Ilargia {
     struct ViewActuator : Actuator<ViewComponent>  { };

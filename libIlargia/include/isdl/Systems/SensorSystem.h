@@ -6,7 +6,6 @@
 #include <anax/FilterOptions.hpp>
 #include <anax/detail/BaseSystem.hpp>
 #include <anax/detail/ClassTypeId.hpp>
-#include <isdl/Components/SensorComponents.h>
 #include <isdl/Components/StateComponent.h>
 
 

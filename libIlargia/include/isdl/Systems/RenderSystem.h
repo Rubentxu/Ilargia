@@ -1,7 +1,6 @@
 #ifndef ILARGIA_RenderSystem_H
 #define ILARGIA_RenderSystem_H
 
-#include "isdl/SDLUtil.h"
 #include "isdl/Components/ViewComponent.h"
 #include "isdl/SDLAssetManager.h"
 #include <anax/anax.hpp>
@@ -9,9 +8,9 @@
 namespace Ilargia {
     class RenderSystem: public anax::System<anax::Requires<ViewComponent>> {
         std::shared_ptr<SDLAssetManager> _assetManager;
-        RendererShPtr _renderer;
+        std::shared_ptr<SDL2pp::Renderer> _renderer;
 
-        void draw(ViewComponent &view, SDL_Renderer* renderer);
+        void draw(ViewComponent &view);
 
       /*  void drawFrame(SDL_Texture *texture, int x, int y, int width, int height, int currentRow, int currentFrame,
                        double angle, int alpha, SDL_RendererFlip flip = SDL_FLIP_NONE);
@@ -20,8 +19,8 @@ namespace Ilargia {
 
     public:
 
-        RenderSystem(std::shared_ptr<SDLAssetManager> assetManager, RendererShPtr _renderer)
-                :_assetManager(std::move(assetManager)),_renderer(std::move(_renderer)){};
+        RenderSystem(std::shared_ptr<SDLAssetManager> assetManager, std::shared_ptr<SDL2pp::Renderer> renderer)
+                :_assetManager(std::move(assetManager)),_renderer(renderer){};
 
         ~RenderSystem();
 

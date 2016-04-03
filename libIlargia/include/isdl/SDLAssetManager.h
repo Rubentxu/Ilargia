@@ -1,35 +1,42 @@
 #ifndef __SDLAssetManager__
 #define __SDLAssetManager__
 
-#include <iostream>
-#include "SDLUtil.h"
 #include "core/Manager.h"
+#include <SDL2pp/SDL2pp.hh>
 
 namespace Ilargia {
-    class Texture: public AssetMap<TexturePtr>{
+    class ILTexture: public AssetMap<SDL2pp::Texture>{
+    protected:
+        std::shared_ptr<SDL2pp::Renderer> _renderer;
+
     public:
-        bool loadAsset(std::string fileName, std::string id, SDL_Renderer* renderer);
-        void destroy(SDL_Texture* ptr);
+        std::string baseDir;
+        ILTexture(std::shared_ptr<SDL2pp::Renderer> renderer) : _renderer(renderer){}
+
+        bool loadAsset(std::string fileName, std::string id);
+
     };
 
-    class Music: public AssetMap<MusicPtr>{
+    class ILMusic: public AssetMap<SDL2pp::Music>{
     public:
         bool loadAsset(std::string fileName, std::string id);
     };
 
-    class SoundFX: public AssetMap<SoundFXPtr>{
+    class ILSoundFX: public AssetMap<SDL2pp::Chunk>{
     public:
         bool loadAsset(std::string fileName, std::string id);
     };
 
-    class TFont: public AssetMap<FontPtr>{
+    class ILFont: public AssetMap<SDL2pp::Font>{
     public:
         bool loadAsset(std::string fileName, std::string id, int size);
     };
 
-    class SDLAssetManager : public AssetManager<Texture, Music, SoundFX, TFont> {
+    class SDLAssetManager : public AssetManager<ILTexture, ILMusic, ILSoundFX, ILFont> {
     public:
-        SDLAssetManager();
+        SDLAssetManager(std::shared_ptr<SDL2pp::Renderer> renderer) {
+            _renderer = renderer;
+        }
         
         ~SDLAssetManager();
 

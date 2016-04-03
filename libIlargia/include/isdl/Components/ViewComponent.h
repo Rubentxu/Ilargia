@@ -1,8 +1,7 @@
 #ifndef ILARGIA_VIEWCOMPONENT_H
 #define ILARGIA_VIEWCOMPONENT_H
 
-#include "SDL.h"
-#include <SDL_rect.h>
+#include <SDL2pp/SDL2pp.hh>
 #include <string>
 #include <anax/Component.hpp>
 
