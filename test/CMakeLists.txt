@@ -1,12 +1,14 @@
 project(test)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 find_package(Threads REQUIRED)
 enable_testing()
+
 
 # Enable ExternalProject CMake module
 include(ExternalProject)
 
 set(externalLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0 CACHE BOOL "")
 
 ExternalProject_Add(
         gtest
