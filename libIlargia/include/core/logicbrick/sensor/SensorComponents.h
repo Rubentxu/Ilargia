@@ -1,9 +1,8 @@
 #ifndef ILARGIA_SENSORCOMPONENT_H
 #define ILARGIA_SENSORCOMPONENT_H
 
-#include <anax/Component.hpp>
 #include <vector>
-#include "isdl/sensors/MouseSensor.h"
+#include "core/sensor/Sensor.h"
 
 namespace Ilargia {
 

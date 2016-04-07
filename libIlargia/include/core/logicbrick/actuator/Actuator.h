@@ -1,7 +1,7 @@
 #ifndef ILARGIA_ACTUATOR_H
 #define ILARGIA_ACTUATOR_H
 
-#include "LogicBrick.h"
+#include "core/logicbrick/LogicBrick.h"
 #include <functional>
 
 namespace Ilargia {

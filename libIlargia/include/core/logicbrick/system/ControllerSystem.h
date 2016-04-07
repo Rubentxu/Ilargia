@@ -1,5 +1,5 @@
-#ifndef PROJECT_ControllerSYSTEM_H
-#define PROJECT_ControllerSYSTEM_H
+#ifndef ILARGIA_ControllerSYSTEM_H
+#define ILARGIA_ControllerSYSTEM_H
 
 #include "core/logicbrick/controller/Controller.h"
 
@@ -84,4 +84,4 @@ namespace Ilargia {
     };
 }
 
-#endif //PROJECT_SENSORSYSTEM_H
+#endif //ILARGIA_SENSORSYSTEM_H

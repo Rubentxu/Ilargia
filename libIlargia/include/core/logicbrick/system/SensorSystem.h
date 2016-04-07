@@ -1,5 +1,5 @@
-#ifndef PROJECT_SENSORSYSTEM_H
-#define PROJECT_SENSORSYSTEM_H
+#ifndef ILARGIA_SENSORSYSTEM_H
+#define ILARGIA_SENSORSYSTEM_H
 
 #include "core/logicbrick/State.h"
 #include "core/logicbrick/sensor/Sensor.h"
@@ -106,4 +106,4 @@ namespace Ilargia {
     };
 }
 
-#endif //PROJECT_SENSORSYSTEM_H
+#endif //ILARGIA_SENSORSYSTEM_H

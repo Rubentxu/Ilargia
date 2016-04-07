@@ -56,7 +56,10 @@ function(TRY_C_COMPILER_FLAG flag name)
     CHECK_C_COMPILER_FLAG("${flag}" ${name})
 
     if(${name})
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}" PARENT_SCOPE)
+        if(NOT "${CMAKE_C_FLAGS_LIST}" MATCHES "${name}" )
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}" CACHE STRING "" FORCE)
+            set(CMAKE_C_FLAGS_LIST "${CMAKE_C_FLAGS_LIST} ${name}" CACHE INTERNAL "" FORCE)
+        endif()
     endif()
 endfunction()
 
@@ -67,7 +70,10 @@ function(TRY_CXX_COMPILER_FLAG flag name)
     CHECK_CXX_COMPILER_FLAG(${flag} ${name})
 
     if(${name})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" CACHE STRING "" FORCE)
+        if(NOT "${CMAKE_CXX_FLAGS_LIST}" MATCHES "${name}" )
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" CACHE STRING "" FORCE)
+            set(CMAKE_CXX_FLAGS_LIST "${CMAKE_CXX_FLAGS_LIST} ${name}" CACHE INTERNAL "" FORCE)
+        endif()
     endif()
 endfunction()
 

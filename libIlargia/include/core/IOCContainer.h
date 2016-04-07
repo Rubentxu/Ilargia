@@ -1,5 +1,5 @@
-#ifndef PROJECT_IOCContainer_H
-#define PROJECT_IOCContainer_H
+#ifndef ILARGIA_IOCContainer_H
+#define ILARGIA_IOCContainer_H
 
 #include <memory>
 #include <vector>
@@ -80,4 +80,4 @@ namespace Ilargia {
     };
 
 }
-#endif //PROJECT_IOCContainer_H
+#endif //ILARGIA_IOCContainer_H

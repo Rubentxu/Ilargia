@@ -100,7 +100,7 @@ TEST_F(NodeTest, decoratorLimiter) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 }
 
-TEST_F(NodeTest, decoratorMaxTime) {
+/*TEST_F(NodeTest, decoratorMaxTime) {
     behavior._root = NodePtr(new MaxTime {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});
     EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
     std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{1.0});
@@ -109,7 +109,7 @@ TEST_F(NodeTest, decoratorMaxTime) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 
 
-}
+}*/
 
 TEST_F(NodeTest, decoratorRepeater) {
     behavior._root = NodePtr(new Repeater {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});

@@ -2,6 +2,7 @@
 #define ILARGIA_SENSOR_H
 
 #include <core/logicbrick/LogicBrick.h>
+#include "mathfu/vector.h">
 
 namespace Ilargia {
 
