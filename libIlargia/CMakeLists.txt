@@ -48,4 +48,5 @@ target_link_libraries(
         PUBLIC ${SDL2PP_LIBRARIES}
 
 )
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ILARGIA_INCLUDE_DIRS)
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${ILARGIA_INCLUDE_DIRS} ${SDL2PP_INCLUDE_DIRS}
+        ${ANAX_INCLUDE_DIR} ${MathFu_SOURCE_DIR}/include)

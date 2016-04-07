@@ -28,12 +28,12 @@ namespace Ilargia {
 
         template <class T>
         Engine(std::shared_ptr<T> n) {
-            _managers[getTypeManagerID<T>] = n;
+            _managers[getTypeManagerID<T>()] = n;
         }
 
         template <class T, class... T2>
         Engine(std::shared_ptr<T> n, std::shared_ptr<T2>... rest) {
-            _managers[getTypeManagerID<T>] = n;
+            _managers[getTypeManagerID<T>()] = n;
             Engine(std::forward(rest)...);
         }
 
@@ -62,9 +62,8 @@ namespace Ilargia {
         bool hasShutdown() const { return _hasShutdown; }
 
         template<typename M>
-        std::unique_ptr<M>& getManager() {
-            auto typeId = getTypeManagerID<M>();
-            return _managers[typeId];
+        std::shared_ptr<M>& getManager() {
+            return _managers[getTypeManagerID<M>()];
         }
     };
 }
