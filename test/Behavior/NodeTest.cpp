@@ -1,10 +1,13 @@
 #ifdef __STRICT_ANSI__
 #undef __STRICT_ANSI__
 #endif
+#include "gtest/gtest.h"
 #include <iostream>
 #include <thread>
-#include "NodeTest.h"
-
+#include <Node.h>
+#include <ActionNode.h>
+#include <DecoratorNode.h>
+#include <CompositeNode.h>
 
 using namespace bt;
 
@@ -16,18 +19,15 @@ BehaviorTree behavior{NodePtr(new Trigger<Status::SUCCESS> {"name"})};
 BlackBoard blackBoard;
 Context *context;
 
-NodeTest::NodeTest() {
-    blackBoard = BlackBoard{};
-    context = new Context{behavior,blackBoard};
-    context->_target = std::make_shared<boost::any>(1);
+
+class NodeTest: public ::testing::Test {
+public:
+    NodeTest() {
+        blackBoard = BlackBoard{};
+        context = new Context{behavior,blackBoard};
+        context->_target = std::make_shared<boost::any>(1);
+    };
 };
-
-NodeTest::~NodeTest() { };
-
-void NodeTest::SetUp() {};
-
-void NodeTest::TearDown() { };
-
 
 // Testing Action Nodes
 TEST_F(NodeTest, triggerActionSuccess) {
@@ -100,7 +100,7 @@ TEST_F(NodeTest, decoratorLimiter) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 }
 
-TEST_F(NodeTest, decoratorMaxTime) {
+/*TEST_F(NodeTest, decoratorMaxTime) {
     behavior._root = NodePtr(new MaxTime {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});
     EXPECT_EQ(Status::SUCCESS, behavior._root->execute(*context));
     std::this_thread::sleep_for( std::chrono::duration<double, std::milli>{1.0});
@@ -109,7 +109,7 @@ TEST_F(NodeTest, decoratorMaxTime) {
     EXPECT_EQ(Status::FAILURE, behavior._root->execute(*context));
 
 
-}
+}*/
 
 TEST_F(NodeTest, decoratorRepeater) {
     behavior._root = NodePtr(new Repeater {NodePtr(new Trigger<Status::SUCCESS>{"name"}),5});

@@ -28,5 +28,3 @@
  ELSE(Boost_FOUND)
      MESSAGE(FATAL_ERROR "Boost is needed to build ${PROJECT_NAME}!")
  endif ()
-
- #set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)

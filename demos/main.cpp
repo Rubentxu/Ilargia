@@ -1,8 +1,18 @@
-#include <iostream>
+#include "isdl/SDLEngine.h"
+#include <core/Game.h>
+#include <StateInit.h>
+#include<SDL.h>
 
-using namespace std;
+using namespace Ilargia;
 
-int main() {
-    cout << "Hello, World!" << endl;
+
+int main(int argc, char **argv) {
+
+    Game game {Engine {}};
+    game.init(argc, argv);
+    game.pushState(StateInit{});
+    game.runGame();
+
     return 0;
+
 }

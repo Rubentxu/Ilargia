@@ -1,12 +1,14 @@
 project(test)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 find_package(Threads REQUIRED)
 enable_testing()
+
 
 # Enable ExternalProject CMake module
 include(ExternalProject)
 
 set(externalLib ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0 CACHE BOOL "")
 
 ExternalProject_Add(
         gtest
@@ -52,19 +54,6 @@ set_target_properties(libgmock PROPERTIES
 include_directories("${source_dir}/include")
 
 
-file(GLOB SRCS *.cpp)
-# This adds another subdirectory, which has 'project(gtest)'. cmake -Dtest=ON .. -DGTEST_OS_CYGWIN=1
-
-
-include_directories(includes)
-
-ADD_EXECUTABLE(testBehavior ${SRCS})
-
-TARGET_LINK_LIBRARIES(testBehavior
-    Behavior
-    libgtest
-    libgmock
-)
-
-add_test(NAME testBehavior
-        COMMAND testBehavior)
+#include_directories(includes)
+add_subdirectory(Behavior)
+add_subdirectory(Ilargia)

@@ -1,0 +1,12 @@
+[submodule "externalLib/mathfu"]
+	path = externalLib/mathfu
+	url = https://github.com/google/mathfu.git
+[submodule "externalLib/anax"]
+	path = externalLib/anax
+	url = https://github.com/miguelmartin75/anax.git
+[submodule "externalLib/Box2D"]
+	path = externalLib/Box2D
+	url = https://github.com/erincatto/Box2D.git
+[submodule "externalLib/libSDL2pp"]
+	path = externalLib/libSDL2pp
+	url = https://github.com/libSDL2pp/libSDL2pp.git

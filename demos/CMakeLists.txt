@@ -1,15 +1,23 @@
-set(Main_SRCS
-    main.cpp
-     )
+set (EXAMPLE_NAME Demo)
 
-add_executable(demo
-    ${Main_SRCS}
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${ILARGIA_INCLUDE_DIRS})
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+
+#mathfu_configure_flags(${EXAMPLE_NAME})
+
+file(GLOB_RECURSE EXAMPLE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+add_executable(${EXAMPLE_NAME} ${EXAMPLE_SOURCES})
+
+target_link_libraries(
+        ${EXAMPLE_NAME}
+        ${ILARGIA_LIBRARY_NAME}
+        ${ANAX_LIBRARY}
+        ${SDL2_LIBRARY}
+        ${SDL2_IMAGE_LIBRARIES}
+        ${SDL2_TTF_LIBRARIES}
+        ${SDL2_MIXER_LIBRARIES}
+
 )
-
-# Specify here the libraries this program depends on
-target_link_libraries(demo
-    Entitas
-    Behavior
-)
-
-install(TARGETS demo DESTINATION bin)

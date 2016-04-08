@@ -1,8 +1,5 @@
-cmake_minimum_required(VERSION 3.1.2)
-
-project(Ilargia)
-
-set(Ilargia_BINARY_DIR )
+PROJECT ("Ilargia Engine" C CXX)
+cmake_minimum_required(VERSION 3.3.2)
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
 set(EXECUTABLE_OUTPUT_PATH ${dir} CACHE PATH "Build directory" FORCE)
@@ -15,7 +12,8 @@ set(Ilargia_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/modules-cmake ${CMAKE_CURRENT_SOURCE_DIR}/externalLib/libSDL2pp/cmake CACHE STRING "" )
+
 
 # uncomment to be in Release mode [default]
 # SET(CMAKE_BUILD_TYPE Release)
@@ -39,124 +37,195 @@ ENDIF (CMAKE_BUILD_TYPE STREQUAL "")
 
 MESSAGE(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-# ===============================================================
-# Detect different compilers and OS'es, tweak flags as necessary.
-
-IF (CMAKE_COMPILER_IS_GNUCXX)
-    # aiiee cmake version 2.8.8 or newer is needed for below to
-    # work...
-    # IF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6.4)
-    #	MESSAGE(FATAL_ERROR "GCC version must be at least 4.6.4!")
-    # ENDIF (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6.4)
-
-    IF (APPLE)
-        SET(CMAKE_C_FLAGS "-Wall -Wno-long-long -Wno-conversion")
-        SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
-        SET(CMAKE_C_FLAGS_PROFILE "-O0 -pg")
-        SET(CMAKE_C_FLAGS_RELEASE "-O2 -g0")
-        # Vital to do this otherwise unresolved symbols everywhere:
-        SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,-flat_namespace,-undefined,dynamic_lookup")
-        SET(CMAKE_EXE_LINKER_FLAGS "-Wl,-flat_namespace,-undefined,dynamic_lookup")
-    ELSE (APPLE)
-        #SET(CMAKE_C_FLAGS "-Wall -fPIC")
-        # SET(CMAKE_C_FLAGS "-Wl,--copy-dt-needed-entries")
-        SET(CMAKE_C_FLAGS_DEBUG "-ggdb3 -fstack-protector")
-        SET(CMAKE_C_FLAGS_PROFILE "-O2 -g3 -fstack-protector -pg")
-        SET(CMAKE_C_FLAGS_RELEASE "-O2 -g -fstack-protector")
-    ENDIF (APPLE)
-
-    # 1) -Wno-variadic-macros is to avoid warnings regarding using
-    # variadic in macro OC_ASSERT (the warning warns that this is only
-    # available from C99, lol!)
-    #
-    # 2) -fopenmp for multithreading support
-    #
-    # 3) -std=gnu++0x for C++0x and GNU extensions support
-    SET(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-variadic-macros -fopenmp -std=gnu++11")
-
-    SET(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-    SET(CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE})
-    SET(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-
-    # Options for generating gcov code coverage output
-    SET(CMAKE_C_FLAGS_COVERAGE "-O0 -g -fprofile-arcs -ftest-coverage -fno-inline")
-    SET(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_C_FLAGS_COVERAGE} -fno-default-inline")
-    # Might be needed for some combinations of ln and gcc
-    IF (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-        LINK_LIBRARIES(gcov)
-    ENDIF (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
-# Do the windows build
-IF (WIN32)
-    ADD_DEFINITIONS(-DWIN32)
-    IF (CYGWIN)
-        ADD_DEFINITIONS(-DCYGWIN)
-        #   SET(WIN32 1)
-    ENDIF (CYGWIN)
-
-    # It is "not unix" when the code is compiled under windows but not
-    # under cygwin
-   IF (NOT UNIX)
-        LINK_LIBRARIES(pthread)
-        IF (CYGWIN)
-            SET(CMAKE_SHARED_LINKER_FLAGS "-Wl")
-        ELSE (CYGWIN)
-            SET(CMAKE_SHARED_LINKER_FLAGS "-Wl,--enable-new-dtags")
-        ENDIF (CYGWIN)
-    ENDIF (NOT UNIX)
-ENDIF (WIN32)
-
 
 option(test "Build all tests." ON) #
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+
+
+INCLUDE(CheckIncludeFiles)
+INCLUDE(CheckCCompilerFlag)
+INCLUDE(CheckCXXCompilerFlag)
+
+################################################################################
+######################### Functions  ###########################################
+
+##
+## TRY_C_COMPILER_FLAG
+##
+function(TRY_C_COMPILER_FLAG flag name)
+    CHECK_C_COMPILER_FLAG("${flag}" ${name})
+
+    if(${name})
+        if(NOT "${CMAKE_C_FLAGS_LIST}" MATCHES "${name}" )
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}" CACHE STRING "" FORCE)
+            set(CMAKE_C_FLAGS_LIST "${CMAKE_C_FLAGS_LIST} ${name}" CACHE INTERNAL "" FORCE)
+        endif()
+    endif()
+endfunction()
+
+##
+## TRY_CXX_COMPILER_FLAG
+##
+function(TRY_CXX_COMPILER_FLAG flag name)
+    CHECK_CXX_COMPILER_FLAG(${flag} ${name})
+
+    if(${name})
+        if(NOT "${CMAKE_CXX_FLAGS_LIST}" MATCHES "${name}" )
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" CACHE STRING "" FORCE)
+            set(CMAKE_CXX_FLAGS_LIST "${CMAKE_CXX_FLAGS_LIST} ${name}" CACHE INTERNAL "" FORCE)
+        endif()
+    endif()
+endfunction()
+
+
+################################################################################
+######################### Compiler: Features  ##################################
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    TRY_CXX_COMPILER_FLAG(-std=c++11 FLAG_CXX_stdcxx11)
 endif()
 
-# Optional, currently needed only to hush up DRD in util/Logger.cc
-#[[FIND_PACKAGE(VALGRIND)
-IF (VALGRIND_FOUND)
-    MESSAGE(STATUS "VALGRIND was found.")
-    IF (VALGRIND_INCLUDE_DIR)
-        MESSAGE(STATUS "VALGRIND devel headers found.")
-        ADD_DEFINITIONS(-DHAVE_VALGRIND)
-    ELSE (VALGRIND_INCLUDE_DIR)
-        MESSAGE(STATUS "VALGRIND devel headers NOT FOUND: needed for thread debugging.")
-    ENDIF (VALGRIND_INCLUDE_DIR)
-ELSE (VALGRIND_FOUND)
-    MESSAGE(STATUS "VALGRIND missing: needed for thread debugging.")
-ENDIF (VALGRIND_FOUND)]]
+
+################################################################################
+######################### Compiler: Warnings  ##################################
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    TRY_C_COMPILER_FLAG(-Wall   FLAG_C_Wall)
+    #TRY_C_COMPILER_FLAG(-Wextra FLAG_C_Wextra)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    TRY_CXX_COMPILER_FLAG(-Wall   FLAG_CXX_Wall)
+    #TRY_CXX_COMPILER_FLAG(-Wextra FLAG_CXX_Wextra)
+endif()
+
+if(CMAKE_C_COMPILER_ID STREQUAL "Intel")
+    TRY_C_COMPILER_FLAG(-Wall              FLAG_C_Wall)
+    TRY_C_COMPILER_FLAG(-Wcheck            FLAG_C_Wcheck)
+    TRY_C_COMPILER_FLAG(-Wp64              FLAG_C_Wp64)
+    TRY_C_COMPILER_FLAG(-Wshorten-64-to-32 FLAG_C_Wshorten_64_to_32)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+    TRY_CXX_COMPILER_FLAG(-Wall              FLAG_CXX_Wall)
+    TRY_CXX_COMPILER_FLAG(-Wcheck            FLAG_CXX_Wcheck)
+    TRY_CXX_COMPILER_FLAG(-Wp64              FLAG_CXX_Wp64)
+    TRY_CXX_COMPILER_FLAG(-Wshorten-64-to-32 FLAG_CXX_Wshorten_64_to_32)
+endif()
+
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
+endif()
 
 
-#[[# create a shared C++ library
-IF(NOT CMAKE_CXX_CREATE_SHARED_LIBRARY)
-    IF (WIN32 AND CMAKE_COMPILER_IS_GNUCXX)
-        SET(CMAKE_CXX_CREATE_SHARED_LIBRARY
-                "<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> -Wl,--out-implib,<TARGET>.a <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>")
-    ELSE (WIN32 AND CMAKE_COMPILER_IS_GNUCXX)
-        SET(CMAKE_CXX_CREATE_SHARED_LIBRARY
-                "<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>")
-    ENDIF (WIN32 AND CMAKE_COMPILER_IS_GNUCXX)
-ENDIF(NOT CMAKE_CXX_CREATE_SHARED_LIBRARY)
+################################################################################
+######################### Compiler: Hardening  #################################
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        TRY_C_COMPILER_FLAG(-fstack-protector FLAG_C_fstack_protector)
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    IF (NOT WIN32)
-        SET(CMAKE_CXX_CREATE_SHARED_LIBRARY "${CMAKE_CXX_CREATE_SHARED_LIBRARY} -lgcc")
-    ENDIF (NOT WIN32)
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)]]
+        if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            TRY_C_COMPILER_FLAG(-fPIC              FLAG_C_fPIC)
+            TRY_C_COMPILER_FLAG(-pie               FLAG_C_pie)
+            TRY_C_COMPILER_FLAG(-Wl,-z,relro       FLAG_C_Wl_z_relro)
+            TRY_C_COMPILER_FLAG(-Wl,-z,now         FLAG_C_Wl_z_now)
+            TRY_C_COMPILER_FLAG(-Wl,--as-needed    FLAG_C_Wl_as_needed)
+            TRY_C_COMPILER_FLAG(-Wl,-z,noexecstack FLAG_C_Wl_z_noexecstack)
+        endif()
+    endif()
 
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        TRY_CXX_COMPILER_FLAG(-fstack-protector FLAG_CXX_fstack_protector)
+
+        if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            TRY_CXX_COMPILER_FLAG(-fPIC              FLAG_CXX_fPIC)
+            TRY_CXX_COMPILER_FLAG(-pie               FLAG_CXX_pie)
+            TRY_CXX_COMPILER_FLAG(-Wl,-z,relro       FLAG_CXX_Wl_z_relro)
+            TRY_CXX_COMPILER_FLAG(-Wl,-z,now         FLAG_CXX_Wl_z_now)
+            TRY_CXX_COMPILER_FLAG(-Wl,--as-needed    FLAG_CXX_Wl_as_needed)
+            TRY_CXX_COMPILER_FLAG(-Wl,-z,noexecstack FLAG_CXX_Wl_z_noexecstack)
+        endif()
+    endif()
+
+    if(CMAKE_C_COMPILER_ID STREQUAL "Intel")
+        TRY_C_COMPILER_FLAG(-fstack-protector  FLAG_C_fstackprotector)
+        TRY_C_COMPILER_FLAG(-fPIC              FLAG_C_fPIC)
+        TRY_C_COMPILER_FLAG(-pie               FLAG_C_pie)
+        TRY_C_COMPILER_FLAG(-Wl,-z,relro       FLAG_C_Wl_z_relro)
+        TRY_C_COMPILER_FLAG(-Wl,-z,now         FLAG_C_Wl_z_now)
+        TRY_C_COMPILER_FLAG(-Wl,--as-needed    FLAG_C_Wl_as_needed)
+        TRY_C_COMPILER_FLAG(-Wl,-z,noexecstack FLAG_C_Wl_z_noexecstack)
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+        TRY_CXX_COMPILER_FLAG(-fstack-protector  FLAG_CXX_fstackprotector)
+        TRY_CXX_COMPILER_FLAG(-fPIC              FLAG_CXX_fPIC)
+        TRY_CXX_COMPILER_FLAG(-pie               FLAG_CXX_pie)
+        TRY_CXX_COMPILER_FLAG(-Wl,-z,relro       FLAG_CXX_Wl_z_relro)
+        TRY_CXX_COMPILER_FLAG(-Wl,-z,now         FLAG_CXX_Wl_z_now)
+        TRY_CXX_COMPILER_FLAG(-Wl,--as-needed    FLAG_CXX_Wl_as_needed)
+        TRY_CXX_COMPILER_FLAG(-Wl,-z,noexecstack FLAG_CXX_Wl_z_noexecstack)
+    endif()
+
+    if(MSVC)
+        TRY_C_COMPILER_FLAG(/GS FLAG_C_GS)
+
+        TRY_CXX_COMPILER_FLAG(/GS FLAG_CXX_GS)
+    endif()
+endif()
+
+
+################################################################################
+######################### Compiler: Optimisation  ##############################
+if(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel" OR CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        TRY_C_COMPILER_FLAG(-fomit-frame-pointer FLAG_C_fomit_frame_pointer)
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        TRY_CXX_COMPILER_FLAG(-fomit-frame-pointer FLAG_CXX_fomit_frame_pointer)
+    endif()
+
+    if(CMAKE_C_COMPILER_ID STREQUAL "Intel")
+        TRY_C_COMPILER_FLAG(-fomit-frame-pointer FLAG_C_fomit_frame_pointer)
+        TRY_C_COMPILER_FLAG(-ipo                 FLAG_C_ipo)
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+        TRY_CXX_COMPILER_FLAG(-fomit-frame-pointer FLAG_CXX_fomit_frame_pointer)
+        TRY_CXX_COMPILER_FLAG(-ipo                 FLAG_CXX_ipo)
+    endif()
+endif()
+
+
+
+
+
+#anax
 add_subdirectory(libBehavior)
-add_subdirectory(libEntitas)
-add_subdirectory(demos)
-add_subdirectory(src)
+set(BUILD_SHARED_LIBS false CACHE BOOL "")
+set(ANAX_STATIC_LIBRARIES true CACHE BOOL "")
+add_subdirectory(externalLib/anax)
+
+#mathfu
+set(dependencies_root "${Ilargia_SOURCE_DIR}/externalLib/mathfu/dependencies" CACHE PATH "Directory holding the dependencies pulled from github.")
+set(mathfu_build_benchmarks OFF CACHE BOOL "")
+set(mathfu_build_tests OFF CACHE BOOL "")
+add_subdirectory(externalLib/mathfu)
+
+set(BOX2D_BUILD_EXAMPLES OFF CACHE BOOL "")
+add_subdirectory(externalLib/Box2D/Box2D)
+
+set(SDL2PP_WITH_EXAMPLES OFF CACHE BOOL "")
+set(SDL2PP_WITH_TESTS OFF CACHE BOOL "")
+set(SDL2PP_ENABLE_LIVE_TESTS OFF CACHE BOOL "")
+SET(SDL2PP_WITH_IMAGE ON) # if you need SDL_image support
+SET(SDL2PP_WITH_MIXER ON) # if you need SDL_mixer support
+SET(SDL2PP_WITH_TTF ON) # if you need SDL_ttf support
+add_subdirectory(externalLib/libSDL2pp)
+
+add_subdirectory(libIlargia)
+#add_subdirectory(demos)
+
 if (test)
     add_subdirectory(test)
-endif()
-
-
-
+endif ()
