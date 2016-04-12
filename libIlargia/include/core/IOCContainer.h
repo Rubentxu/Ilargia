@@ -19,7 +19,7 @@ namespace Ilargia {
             virtual ~FactoryRoot() { }
         };
 
-        std::vector<int, std::shared_ptr<FactoryRoot>> m_factories;
+        std::vector<std::shared_ptr<FactoryRoot>> m_factories;
 
         template<typename T>
         class CFactory : public FactoryRoot {

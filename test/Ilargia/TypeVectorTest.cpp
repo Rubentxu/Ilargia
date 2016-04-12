@@ -8,7 +8,7 @@
 #include <string>
 
 
-struct ArrayIndexTest: public ::testing::Test {
+struct TypeVectorTest: public ::testing::Test {
 
     virtual void SetUp() {
 
@@ -40,8 +40,8 @@ public:
 
 
 
-TEST_F(ArrayIndexTest, testGetType) {
-    Ilargia::ArrayIndex<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
+TEST_F(TypeVectorTest, testGetType) {
+    Ilargia::TypeVector<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
     auto id = array.getTypeID<ExtendUno>();
     auto id2 = array.getTypeID<ExtendDos>();
     auto id3 = array.getTypeID<ExtendTres>();
@@ -54,8 +54,8 @@ TEST_F(ArrayIndexTest, testGetType) {
 
 }
 
-TEST_F(ArrayIndexTest, testAddItem) {
-    Ilargia::ArrayIndex<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
+TEST_F(TypeVectorTest, testAddItem) {
+    Ilargia::TypeVector<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
 
 
     EXPECT_EQ("Uno",array.get<ExtendUno>());

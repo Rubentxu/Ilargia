@@ -9,7 +9,7 @@
 namespace Ilargia {
 
     template<class Base>
-    class ArrayIndex {
+    class TypeVector {
         static int s_nextTypeId;
         std::vector<Base> _data;
 
@@ -32,7 +32,7 @@ namespace Ilargia {
 
     public:
         template<typename... Ts>
-        ArrayIndex(Ts &&... vs) {
+        TypeVector(Ts &&... vs) {
             addItem(std::forward<Ts>(vs)...);
         }
 
@@ -50,12 +50,11 @@ namespace Ilargia {
     };
 
     template<class Base>
-    int ArrayIndex<Base>::s_nextTypeId = 0;
+    int TypeVector<Base>::s_nextTypeId = 0;
 
-    class Engine {
+    class Engine: public TypeVector<std::shared_ptr<Manager>>{
 
     protected:
-        std::vector<std::shared_ptr<Manager>> _managers;
 
         int _errorState;
         bool _hasShutdown;
@@ -63,13 +62,7 @@ namespace Ilargia {
     public:
 
         template<class... T>
-        Engine(std::shared_ptr<T>... rest) {
-            /*    constexpr int n = sizeof...(T);
-                //_managers.reserve(n);
-                _managers = {n,rest...};
-                getTypeManagerID<T...>();*/
-
-        }
+        Engine(std::shared_ptr<T>&&... rest): TypeVector(std::forward<std::shared_ptr<T>>(rest)...) { }
 
         Engine &operator=(const Engine &other) = delete;
 

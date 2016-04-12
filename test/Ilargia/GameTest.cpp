@@ -19,7 +19,7 @@ public:
     bool isUpdate = false;
     bool isShutdown = false;
 
-    TestEngine(std::shared_ptr<Ilargia::Manager> manager) : Engine(manager) { }
+    TestEngine(std::shared_ptr<Ilargia::Manager>&& manager) : Engine(std::move(manager)) { }
 
     virtual void configure(std::vector<std::string> &args) override {
         isConfigure = true;
