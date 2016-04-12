@@ -41,7 +41,7 @@ public:
 
 
 TEST_F(ArrayIndexTest, testGetType) {
-    Ilargia::ArrayIndex<4,std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
+    Ilargia::ArrayIndex<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
     auto id = array.getTypeID<ExtendUno>();
     auto id2 = array.getTypeID<ExtendDos>();
     auto id3 = array.getTypeID<ExtendTres>();
@@ -55,7 +55,7 @@ TEST_F(ArrayIndexTest, testGetType) {
 }
 
 TEST_F(ArrayIndexTest, testAddItem) {
-    Ilargia::ArrayIndex<4, std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
+    Ilargia::ArrayIndex<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
 
 
     EXPECT_EQ("Uno",array.get<ExtendUno>());

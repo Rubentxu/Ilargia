@@ -8,38 +8,37 @@
 
 namespace Ilargia {
 
-    template<int N, typename Base>
+    template<class Base>
     class ArrayIndex {
-       // static const int size = sizeof...(Args);
-        std::array<Base,N> _data;
         static int s_nextTypeId;
+        std::vector<Base> _data;
 
-        template<typename T>
-        void addItem(T &&item) {
+        template <class T>
+        void addItem(T&& n) {
             static_assert(!std::is_lvalue_reference<T>::value,
                           "T replacement template argument must be a reference type rvalue");
-            int id = getTypeID<T>();
-            //_data[id] = std::forward<T>(item);
 
+            s_nextTypeId = _data.size();
+            getTypeID<T>();
+            _data.push_back(std::forward<T>(n));
         }
 
+        template <class T, class... T2>
+        void addItem(T&& n, T2&&... rest) {
+            addItem(std::forward<T>(n));
+            addItem(std::forward<T2>(rest)...);
+        }
 
 
     public:
-
         template<typename... Ts>
-        ArrayIndex(Ts&&... vs) : _data{{std::forward<Ts>(vs)...}} {
-            static_assert(sizeof...(Ts)==N,"Not enough args supplied!");
-            /* for(auto d: _data) {
-               getTypeID<decltype(d)>();
-           }*/
+        ArrayIndex(Ts &&... vs) {
+            addItem(std::forward<Ts>(vs)...);
         }
-
-
 
         template<typename T>
         static int getTypeID() {
-            static int typeId = s_nextTypeId++;
+            static int typeId = s_nextTypeId;
             return typeId;
         }
 
@@ -50,8 +49,8 @@ namespace Ilargia {
 
     };
 
-    template<int N, typename Base>
-    int ArrayIndex<N,Base>::s_nextTypeId = 0;
+    template<class Base>
+    int ArrayIndex<Base>::s_nextTypeId = 0;
 
     class Engine {
 
