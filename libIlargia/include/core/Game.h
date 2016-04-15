@@ -29,7 +29,7 @@ namespace Ilargia {
         void init(int argc, char *argv[]) {
             std::vector<std::string> args;
             for (int i=1;i<argc;i++){
-                args.push_back(argv[i]);
+                args.push_back(std::string(argv[i]));
             }
             _engine->configure(args);
             _engine->initSystems();

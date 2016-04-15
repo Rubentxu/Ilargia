@@ -24,14 +24,12 @@ public:
 struct TimerTest: public ::testing::Test {
     std::shared_ptr<Ilargia::Timer> _timer;
 
-
     virtual void SetUp() {
         _timer = std::make_shared<ChronoTimer>(60);
     }
 
     virtual void TearDown() {
     }
-
 };
 
 

@@ -7,7 +7,6 @@
 #include "core/Engine.h"
 #include <string>
 
-
 struct TypeVectorTest: public ::testing::Test {
 
     virtual void SetUp() {
@@ -18,7 +17,6 @@ struct TypeVectorTest: public ::testing::Test {
     }
 
 };
-
 
 class ExtendUno : public std::string {
 public:
@@ -38,8 +36,6 @@ public:
 };
 
 
-
-
 TEST_F(TypeVectorTest, testGetType) {
     Ilargia::TypeVector<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
     auto id = array.getTypeID<ExtendUno>();
@@ -56,7 +52,6 @@ TEST_F(TypeVectorTest, testGetType) {
 
 TEST_F(TypeVectorTest, testAddItem) {
     Ilargia::TypeVector<std::string> array{ExtendUno{"Uno"},ExtendDos{"Dos"},ExtendTres{"Tres"},ExtendCuatro{"Cuatro"}};
-
 
     EXPECT_EQ("Uno",array.get<ExtendUno>());
     EXPECT_EQ("Dos",array.get<ExtendDos>());

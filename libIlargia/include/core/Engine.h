@@ -55,7 +55,6 @@ namespace Ilargia {
     class Engine: public TypeVector<std::shared_ptr<Manager>>{
 
     protected:
-
         int _errorState;
         bool _hasShutdown;
 

@@ -3,8 +3,6 @@
 namespace Ilargia {
 
     int Game::runGame() {
-        const float STEP = _timer->step();
-
         while (isRunning()) {
             //processGameEvents(_engine.getEvents());
             _engine->processInput();
