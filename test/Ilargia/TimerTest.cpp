@@ -7,6 +7,8 @@
 #include "core/Game.h"
 #include <chrono>
 #include <thread>
+#include <signal.h>
+#include <unistd.h>
 
 
 class ChronoTimer:  public Ilargia::Timer {
@@ -75,3 +77,21 @@ TEST_F(TimerTest, testPause) {
 
 }
 
+volatile bool alarmed = false;
+
+void alrm_handler(int) {
+    alarmed = true;
+}
+
+TEST_F(TimerTest, testFrames) {
+    _timer->start();
+    signal(SIGALRM, alrm_handler);
+
+    alarm(1);
+    while(not alarmed){
+        _timer->step();
+    }
+    EXPECT_EQ(60,_timer->numStep());
+
+
+}

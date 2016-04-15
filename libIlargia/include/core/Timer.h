@@ -59,7 +59,7 @@ namespace Ilargia {
                         _accumulator -= _timeStep;
                         _alpha = _accumulator / _timeStep;
                         _numStep++;
-                        if(_numStep>59) _numStep=1;
+                        if(_numStep>_steps) _numStep=1;
                         return _timeStep;
                     }
 
