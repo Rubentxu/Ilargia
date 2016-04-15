@@ -34,10 +34,6 @@ public:
     virtual void processInput() override {
         isProcessInput = true;
 
-        std::thread([this]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            shutdownEngine(1);
-        }).detach();
     }
 
     virtual void update(float deltaTime) override {
@@ -46,6 +42,7 @@ public:
 
     virtual void render() override {
         isRender = true;
+        shutdownEngine(1);
     }
 
     virtual void shutdown() override {
@@ -90,8 +87,11 @@ TEST_F(GameTest, testInitEngine) {
 
 TEST_F(GameTest, testRunEngine) {
     _game->runGame();
+
     EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isProcessInput);
     EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isUpdate);
     EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isRender);
+    EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isShutdown);
+
 
 }

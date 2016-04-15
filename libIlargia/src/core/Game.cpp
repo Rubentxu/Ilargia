@@ -3,6 +3,7 @@
 namespace Ilargia {
 
     int Game::runGame() {
+        _timer->start();
         while (isRunning()) {
             //processGameEvents(_engine.getEvents());
             _engine->processInput();
@@ -10,6 +11,7 @@ namespace Ilargia {
             _engine->render();
 
         }
+        _timer->stop();
         return getErrorState();
     }
 
