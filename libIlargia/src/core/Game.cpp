@@ -3,15 +3,13 @@
 namespace Ilargia {
 
     int Game::runGame() {
-        const float STEP = _timer->Step();
+        const float STEP = _timer->step();
 
         while (isRunning()) {
             //processGameEvents(_engine.getEvents());
             _engine->processInput();
-            if(_timer->tick()) {
-                _engine->update(STEP);
-                _engine->render();
-            }
+            if(!_timer->paused())_engine->update(_timer->step());
+            _engine->render();
 
         }
         return getErrorState();
@@ -41,7 +39,7 @@ namespace Ilargia {
     }
 
     void Game::changeState(GameState &&gameState) {
-        if(!_states.empty()) {
+        if (!_states.empty()) {
             popState();
         }
         pushState(std::move(gameState));
@@ -49,7 +47,7 @@ namespace Ilargia {
 
     /// Clears the GameStateStack
     void Game::clear() {
-        while(!_states.empty()) {
+        while (!_states.empty()) {
             _states.pop();
         }
 

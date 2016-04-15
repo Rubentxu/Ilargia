@@ -4,77 +4,85 @@
 namespace Ilargia {
 
     class Timer {
-        double currentTime, pausedTicks, newTime, frameTime, accumulator, alpha = 0.0;
-        bool started, paused = false;
-        double step = 1.0 / 60.0;
+        double _currentTime, _pausedTime, _newTime, _frameTime, _accumulator, _alpha = 0.0;
+        bool _started, _paused = false;
+        int _steps = 60.0;
+        double _timeStep;
+        int _numStep = 0;
 
     public:
-        Timer(double step) : step(step) { }
+        Timer() {  _timeStep =1.0/ _steps;}
 
-        void Start() {
-            started = true;
-            paused = false;
-            currentTime = getTime();
-            accumulator = 0.0;
+        Timer(int steps) : _steps(steps) { _timeStep =1.0/ _steps;}
+
+        void start() {
+            _started = true;
+            _paused = false;
+            _currentTime = getSecondsTime();
+            _accumulator = 0.0;
         }
 
-        void Stop() {
-            started = false;
-            paused = false;
+        void stop() {
+            _started = false;
+            _paused = false;
         }
 
-        void Pause() {
-            if (started && !paused) {
-                paused = true;
-                pausedTicks = getTime() - currentTime;
+        void pause() {
+            if (_started && !_paused) {
+                _paused = true;
+                _pausedTime = getSecondsTime() - _currentTime;
             }
         }
 
-        void Unpause() {
-            if (paused) {
-                paused = false;
-                currentTime = getTime() - pausedTicks;
-                pausedTicks = 0;
+        void unpause() {
+            if (_paused) {
+                _paused = false;
+                _currentTime = getSecondsTime() - _pausedTime;
+                _pausedTime = 0;
             }
         }
 
-        bool tick() {
-            if (started) {
-                if (paused)
-                    return false;
+        double step() {
+            if (_started) {
+                if (_paused)
+                    return 0.0;
                 else {
-                    newTime = getTime();
-                    frameTime = newTime - currentTime;
-                    if (frameTime > 0.25)
-                        frameTime = 0.25;
-                    currentTime = newTime;
+                    _newTime = getSecondsTime();
+                    _frameTime = _newTime - _currentTime;
+                    if (_frameTime > 0.25)
+                        _frameTime = 0.25;
+                    _currentTime = _newTime;
 
-                    accumulator += frameTime;
+                    _accumulator += _frameTime;
 
-                    if (accumulator >= step) {
-                        accumulator -= step;
-                        alpha = accumulator / step;
-                        return true;
+                    if (_accumulator >= _timeStep) {
+                        _accumulator -= _timeStep;
+                        _alpha = _accumulator / _timeStep;
+                        _numStep++;
+                        if(_numStep>59) _numStep=1;
+                        return _timeStep;
                     }
 
                 }
             }
-            return false;
+            return 0.0;
         }
 
-        bool Started() const {
-            return started;
+        bool started() const {
+            return _started;
         }
 
-        bool Paused() const {
-            return paused;
+        bool paused() const {
+            return _paused;
         }
 
-        double Step() const {
-            return step;
+        int numStep() const {
+            return _numStep;
         }
 
-        virtual double getTime() { 0;}
+
+
+        virtual double getSecondsTime() { 0;}
 
 
     };

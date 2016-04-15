@@ -13,7 +13,7 @@ class ChronoTimer:  public Ilargia::Timer {
 public:
     ChronoTimer(double step) : Timer(step) { }
 
-    virtual double getTime() override  {
+    virtual double getSecondsTime() override  {
         return std::chrono::duration_cast<std::chrono::duration<double,std::milli>>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()/1000.0;
     }
 
@@ -24,7 +24,7 @@ struct TimerTest: public ::testing::Test {
 
 
     virtual void SetUp() {
-        _timer = std::make_shared<ChronoTimer>(0.2);
+        _timer = std::make_shared<ChronoTimer>(60);
     }
 
     virtual void TearDown() {
@@ -34,10 +34,44 @@ struct TimerTest: public ::testing::Test {
 
 
 TEST_F(TimerTest, testStep) {
-    _timer->Start();
-    EXPECT_FALSE(_timer->tick());
-    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{200.0});
-    EXPECT_TRUE(_timer->tick());
-    //EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isInitSystem);
+    _timer->start();
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(0,_timer->numStep());
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{16.7});
+    ASSERT_DOUBLE_EQ(0.016666666666666666,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{16.7});
+    ASSERT_DOUBLE_EQ(0.016666666666666666,_timer->step());
+    EXPECT_EQ(2,_timer->numStep());
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(2,_timer->numStep());
 
 }
+
+
+TEST_F(TimerTest, testPause) {
+    _timer->start();
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(0,_timer->numStep());
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{16.7});
+    ASSERT_DOUBLE_EQ(0.016666666666666666,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    _timer->pause();
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{100});
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(1,_timer->numStep());
+    _timer->unpause();
+    std::this_thread::sleep_for(std::chrono::duration<double, std::milli>{16.7});
+    ASSERT_DOUBLE_EQ(0.016666666666666666,_timer->step());
+    EXPECT_EQ(2,_timer->numStep());
+    ASSERT_DOUBLE_EQ(0.0,_timer->step());
+    EXPECT_EQ(2,_timer->numStep());
+
+}
+
