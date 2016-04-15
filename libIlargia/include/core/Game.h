@@ -5,6 +5,7 @@
 #include <stack>
 #include "Engine.h"
 #include "GameState.h"
+#include "Timer.h"
 
 namespace Ilargia {
 
@@ -13,11 +14,13 @@ namespace Ilargia {
         using  GameStatePtr = std::shared_ptr<GameState> ;
         std::stack<GameStatePtr> _states;
         std::shared_ptr<Engine> _engine;
+        std::shared_ptr<Timer> _timer;
         unsigned int thisTime = 0;
         unsigned int lastTime = 0;
 
     public:
-        Game(std::shared_ptr<Engine> engine) : _engine(engine) {}
+        Game(std::shared_ptr<Engine> engine, std::shared_ptr<Timer> timer)
+                : _engine(engine), _timer(timer) {}
 
         int getErrorState() const { return _engine->getErrorState(); }
 
@@ -33,8 +36,6 @@ namespace Ilargia {
         }
 
         //virtual void processGameEvents(std::deque events) =0;
-
-        float deltaTime();
 
         int runGame();
 

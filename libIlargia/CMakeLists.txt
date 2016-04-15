@@ -27,7 +27,7 @@ include_directories(${MathFu_SOURCE_DIR}/include)
 
 #include_directories(${BitScan_SOURCE_DIR}/include)
 file(GLOB_RECURSE ILARGIA_LIBRARY_SOURCES ${Ilargia_SOURCE_DIR}/src/*.cpp)
-add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES})
+add_library(${ILARGIA_LIBRARY_NAME} ${ILARGIA_LIBRARY_SOURCES} )
 
 set_target_properties(${ILARGIA_LIBRARY_NAME} PROPERTIES
         VERSION ${PROJECT_VERSION}

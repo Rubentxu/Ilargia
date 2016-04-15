@@ -1,39 +1,28 @@
 #include "core/Game.h"
-#include <SDL2pp/SDL2pp.hh>
 
 namespace Ilargia {
 
     int Game::runGame() {
-        const float MAX_FRAME_TIME = 1000 / 4.f;
-        const float DELTA_TIME = 1000 / 60.f;
-        float accumulator{0};
+        const float STEP = _timer->Step();
 
         while (isRunning()) {
             //processGameEvents(_engine.getEvents());
             _engine->processInput();
-
-            float frameTime = deltaTime();
-
-            if (frameTime >= MAX_FRAME_TIME) {
-                frameTime = MAX_FRAME_TIME;
+            if(_timer->tick()) {
+                _engine->update(STEP);
+                _engine->render();
             }
-            accumulator += frameTime;
 
-            while (accumulator >= DELTA_TIME) {
-                accumulator -= DELTA_TIME;
-            }
-            _engine->update(DELTA_TIME);
-            _engine->render();
         }
         return getErrorState();
     }
 
-    inline float Game::deltaTime() {
-        thisTime = SDL_GetTicks();
+/*    inline float Game::deltaTime() {
+        thisTime = deltaTime();
         float deltaTime = (float) (thisTime - lastTime) / 1000;
         lastTime = thisTime;
         return deltaTime;
-    }
+    }*/
 
     void Game::pushState(GameState &&gameState) {
         _states.push(GameStatePtr(&gameState));
