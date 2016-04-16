@@ -2,74 +2,22 @@
 #undef __STRICT_ANSI__
 #endif
 
-#include <memory>
 #include <thread>
 #include "gtest/gtest.h"
 #include "core/Game.h"
-
-
-class TestManager : public Ilargia::Manager {
-};
-
-class TestEngine : public Ilargia::Engine {
-public:
-    bool isConfigure = false;
-    bool isInitSystem = false;
-    bool isProcessInput = false;
-    bool isUpdate = false;
-    bool isRender = false;
-    bool isShutdown = false;
-
-    TestEngine(std::shared_ptr<Ilargia::Manager> &&manager) : Engine(std::move(manager)) { }
-
-    virtual void configure(std::vector<std::string> &args) override {
-        isConfigure = (args[0] == "true") ? true : false;
-    }
-
-    virtual void initSystems() override {
-        isInitSystem = true;
-    }
-
-
-    virtual void processInput() override {
-        isProcessInput = true;
-
-    }
-
-    virtual void update(float deltaTime) override {
-        isUpdate = !isUpdate;
-    }
-
-    virtual void render() override {
-        isRender = true;
-        shutdownEngine(1);
-    }
-
-    virtual void shutdown() override {
-        isShutdown = true;
-    }
-
-};
-
-class TestTimer : public Ilargia::Timer {
-public:
-    TestTimer() : Timer() { }
-
-    virtual double getSecondsTime() override {
-        return 0.016666666666666666;
-    }
-
-};
+#include "Commons.h"
 
 struct GameTest : public ::testing::Test {
     std::shared_ptr<Ilargia::Engine> _engine;
     std::shared_ptr<Ilargia::Timer> _timer;
     std::shared_ptr<Ilargia::Game> _game;
+    std::shared_ptr<Ilargia::GameState> _gameState;
 
     virtual void SetUp() {
         _timer = std::make_shared<TestTimer>();
         _engine = std::make_shared<TestEngine>(std::make_shared<TestManager>());
         _game = std::make_shared<Ilargia::Game>(_engine, _timer);
+        _gameState = std::make_shared<TestGameState>(_engine);
     }
 
     virtual void TearDown() {
@@ -93,5 +41,26 @@ TEST_F(GameTest, testRunEngine) {
     EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isRender);
     EXPECT_TRUE(dynamic_cast<TestEngine *>(_engine.get())->isShutdown);
 
+}
+
+TEST_F(GameTest, testPushState) {
+    _game->pushState(_gameState);
+
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isLoadResources);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isInit);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isOnResume);
+
+
+}
+
+TEST_F(GameTest, testPopState) {
+    _game->pushState(_gameState);
+    _game->changeState(_gameState);
+
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isLoadResources);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isInit);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isOnResume);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isOnPause);
+    EXPECT_TRUE(dynamic_cast<TestGameState *>(_gameState.get())->isUnloadResources);
 
 }

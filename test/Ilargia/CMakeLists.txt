@@ -1,6 +1,6 @@
 file(GLOB_RECURSE SRCS *.cpp)
 
-ADD_EXECUTABLE(testIlargia ${SRCS})
+ADD_EXECUTABLE(testIlargia ${SRCS} Commons.h)
 
 TARGET_LINK_LIBRARIES(testIlargia
     Ilargia

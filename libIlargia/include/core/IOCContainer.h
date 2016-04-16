@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+
 namespace Ilargia {
 
     class IOCContainer {
@@ -78,6 +79,8 @@ namespace Ilargia {
         }
 
     };
+
+    int IOCContainer::s_nextTypeId = 1000;
 
 }
 #endif //ILARGIA_IOCContainer_H

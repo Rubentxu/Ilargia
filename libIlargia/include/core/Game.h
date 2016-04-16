@@ -39,11 +39,11 @@ namespace Ilargia {
 
         int runGame();
 
-        void pushState(GameState &&gameState);
+        void pushState(GameStatePtr gameState);
 
         void popState();
 
-        void changeState(GameState &&gameState);
+        void changeState(GameStatePtr gameState);
 
         void clear();
     };
