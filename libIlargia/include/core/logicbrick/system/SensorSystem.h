@@ -6,13 +6,19 @@
 
 namespace Ilargia {
 
-
-    class SensorSystem {
+    class ISensorSystem {
     protected:
-        void process(Sensor &sensor, State state, float deltaTime) {
+        virtual void process(Sensor &sensor, bool isChanged, float deltaTime) = 0;
+
+        virtual bool query(Sensor sensor, float deltaTime) = 0;
+    };
+
+    class SensorSystem : public ISensorSystem {
+    protected:
+        virtual void process(Sensor &sensor, bool isChanged, float deltaTime) override {
 
             bool doDispatch = false, freqDispatch = false;
-            if (state.isChanged) {
+            if (isChanged) {
                 sensor.firstExec = true;
                 sensor.positive = false;
                 sensor.firstTap = TapMode::TAP_IN;
@@ -27,7 +33,7 @@ namespace Ilargia {
             sensor.positive = query(sensor, deltaTime);
             if (sensor.invert) sensor.positive = !sensor.positive;
 
-            if (sensor.firstExec || ((sensor.tick += deltaTime) > sensor.frequency) || sensor.pulse == Pulse::PM_IDLE
+            if (sensor.firstExec || ((sensor.tick += deltaTime) >= sensor.frequency) || sensor.pulse == Pulse::PM_IDLE
                 || (lastPulse != sensor.positive)) {
                 processPulseState = true;
                 if (sensor.tick > sensor.frequency) freqDispatch = true;
@@ -36,23 +42,20 @@ namespace Ilargia {
             }
 
             if (processPulseState) {
-                if (sensor.pulse == Pulse::PM_IDLE) {
-                    doDispatch = lastPulse != sensor.positive;
-
-                } else {
-                    if (sensor.pulse == Pulse::PM_TRUE) {
-                        doDispatch = (lastPulse != sensor.positive) || sensor.positive;
-                    }
-                    if (sensor.pulse == Pulse::PM_FALSE) {
-                        doDispatch = (lastPulse != sensor.positive) || !sensor.positive;
-                    }
+                doDispatch = lastPulse != sensor.positive;
+                switch (sensor.pulse) {
+                    case Pulse::PM_TRUE:
+                        doDispatch = doDispatch || sensor.positive;
+                        break ;
+                    case Pulse::PM_FALSE:
+                        doDispatch = doDispatch || !sensor.positive;
+                        break ;
                 }
             }
 
 
             if (sensor.tap) {
                 processPulseState = sensor.positive;
-
                 doDispatch = false;
                 sensor.pulseState = BrickMode::BM_OFF;
 
@@ -81,16 +84,13 @@ namespace Ilargia {
             // Dispatch results
             if (doDispatch) {
                 sensor.pulseState = BrickMode::BM_ON;
-            }
-
-            if (!doDispatch && sensor.pulse == Pulse::PM_TRUE && sensor.positive && freqDispatch) {
+            } else if (sensor.pulse == Pulse::PM_TRUE && sensor.positive && freqDispatch) {
                 sensor.pulseState = BrickMode::BM_ON;
-            } else if (!doDispatch) {
+            } else {
                 sensor.pulseState = BrickMode::BM_OFF;
             }
 
         }
-
 
         bool isPositive(Sensor sensor) {
             bool result = sensor.positive;
@@ -103,6 +103,7 @@ namespace Ilargia {
         }
 
         virtual bool query(Sensor sensor, float deltaTime) = 0;
+
     };
 }
 

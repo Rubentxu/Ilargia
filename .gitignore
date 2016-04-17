@@ -41,3 +41,6 @@ build/
 CMakeCache.txt
 nbproject/
 CMakeFiles/
+
+# Dependencies
+externalLib/*

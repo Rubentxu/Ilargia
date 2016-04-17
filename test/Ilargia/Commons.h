@@ -3,6 +3,11 @@
 
 #include <memory>
 #include <vector>
+#include <core/logicbrick/system/SensorSystem.h>
+#include <core/Manager.h>
+#include <core/Engine.h>
+#include <core/Timer.h>
+#include <core/GameState.h>
 
 class TestManager : public Ilargia::Manager {
 public:
@@ -79,6 +84,17 @@ public:
 
     virtual void unloadResources()  override { isUnloadResources = true;}
 
+};
+
+class TestSensorSystem: public Ilargia::SensorSystem {
+protected:
+    virtual bool query(Ilargia::Sensor sensor, float deltaTime) override { return queryIsTrue;}
+
+public:
+    bool queryIsTrue = false;
+    virtual void processSensor(Ilargia::Sensor &sensor, bool isChanged, float deltaTime) {
+        process(sensor,isChanged,deltaTime);
+    }
 };
 
 

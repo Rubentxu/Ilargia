@@ -14,7 +14,7 @@ namespace Ilargia {
         float frequency = 0;
         bool invert = false;
         bool tap = false;
-        Pulse pulse = Pulse::PM_IDLE;
+        Pulse pulse = Pulse::PM_IDLE; // Valorar si quitar. Duplicidad de funcionalidad con positive
 
         // Values
         float tick = 0;
@@ -31,7 +31,7 @@ namespace Ilargia {
     };
 
     template <typename Entity>
-    struct MouseSensor : Sensor<MouseSensor> {
+    struct MouseSensor : Sensor {
         MouseEvent mouseEvent = MouseEvent::MOUSEMOTION;
         Entity target;
 
