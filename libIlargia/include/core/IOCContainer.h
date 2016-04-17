@@ -46,8 +46,10 @@ namespace Ilargia {
         //Most basic implementation - register a functor
         template<typename TInterface, typename ...TS>
         void registerFunctor(std::function<std::shared_ptr<TInterface>(std::shared_ptr<TS> ...ts)> functor) {
-            m_factories[getTypeID<TInterface>()] = std::make_shared<CFactory<TInterface>>(
-                    [=] { return functor(getObject<TS>()...); });
+            auto it = m_factories.begin();
+            m_factories.insert(it + getTypeID<TInterface>(), std::make_shared<CFactory<TInterface>>(
+                    [=] { return functor(getObject<TS>()...); }));
+
         }
 
 
@@ -69,7 +71,9 @@ namespace Ilargia {
         //Register one instance of an object
         template<typename TInterface>
         void registerInstance(std::shared_ptr<TInterface> t) {
-            m_factories[getTypeID<TInterface>()] = std::make_shared<CFactory<TInterface>>([=] { return t; });
+            auto it = m_factories.begin();
+            m_factories.insert(it + getTypeID<TInterface>(), std::make_shared<CFactory<TInterface>>([=] { return t; }));
+
         }
 
         //A factory that will return one instance for every request
@@ -80,7 +84,7 @@ namespace Ilargia {
 
     };
 
-    int IOCContainer::s_nextTypeId = 1000;
+    int IOCContainer::s_nextTypeId = 0;
 
 }
 #endif //ILARGIA_IOCContainer_H

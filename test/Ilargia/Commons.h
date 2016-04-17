@@ -5,6 +5,9 @@
 #include <vector>
 
 class TestManager : public Ilargia::Manager {
+public:
+    bool param = true;
+    TestManager() {}
 };
 
 class TestEngine : public Ilargia::Engine {
