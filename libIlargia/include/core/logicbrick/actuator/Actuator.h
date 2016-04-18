@@ -5,10 +5,20 @@
 #include <functional>
 
 namespace Ilargia {
-    template <class... Components>
+
     struct Actuator : LogicBrick  {
-        std::function<void (Components...)> actuator;
+        bool isActive = false;
     };
+
+   /* struct TextureActuator: public Actuator {
+     TextureView textureView;
+     float height = 0;
+     float width = 0;
+     int opacity = -1;
+     bool flipX;
+     bool flipY;
+     Color tint;
+    };*/
 }
 
 

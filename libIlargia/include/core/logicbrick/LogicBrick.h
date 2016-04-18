@@ -7,6 +7,8 @@ namespace Ilargia {
 
     enum class BrickMode { BM_IDLE, BM_ON, BM_OFF };
 
+    struct Component {};
+
     struct LogicBrick {
         std::string name;
         int state = -1;

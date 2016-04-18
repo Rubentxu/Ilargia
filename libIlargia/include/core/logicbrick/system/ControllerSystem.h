@@ -3,28 +3,56 @@
 
 #include "core/logicbrick/controller/Controller.h"
 #include "core/logicbrick/State.h"
+#include "core/logicbrick/sensor/Sensor.h"
 
 
 namespace Ilargia {
 
-
-    class ControllerSystem {
+    class IControllerSystem {
     protected:
-        void process(Controller &controller) {
-            if (controller.actuators.empty() || controller.sensors.empty()) {
+        virtual bool validateSensors(std::unordered_map<std::string,std::unique_ptr<Sensor>>& sensors) = 0;
+
+    };
+
+    class ControllerSystem: public IControllerSystem {
+    protected:
+        virtual bool validateSensors(std::unordered_map<std::string,std::unique_ptr<Sensor>>& sensors) override {
+            bool pulseState = false;
+            for (auto &pair : sensors) {
+                auto &sensor = pair.second;
+                if (sensor->pulseState == Ilargia::BrickMode::BM_ON) {
+                    pulseState = true;
+                } else {
+                    pulseState = false;
+                    break;
+                }
+            }
+            return pulseState;
+        }
+
+        template <typename ControllerType>
+        void process(ControllerType &controller);
+
+    };
+
+    class ConditionalControllerSystem : public ControllerSystem {
+    protected:
+         void process(ConditionalController &ccontroller) {
+
+            if (ccontroller.actuators.empty() || ccontroller.sensors.empty()) {
                 return;
             }
 
-            boolean doDispatch = false;
-            boolean seed = true, last = false, pos = false;
+            bool doDispatch = false;
+            bool seed = true, last = false, pos = false;
 
 
-            switch (controller.op) {
-                case OP_NOR:
-                    controller.isInverter = true;
-                case OP_OR:
-                    for (Sensor sens : controller.sensors.values()) {
-                        pos = sens.positive;
+            switch (ccontroller.op) {
+                case Op::OP_NOR:
+                    ccontroller.isInverter = true;
+                case Op::OP_OR:
+                    for (auto &pair : ccontroller.sensors) {
+                        pos = pair.second->positive;
                         if (pos)
                             doDispatch = true;
 
@@ -32,15 +60,15 @@ namespace Ilargia {
                             break;
                     }
 
-                    if (controller.isInverter)
+                    if (ccontroller.isInverter)
                         doDispatch = !doDispatch;
 
                     break;
-                case OP_XNOR:
-                    controller.isInverter = true;
-                case OP_XOR:
-                    for (Sensor sens : controller.sensors.values()) {
-                        seed = sens.positive;
+                case Op::OP_XNOR:
+                    ccontroller.isInverter = true;
+                case Op::OP_XOR:
+                    for (auto &pair : ccontroller.sensors) {
+                        seed = pair.second->positive;
 
                         if (seed && last) {
                             doDispatch = false;
@@ -50,18 +78,18 @@ namespace Ilargia {
                         if (!last && seed)
                             last = true;
 
-                        if (controller.op == Op.OP_XNOR && seed)
-                            controller.isInverter = true;
+                        if (ccontroller.op == Op::OP_XNOR && seed)
+                            ccontroller.isInverter = true;
                     }
-                    if (controller.isInverter)
+                    if (ccontroller.isInverter)
                         doDispatch = !doDispatch;
 
                     break;
-                case OP_NAND:
-                    controller.isInverter = true;
-                case OP_AND:
-                    for (Sensor sens : controller.sensors.values()) {
-                        pos = sens.positive;
+                case Op::OP_NAND:
+                    ccontroller.isInverter = true;
+                case Op::OP_AND:
+                    for (auto &pair : ccontroller.sensors) {
+                        pos = pair.second->positive;
                         if (seed) {
                             seed = false;
                             doDispatch = pos;
@@ -69,16 +97,16 @@ namespace Ilargia {
                             doDispatch = doDispatch && pos;
 
                     }
-                    if (controller.isInverter) {
+                    if (ccontroller.isInverter) {
                         doDispatch = !doDispatch;
                     }
 
                     break;
             }
             if (doDispatch) {
-                controller.pulseState = BrickMode.BM_ON;
+                ccontroller.pulseState = Ilargia::BrickMode::BM_ON;
             } else {
-                controller.pulseState = BrickMode.BM_OFF;
+                ccontroller.pulseState = Ilargia::BrickMode::BM_OFF;
             }
 
         }
