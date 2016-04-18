@@ -2,6 +2,8 @@
 #define ILARGIA_ControllerSYSTEM_H
 
 #include "core/logicbrick/controller/Controller.h"
+#include "core/logicbrick/State.h"
+
 
 namespace Ilargia {
 

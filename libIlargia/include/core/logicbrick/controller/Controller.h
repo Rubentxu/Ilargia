@@ -3,8 +3,8 @@
 
 #include <memory>
 #include <unordered_map>
-#include "core/logicbrick/Sensor.h"
-#include "core/logicbrick/Actuator.h"
+#include "core/logicbrick/sensor/Sensor.h"
+#include "core/logicbrick/actuator/Actuator.h"
 #include "core/logicbrick/LogicBrick.h"
 
 namespace Ilargia {
@@ -12,7 +12,6 @@ namespace Ilargia {
     struct Controller : LogicBrick {
         std::unordered_map<std::string,std::unique_ptr<Sensor>> sensors;
         std::unordered_map<std::string,std::unique_ptr<Actuator>> actuators;
-
     };
 
     enum class Op {

@@ -6,7 +6,7 @@
 
 namespace Ilargia {
 
-    enum class Pulse { PM_IDLE, PM_TRUE, PM_FALSE };
+    enum class Pulse { PM_IDLE, PM_TRUE, PM_FALSE, PM_BOTH };
     enum class TapMode { TAP_OUT, TAP_IN };
 
     struct Sensor : LogicBrick {

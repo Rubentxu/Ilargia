@@ -50,6 +50,9 @@ namespace Ilargia {
                     case Pulse::PM_FALSE:
                         doDispatch = doDispatch || !sensor.positive;
                         break ;
+                    case Pulse::PM_BOTH:
+                        doDispatch = true;
+                        break ;
                 }
             }
 
@@ -68,7 +71,7 @@ namespace Ilargia {
                 } else if (sensor.lastTap == TapMode::TAP_IN) {
                     sensor.positive = false;
                     doDispatch = true;
-                    if (sensor.pulse == Pulse::PM_TRUE) sensor.firstTap = TapMode::TAP_IN;
+                    if (sensor.pulse == Pulse::PM_TRUE || sensor.pulse == Pulse::PM_BOTH) sensor.firstTap = TapMode::TAP_IN;
                     sensor.lastTap = TapMode::TAP_OUT;
                 } else {
                     sensor.positive = false;
@@ -84,7 +87,7 @@ namespace Ilargia {
             // Dispatch results
             if (doDispatch) {
                 sensor.pulseState = BrickMode::BM_ON;
-            } else if (sensor.pulse == Pulse::PM_TRUE && sensor.positive && freqDispatch) {
+            } else if ((sensor.pulse == Pulse::PM_TRUE || sensor.pulse == Pulse::PM_BOTH) && sensor.positive && freqDispatch) {
                 sensor.pulseState = BrickMode::BM_ON;
             } else {
                 sensor.pulseState = BrickMode::BM_OFF;
