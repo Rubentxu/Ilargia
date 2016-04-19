@@ -3,10 +3,11 @@
 #endif
 
 #include <memory>
+#include <string>
+#include <unordered_map>
 #include "gtest/gtest.h"
 #include "core/logicbrick/system/ControllerSystem.h"
-#include <string>
-#include "core/logicbrick/controller/Controller.h"
+#include "core/logicbrick/LogicBrick.h"
 
 class TestControllerSystem : public Ilargia::ControllerSystem {
 public:
@@ -97,32 +98,177 @@ TEST_F(ControllerSystemTest, validateControllerNotProccess) {
 }
 
 
+
 TEST_F(ControllerSystemTest, conditionalControllerAND) {
     initializeConditionalControllerSystem();
     sensor->pulseState = Ilargia::BrickMode::BM_ON;
-    sensor->positive = true;
     sensor2->pulseState = Ilargia::BrickMode::BM_ON;
-    sensor2->positive = true;
     conditionalController.op = Ilargia::Op::OP_AND;
 
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
     conditionalControllerSystem->process(conditionalController);
     EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
 
 }
 
+TEST_F(ControllerSystemTest, conditionalControllerNAND) {
+    initializeConditionalControllerSystem();
+    sensor->pulseState = Ilargia::BrickMode::BM_ON;
+    sensor2->pulseState = Ilargia::BrickMode::BM_ON;
+    conditionalController.op = Ilargia::Op::OP_NAND;
+
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+
+}
 
 TEST_F(ControllerSystemTest, conditionalControllerOR) {
     initializeConditionalControllerSystem();
     sensor->pulseState = Ilargia::BrickMode::BM_ON;
-    sensor->positive = true;
     sensor2->pulseState = Ilargia::BrickMode::BM_ON;
-    sensor2->positive = false;
     conditionalController.op = Ilargia::Op::OP_OR;
 
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
     conditionalControllerSystem->process(conditionalController);
     EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
 
 }
+
+TEST_F(ControllerSystemTest, conditionalControllerNOR) {
+    initializeConditionalControllerSystem();
+    sensor->pulseState = Ilargia::BrickMode::BM_ON;
+    sensor2->pulseState = Ilargia::BrickMode::BM_ON;
+    conditionalController.op = Ilargia::Op::OP_NOR;
+
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+}
+
+TEST_F(ControllerSystemTest, conditionalControllerXOR) {
+    initializeConditionalControllerSystem();
+    sensor->pulseState = Ilargia::BrickMode::BM_ON;
+    sensor2->pulseState = Ilargia::BrickMode::BM_ON;
+    conditionalController.op = Ilargia::Op::OP_XOR;
+
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+}
+
+TEST_F(ControllerSystemTest, conditionalControllerXNOR) {
+    initializeConditionalControllerSystem();
+    sensor->pulseState = Ilargia::BrickMode::BM_ON;
+    sensor2->pulseState = Ilargia::BrickMode::BM_ON;
+    conditionalController.op = Ilargia::Op::OP_XNOR;
+
+    sensor->positive = false;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+    sensor->positive = false;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = false;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_OFF,conditionalController.pulseState);
+
+    sensor->positive = true;
+    sensor2->positive = true;
+    conditionalControllerSystem->process(conditionalController);
+    EXPECT_EQ(Ilargia::BrickMode::BM_ON,conditionalController.pulseState);
+
+}
+
+
 
 
 

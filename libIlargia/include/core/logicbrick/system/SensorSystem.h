@@ -2,7 +2,7 @@
 #define ILARGIA_SENSORSYSTEM_H
 
 #include "core/logicbrick/State.h"
-#include "core/logicbrick/sensor/Sensor.h"
+#include "core/logicbrick/LogicBrick.h"
 
 namespace Ilargia {
 

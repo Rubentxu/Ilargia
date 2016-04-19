@@ -1,22 +1,20 @@
 #ifndef ILARGIA_ControllerSYSTEM_H
 #define ILARGIA_ControllerSYSTEM_H
 
-#include "core/logicbrick/controller/Controller.h"
+#include "core/logicbrick/LogicBrick.h"
 #include "core/logicbrick/State.h"
-#include "core/logicbrick/sensor/Sensor.h"
-
 
 namespace Ilargia {
 
     class IControllerSystem {
     protected:
-        virtual bool validateSensors(std::unordered_map<std::string,std::unique_ptr<Sensor>>& sensors) = 0;
+        virtual bool validateSensors(std::unordered_map<std::string, std::unique_ptr<Sensor>> &sensors) = 0;
 
     };
 
-    class ControllerSystem: public IControllerSystem {
+    class ControllerSystem : public IControllerSystem {
     protected:
-        virtual bool validateSensors(std::unordered_map<std::string,std::unique_ptr<Sensor>>& sensors) override {
+        virtual bool validateSensors(std::unordered_map<std::string, std::unique_ptr<Sensor>> &sensors) override {
             bool pulseState = false;
             for (auto &pair : sensors) {
                 auto &sensor = pair.second;
@@ -30,14 +28,14 @@ namespace Ilargia {
             return pulseState;
         }
 
-        template <typename ControllerType>
+        template<typename ControllerType>
         void process(ControllerType &controller);
 
     };
 
     class ConditionalControllerSystem : public ControllerSystem {
     protected:
-         void process(ConditionalController &ccontroller) {
+        void process(ConditionalController &ccontroller) {
 
             if (ccontroller.actuators.empty() || ccontroller.sensors.empty()) {
                 return;
@@ -107,6 +105,9 @@ namespace Ilargia {
                 ccontroller.pulseState = Ilargia::BrickMode::BM_ON;
             } else {
                 ccontroller.pulseState = Ilargia::BrickMode::BM_OFF;
+            }
+            for (auto &pair : ccontroller.actuators) {
+                pair.second->isActive = doDispatch;
             }
 
         }

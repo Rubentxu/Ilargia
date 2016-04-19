@@ -3,7 +3,7 @@
 #endif
 #include "gtest/gtest.h"
 #include "Commons.h"
-#include "core/logicbrick/sensor/Sensor.h"
+#include "core/logicbrick/LogicBrick.h"
 
 
 class SensorSystemTest: public ::testing::Test {
