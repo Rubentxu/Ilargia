@@ -113,6 +113,13 @@ namespace Ilargia {
         }
 
     };
+
+    class ScriptControllerSystem : public ControllerSystem {
+    protected:
+        void process(ScriptController &controller) {
+            controller.script(controller);
+        }
+    };
 }
 
 #endif //ILARGIA_SENSORSYSTEM_H

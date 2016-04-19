@@ -78,7 +78,7 @@ namespace Ilargia {
     };
 
     struct ScriptController : Controller {
-        std::function<void(Controller)> script;
+        std::function<void(Controller&)> script;
     };
 
 
