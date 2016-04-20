@@ -1,7 +1,7 @@
 #ifndef ILARGIA_SENSORSYSTEM_H
 #define ILARGIA_SENSORSYSTEM_H
 
-#include "core/logicbrick/State.h"
+#include "core/logicbrick/Components.h"
 #include "core/logicbrick/LogicBrick.h"
 
 namespace Ilargia {
@@ -10,90 +10,12 @@ namespace Ilargia {
     protected:
         virtual void process(Sensor &sensor, bool isChanged, float deltaTime) = 0;
 
-        virtual bool query(Sensor sensor, float deltaTime) = 0;
     };
+
 
     class SensorSystem : public ISensorSystem {
     protected:
-        virtual void process(Sensor &sensor, bool isChanged, float deltaTime) override {
-
-            bool doDispatch = false, freqDispatch = false;
-            if (isChanged) {
-                sensor.firstExec = true;
-                sensor.positive = false;
-                sensor.firstTap = TapMode::TAP_IN;
-                /*  if (sensor instanceof DelaySensor) {
-                      ((DelaySensor) sensor).time = 0;
-                  }*/
-
-            }
-
-            bool processPulseState = false;
-            bool lastPulse = sensor.positive;
-            sensor.positive = query(sensor, deltaTime);
-            if (sensor.invert) sensor.positive = !sensor.positive;
-
-            if (sensor.firstExec || ((sensor.tick += deltaTime) >= sensor.frequency) || sensor.pulse == Pulse::PM_IDLE
-                || (lastPulse != sensor.positive)) {
-                processPulseState = true;
-                if (sensor.tick > sensor.frequency) freqDispatch = true;
-                sensor.tick = 0;
-
-            }
-
-            if (processPulseState) {
-                doDispatch = lastPulse != sensor.positive;
-                switch (sensor.pulse) {
-                    case Pulse::PM_TRUE:
-                        doDispatch = doDispatch || sensor.positive;
-                        break ;
-                    case Pulse::PM_FALSE:
-                        doDispatch = doDispatch || !sensor.positive;
-                        break ;
-                    case Pulse::PM_BOTH:
-                        doDispatch = true;
-                        break ;
-                }
-            }
-
-
-            if (sensor.tap) {
-                processPulseState = sensor.positive;
-                doDispatch = false;
-                sensor.pulseState = BrickMode::BM_OFF;
-
-                if (sensor.firstTap == TapMode::TAP_IN && processPulseState) {
-                    doDispatch = true;
-                    sensor.positive = true;
-                    sensor.pulseState = BrickMode::BM_ON;
-                    sensor.firstTap = TapMode::TAP_OUT;
-                    sensor.lastTap = TapMode::TAP_IN;
-                } else if (sensor.lastTap == TapMode::TAP_IN) {
-                    sensor.positive = false;
-                    doDispatch = true;
-                    if (sensor.pulse == Pulse::PM_TRUE || sensor.pulse == Pulse::PM_BOTH) sensor.firstTap = TapMode::TAP_IN;
-                    sensor.lastTap = TapMode::TAP_OUT;
-                } else {
-                    sensor.positive = false;
-                    if (!processPulseState)
-                        sensor.firstTap = TapMode::TAP_IN;
-                }
-            } else sensor.pulseState = isPositive(sensor) ? BrickMode::BM_ON : BrickMode::BM_OFF;
-
-            if (sensor.firstExec) {
-                sensor.firstExec = false;
-            }
-
-            // Dispatch results
-            if (doDispatch) {
-                sensor.pulseState = BrickMode::BM_ON;
-            } else if ((sensor.pulse == Pulse::PM_TRUE || sensor.pulse == Pulse::PM_BOTH) && sensor.positive && freqDispatch) {
-                sensor.pulseState = BrickMode::BM_ON;
-            } else {
-                sensor.pulseState = BrickMode::BM_OFF;
-            }
-
-        }
+        virtual void process(Sensor &sensor, bool isChanged, float deltaTime) override;
 
         bool isPositive(Sensor sensor) {
             bool result = sensor.positive;
@@ -105,8 +27,84 @@ namespace Ilargia {
 
         }
 
-        virtual bool query(Sensor sensor, float deltaTime) = 0;
 
+        virtual bool query(Sensor &sensor, float deltaTime) = 0;
+
+    };
+
+    class AlwaysSensorSystem : public SensorSystem {
+
+        bool query(Sensor &sensor, float deltaTime) override {
+            return true;
+        }
+    };
+
+    class DelaySensorSystem : public SensorSystem {
+
+        bool query(Sensor &sensor, float deltaTime) override {
+            DelaySensor& dsensor = static_cast<DelaySensor&>(sensor);
+            bool isActive = false;
+            if (dsensor.time != -1) dsensor.time += deltaTime;
+
+            if (dsensor.time >= dsensor.delay) {
+                if (dsensor.positive && dsensor.time >= (dsensor.delay + dsensor.duration)) {
+                    if (dsensor.repeat) {
+                        dsensor.time = 0;
+                    } else {
+                        dsensor.time = -1;
+                    }
+                } else {
+                    isActive = true;
+                }
+
+            }
+            return isActive;
+
+        }
+    };
+
+    class KeyboardSensorSystem : public SensorSystem {
+
+        bool query(Sensor &sensor, float deltaTime) override {
+            KeyboardSensor& ksensor = static_cast<KeyboardSensor&>(sensor);
+            bool isActive = false;
+            if (ksensor.keyCode != -1) {
+                isActive = ksensor.keysCodeSignal[ksensor.keyCode];
+
+            }
+            return isActive;
+
+        }
+    };
+
+    template<typename Body, typename Contact>
+    class NearSensorSystem : public SensorSystem {
+
+        bool query(Sensor &sensor, float deltaTime) override {
+            NearSensor<Body,Contact>& nsensor = static_cast<NearSensor<Body,Contact>&>(sensor);
+            bool isActive = false;
+
+            if (nsensor.distanceContactList.size() > 0) {
+                isActive = true;
+                if (!nsensor.initContact) nsensor.initContact = true;
+
+            } else if (nsensor.initContact && nsensor.resetDistanceContactList.size > 0) {
+                isActive = true;
+
+            } else if (nsensor.initContact) {
+                nsensor.initContact = false;
+
+            }
+            return isActive;
+
+        }
+
+    };
+
+    template<typename Contact>
+    class RadarSensorSystem : public SensorSystem {
+
+        bool query(Sensor &sensor, float deltaTime) override ;
     };
 }
 

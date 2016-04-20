@@ -88,7 +88,7 @@ public:
 
 class TestSensorSystem: public Ilargia::SensorSystem {
 protected:
-    virtual bool query(Ilargia::Sensor sensor, float deltaTime) override { return queryIsTrue;}
+    bool query(Ilargia::Sensor& sensor, float deltaTime) override { return queryIsTrue;}
 
 public:
     bool queryIsTrue = false;

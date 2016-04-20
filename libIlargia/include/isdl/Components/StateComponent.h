@@ -3,7 +3,7 @@
 
 #include <anax/Component.hpp>
 #include <string>
-#include "core/logicbrick/State.h"
+#include "core/logicbrick/Components.h"
 
 namespace Ilargia {
 

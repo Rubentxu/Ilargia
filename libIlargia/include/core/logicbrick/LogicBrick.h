@@ -3,16 +3,25 @@
 
 #include <string>
 #include <unordered_map>
+#include <set>
+#include <queue>
 #include "mathfu/vector.h"
 #include "core/logicbrick/LogicBrick.h"
 
 namespace Ilargia {
 
-    enum class BrickMode { BM_IDLE, BM_ON, BM_OFF };
-    enum class Pulse { PM_IDLE, PM_TRUE, PM_FALSE, PM_BOTH };
-    enum class TapMode { TAP_OUT, TAP_IN };
+    enum class BrickMode {
+        BM_IDLE, BM_ON, BM_OFF
+    };
+    enum class Pulse {
+        PM_IDLE, PM_TRUE, PM_FALSE, PM_BOTH
+    };
+    enum class TapMode {
+        TAP_OUT, TAP_IN
+    };
 
-    struct Component {};
+    struct Component {
+    };
 
     struct LogicBrick {
         std::string name;
@@ -38,11 +47,18 @@ namespace Ilargia {
 
     };
 
+    struct AlwaysSensor : Sensor {
+        AlwaysSensor() {
+            Sensor::pulseState = BrickMode::BM_ON;
+            Sensor::pulse = Pulse::PM_BOTH;
+        }
+    };
+
     enum class MouseEvent {
         MOUSEMOTION = 0x400, MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL
     };
 
-    template <typename Entity>
+    template<typename Entity>
     struct MouseSensor : Sensor {
         MouseEvent mouseEvent = MouseEvent::MOUSEMOTION;
         Entity target;
@@ -53,13 +69,72 @@ namespace Ilargia {
 
     };
 
-    struct Actuator : LogicBrick  {
+    struct DelaySensor : Sensor {
+        // Config Values
+        float delay = 0;
+        float duration = 0;
+        bool repeat = false;
+
+        // Signal
+        float time = 0;
+    };
+
+    struct KeyboardSensor : Sensor {
+        // Config Values
+        int keyCode;
+        bool allKeys = false;
+        bool logToggle = false;
+
+        // Signal Values
+        static std::vector<bool> keysCodeSignal;
+        std::string target;
+
+        KeyboardSensor() {
+            keysCodeSignal= std::vector<bool>{128};
+            std::fill (keysCodeSignal.begin(),keysCodeSignal.end(),false);
+        }
+
+    };
+
+    template<typename Body, typename Contact>
+    struct NearSensor : Sensor {
+        // Config Values
+        std::string targetTag;
+        std::string targetPropertyName;
+        float distance = 0;
+        float resetDistance = 0;
+        Body attachedRigidBody;
+
+        // Signal Values
+        std::set<Contact> distanceContactList;
+        std::set<Contact> resetDistanceContactList;
+        bool initContact = false;
+    };
+
+    enum class Axis2D {
+        Xpositive, Ypositive, Xnegative, Ynegative
+    };
+
+    template<typename Contact>
+    struct RadarSensor : Sensor {
+        // Config Values
+        std::string targetTag;
+        std::string targetPropertyName;
+        Axis2D axis2D;
+        float angle = 0;
+        float distance = 0;
+        // Signal Values
+        std::set<Contact> contactList;
+    };
+
+
+    struct Actuator : LogicBrick {
         bool isActive = false;
     };
 
     struct Controller : LogicBrick {
-        std::unordered_map<std::string,std::unique_ptr<Sensor>> sensors;
-        std::unordered_map<std::string,std::unique_ptr<Actuator>> actuators;
+        std::unordered_map<std::string, std::unique_ptr<Sensor>> sensors;
+        std::unordered_map<std::string, std::unique_ptr<Actuator>> actuators;
     };
 
     enum class Op {
@@ -78,9 +153,8 @@ namespace Ilargia {
     };
 
     struct ScriptController : Controller {
-        std::function<void(Controller&)> script;
+        std::function<void(Controller &)> script;
     };
-
 
 
 }
