@@ -27,20 +27,20 @@ namespace Ilargia {
 
         }
 
-
+    public:
         virtual bool query(Sensor &sensor, float deltaTime) = 0;
 
     };
 
     class AlwaysSensorSystem : public SensorSystem {
-
+    public:
         bool query(Sensor &sensor, float deltaTime) override {
             return true;
         }
     };
 
     class DelaySensorSystem : public SensorSystem {
-
+    public:
         bool query(Sensor &sensor, float deltaTime) override {
             DelaySensor& dsensor = static_cast<DelaySensor&>(sensor);
             bool isActive = false;
@@ -58,18 +58,28 @@ namespace Ilargia {
                 }
 
             }
+            dsensor.positive = isActive;
             return isActive;
 
         }
     };
 
     class KeyboardSensorSystem : public SensorSystem {
+    public:
+        // Signal Values
+        std::vector<bool> keysCodeSignal;
+
+
+        KeyboardSensorSystem() {
+            keysCodeSignal= std::vector<bool>{128};
+            std::fill (keysCodeSignal.begin(),keysCodeSignal.end(),false);
+        }
 
         bool query(Sensor &sensor, float deltaTime) override {
             KeyboardSensor& ksensor = static_cast<KeyboardSensor&>(sensor);
             bool isActive = false;
             if (ksensor.keyCode != -1) {
-                isActive = ksensor.keysCodeSignal[ksensor.keyCode];
+                isActive = keysCodeSignal[ksensor.keyCode];
 
             }
             return isActive;
@@ -79,7 +89,7 @@ namespace Ilargia {
 
     template<typename Body, typename Contact>
     class NearSensorSystem : public SensorSystem {
-
+    public:
         bool query(Sensor &sensor, float deltaTime) override {
             NearSensor<Body,Contact>& nsensor = static_cast<NearSensor<Body,Contact>&>(sensor);
             bool isActive = false;
@@ -103,7 +113,7 @@ namespace Ilargia {
 
     template<typename Contact>
     class RadarSensorSystem : public SensorSystem {
-
+    public:
         bool query(Sensor &sensor, float deltaTime) override ;
     };
 }

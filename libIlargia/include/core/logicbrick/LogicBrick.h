@@ -71,12 +71,14 @@ namespace Ilargia {
 
     struct DelaySensor : Sensor {
         // Config Values
-        float delay = 0;
-        float duration = 0;
-        bool repeat = false;
+        float delay;
+        float duration;
+        bool repeat;
 
         // Signal
-        float time = 0;
+        float time = 0.0;
+
+        DelaySensor(float _delay, float _duration = 0.0, bool _repeat = false) : delay{_delay}, duration{_duration}, repeat{_repeat} {}
     };
 
     struct KeyboardSensor : Sensor {
@@ -85,14 +87,10 @@ namespace Ilargia {
         bool allKeys = false;
         bool logToggle = false;
 
-        // Signal Values
-        static std::vector<bool> keysCodeSignal;
         std::string target;
 
-        KeyboardSensor() {
-            keysCodeSignal= std::vector<bool>{128};
-            std::fill (keysCodeSignal.begin(),keysCodeSignal.end(),false);
-        }
+        KeyboardSensor(int _keyCode, bool _allKeys, bool _logToggle)
+                : keyCode{_keyCode}, allKeys{_allKeys}, logToggle{_logToggle} { }
 
     };
 

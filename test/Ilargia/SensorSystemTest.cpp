@@ -650,3 +650,28 @@ TEST_F(SensorSystemTest, pulseChangeStateTest) {
     EXPECT_EQ(Ilargia::BrickMode::BM_ON, sensor.pulseState);
     EXPECT_FALSE(sensor.positive);
 }
+
+TEST_F(SensorSystemTest, delaySensorTest) {
+    Ilargia::DelaySensorSystem delaySensorSystem {};
+    Ilargia::DelaySensor delaySensor {1,1};
+
+    EXPECT_FALSE(delaySensorSystem.query(delaySensor,0.5));
+    EXPECT_TRUE(delaySensorSystem.query(delaySensor,0.5));
+    EXPECT_TRUE(delaySensorSystem.query(delaySensor,0.5));
+    EXPECT_FALSE(delaySensorSystem.query(delaySensor,0.5));
+    EXPECT_FALSE(delaySensorSystem.query(delaySensor,0.5));
+
+}
+
+TEST_F(SensorSystemTest, keyboardSensorTest) {
+    Ilargia::KeyboardSensorSystem sensorSystem {};
+    Ilargia::KeyboardSensor sensor {100,false, false};
+
+    sensorSystem.keysCodeSignal[100] = true;
+    EXPECT_TRUE(sensorSystem.query(sensor,0.5));
+
+    sensorSystem.keysCodeSignal[100] = false;
+    EXPECT_FALSE(sensorSystem.query(sensor,0.5));
+
+
+}
