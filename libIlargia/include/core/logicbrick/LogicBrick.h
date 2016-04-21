@@ -7,6 +7,7 @@
 #include <queue>
 #include "mathfu/vector.h"
 #include "core/logicbrick/LogicBrick.h"
+#include "core/logicbrick/Components.h"
 
 namespace Ilargia {
 
@@ -78,7 +79,8 @@ namespace Ilargia {
         // Signal
         float time = 0.0;
 
-        DelaySensor(float _delay, float _duration = 0.0, bool _repeat = false) : delay{_delay}, duration{_duration}, repeat{_repeat} {}
+        DelaySensor(float _delay, float _duration = 0.0, bool _repeat = false) : delay{_delay}, duration{_duration},
+                                                                                 repeat{_repeat} { }
     };
 
     struct KeyboardSensor : Sensor {
@@ -128,6 +130,48 @@ namespace Ilargia {
 
     struct Actuator : LogicBrick {
         bool isActive = false;
+    };
+
+    template<typename Camera, typename Entity>
+    struct CameraActuator : Actuator {
+        Camera camera;
+        short height = 0;
+        float damping = 0.08f;
+        std::string followTagEntity;
+        Entity followEntity;
+
+    };
+
+    template<typename Body, typename Entity>
+    struct EditRigidBodyActuator : Actuator {
+        Body targetRigidBody;
+        bool active = true;
+        bool awake = true;
+        float friction = 0.2f;
+        float restitution = 0;
+        Entity target;
+    };
+
+/*    struct EffectActuator : Actuator {
+        ParticleEffectView effectView;
+        mathfu::Vector<float, 2> position;
+        float rotation = 0;
+        int opacity = -1;
+        Color tint;
+        boolean active = false;
+    };*/
+
+    enum class Type {AddEntity, RemoveEntity};
+
+    template<typename Entity>
+    struct InstanceEntityActuator : Actuator {
+        std::function<Entity*()> entityFactory;
+        mathfu::Vector<float, 2> localPosition;
+        mathfu::Vector<float, 2> initialVelocity;
+        float angle = 0;
+        float initialAngularVelocity = 0;
+        float duration = 0; // 0 = lives forever
+        Type type;
     };
 
     struct Controller : LogicBrick {

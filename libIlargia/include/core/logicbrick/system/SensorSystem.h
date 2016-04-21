@@ -17,15 +17,7 @@ namespace Ilargia {
     protected:
         virtual void process(Sensor &sensor, bool isChanged, float deltaTime) override;
 
-        bool isPositive(Sensor sensor) {
-            bool result = sensor.positive;
-            if (sensor.invert) {
-                if (!(sensor.tap && !(sensor.pulse == Pulse::PM_TRUE)))
-                    result = !result;
-            }
-            return result;
-
-        }
+        bool isPositive(Sensor sensor);
 
     public:
         virtual bool query(Sensor &sensor, float deltaTime) = 0;
@@ -41,27 +33,7 @@ namespace Ilargia {
 
     class DelaySensorSystem : public SensorSystem {
     public:
-        bool query(Sensor &sensor, float deltaTime) override {
-            DelaySensor& dsensor = static_cast<DelaySensor&>(sensor);
-            bool isActive = false;
-            if (dsensor.time != -1) dsensor.time += deltaTime;
-
-            if (dsensor.time >= dsensor.delay) {
-                if (dsensor.positive && dsensor.time >= (dsensor.delay + dsensor.duration)) {
-                    if (dsensor.repeat) {
-                        dsensor.time = 0;
-                    } else {
-                        dsensor.time = -1;
-                    }
-                } else {
-                    isActive = true;
-                }
-
-            }
-            dsensor.positive = isActive;
-            return isActive;
-
-        }
+        bool query(Sensor &sensor, float deltaTime) override;
     };
 
     class KeyboardSensorSystem : public SensorSystem {
@@ -69,22 +41,12 @@ namespace Ilargia {
         // Signal Values
         std::vector<bool> keysCodeSignal;
 
-
         KeyboardSensorSystem() {
             keysCodeSignal= std::vector<bool>{128};
             std::fill (keysCodeSignal.begin(),keysCodeSignal.end(),false);
         }
 
-        bool query(Sensor &sensor, float deltaTime) override {
-            KeyboardSensor& ksensor = static_cast<KeyboardSensor&>(sensor);
-            bool isActive = false;
-            if (ksensor.keyCode != -1) {
-                isActive = keysCodeSignal[ksensor.keyCode];
-
-            }
-            return isActive;
-
-        }
+        bool query(Sensor &sensor, float deltaTime) override;
     };
 
     template<typename Body, typename Contact>

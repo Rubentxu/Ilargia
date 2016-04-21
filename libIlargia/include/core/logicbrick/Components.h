@@ -44,6 +44,12 @@ namespace Ilargia {
         bool flipY = false;
     };
 
+    /*template<typename Transform>
+    struct ParticleEffectView : View<Transform> {
+        ParticleEffect effect;
+        boolean autoStart = false;
+    };*/
+
     template<typename Sensor, typename BaseComponent = DefaultBase>
     struct SensorComponents : BaseComponent {
         std::vector<std::vector<Sensor>> sensors;
