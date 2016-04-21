@@ -98,7 +98,7 @@ namespace Ilargia {
                 isActive = true;
                 if (!nsensor.initContact) nsensor.initContact = true;
 
-            } else if (nsensor.initContact && nsensor.resetDistanceContactList.size > 0) {
+            } else if (nsensor.initContact && nsensor.resetDistanceContactList.size() > 0) {
                 isActive = true;
 
             } else if (nsensor.initContact) {

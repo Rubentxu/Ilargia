@@ -673,5 +673,24 @@ TEST_F(SensorSystemTest, keyboardSensorTest) {
     sensorSystem.keysCodeSignal[100] = false;
     EXPECT_FALSE(sensorSystem.query(sensor,0.5));
 
+}
+
+struct BodyTest {};
+struct ContactTest {};
+
+TEST_F(SensorSystemTest, nearSensorTest) {
+    Ilargia::NearSensorSystem<BodyTest,ContactTest> sensorSystem {};
+    Ilargia::NearSensor<BodyTest,ContactTest> sensor {};
+    ContactTest contact{};
+
+    EXPECT_FALSE(sensorSystem.query(sensor,0.5));
+
+    sensor.distanceContactList.push_back(contact);
+    EXPECT_TRUE(sensorSystem.query(sensor,0.5));
+
+    sensor.distanceContactList.pop_back();
+    sensor.resetDistanceContactList.push_back(contact);
+    EXPECT_TRUE(sensorSystem.query(sensor,0.5));
+
 
 }

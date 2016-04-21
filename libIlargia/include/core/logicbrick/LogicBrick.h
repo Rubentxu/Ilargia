@@ -104,8 +104,8 @@ namespace Ilargia {
         Body attachedRigidBody;
 
         // Signal Values
-        std::set<Contact> distanceContactList;
-        std::set<Contact> resetDistanceContactList;
+        std::vector<Contact> distanceContactList;
+        std::vector<Contact> resetDistanceContactList;
         bool initContact = false;
     };
 
